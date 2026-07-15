@@ -119,7 +119,7 @@ public partial class RashodPage : Page
     {
         if (RashodGrid.SelectedItem is RashodRedViewModel r)
         {
-            NavigationService?.Navigate(new Views.Kartice.KarticaPage(_db, r.SredstvoId));
+            NavigationService?.Navigate(new Views.Kartice.KarticePage(_db, r.SredstvoId));
         }
     }
 

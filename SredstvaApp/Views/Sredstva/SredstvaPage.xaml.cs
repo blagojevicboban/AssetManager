@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Microsoft.EntityFrameworkCore;
 using SredstvaData;
 using SredstvaData.Models;
@@ -50,11 +51,19 @@ public partial class SredstvaPage : Page
         // Priprema za buduće akcije na selekciji
     }
 
+    private void SredstvaGrid_DoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        if (SredstvaGrid.SelectedItem is Sredstvo s)
+        {
+            NavigationService?.Navigate(new Views.Kartice.KarticePage(_db, s.Id));
+        }
+    }
+
     private void BtnKartica_Click(object sender, RoutedEventArgs e)
     {
         if (SredstvaGrid.SelectedItem is Sredstvo s)
         {
-            NavigationService?.Navigate(new Views.Kartice.KarticaPage(_db, s.Id));
+            NavigationService?.Navigate(new Views.Kartice.KarticePage(_db, s.Id));
         }
         else
         {
