@@ -32,10 +32,6 @@
 
         <!-- Grid -->
         <DataGrid x:Name="DgKorisnici" Grid.Row="2" AutoGenerateColumns="False" 
-                  Style="{StaticResource CustomDataGrid}"
-                  RowStyle="{StaticResource CustomDataGridRow}"
-                  CellStyle="{StaticResource CustomDataGridCell}"
-                  ColumnHeaderStyle="{StaticResource CustomDataGridColumnHeader}"
                   IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Ime i prezime" Binding="{Binding ImePrezime}" Width="250"/>
@@ -58,10 +54,10 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button Content="Izmeni" Style="{StaticResource ActionButton}" Tag="{Binding Id}" Click="BtnIzmeni_Click" Margin="0,0,8,0"/>
-                                <Button Content="Poništi lozinku" Style="{StaticResource ActionButton}" Tag="{Binding Id}" Click="BtnPonistiLozinku_Click" Margin="0,0,8,0"/>
+                                <Button Content="Izmeni" Style="{StaticResource SecondaryButton}" Tag="{Binding Id}" Click="BtnIzmeni_Click" Margin="0,0,8,0"/>
+                                <Button Content="Poništi lozinku" Style="{StaticResource SecondaryButton}" Tag="{Binding Id}" Click="BtnPonistiLozinku_Click" Margin="0,0,8,0"/>
                                 <Button Content="{Binding JeAktivan, Converter={StaticResource BooleanToDeactivateTextConverter}}" 
-                                        Style="{StaticResource ActionButton}" Tag="{Binding Id}" Click="BtnDeaktiviraj_Click"/>
+                                        Style="{StaticResource SecondaryButton}" Tag="{Binding Id}" Click="BtnDeaktiviraj_Click"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
