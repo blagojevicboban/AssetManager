@@ -1,0 +1,10 @@
+<Page x:Class="SredstvaApp.Views.Kartice.KarticePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Analitičke kartice" Background="{StaticResource SurfaceBrush}">
+    <StackPanel Margin="28,40">
+        <TextBlock Text="Analitičke kartice" Style="{StaticResource PageTitle}"/>
+        <TextBlock Text="Izaberite sredstvo iz liste Osnovnih sredstava i kliknite 'Kartica'."
+                   Style="{StaticResource PageSubtitle}" Margin="0,8,0,0"/>
+    </StackPanel>
+</Page>

@@ -1,0 +1,70 @@
+using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Controls;
+using Microsoft.EntityFrameworkCore;
+using SredstvaData;
+using SredstvaData.Models;
+
+namespace SredstvaApp.Views.Sredstva;
+
+public partial class SredstvaPage : Page
+{
+    private readonly SredstvaDbContext _db;
+    private List<Sredstvo> _all = new();
+
+    public SredstvaPage(SredstvaDbContext db)
+    {
+        InitializeComponent();
+        _db = db;
+        Loaded += SredstvaPage_Loaded;
+    }
+
+    private void SredstvaPage_Loaded(object sender, RoutedEventArgs e)
+    {
+        _all = _db.Sredstva
+            .Include(s => s.Firma)
+            .OrderBy(s => s.Naziv)
+            .ToList();
+
+        SredstvaGrid.ItemsSource = _all;
+        SubtitleText.Text = $"Ukupno {_all.Count} sredstava";
+    }
+
+    private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        var q = SearchBox.Text.Trim().ToLowerInvariant();
+        if (string.IsNullOrEmpty(q))
+        {
+            SredstvaGrid.ItemsSource = _all;
+        }
+        else
+        {
+            SredstvaGrid.ItemsSource = _all.Where(s =>
+                s.Naziv.Contains(q, StringComparison.OrdinalIgnoreCase) ||
+                s.InventarskiBroj.Contains(q, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+    }
+
+    private void SredstvaGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        // Priprema za buduće akcije na selekciji
+    }
+
+    private void BtnKartica_Click(object sender, RoutedEventArgs e)
+    {
+        if (SredstvaGrid.SelectedItem is Sredstvo s)
+        {
+            NavigationService?.Navigate(new Views.Kartice.KarticaPage(_db, s.Id));
+        }
+        else
+        {
+            MessageBox.Show("Izaberite sredstvo iz liste.", "Kartica", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+    }
+
+    private void BtnNovo_Click(object sender, RoutedEventArgs e)
+    {
+        MessageBox.Show("Forma za unos novog sredstva — u razvoju.", "Novo sredstvo",
+            MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+}
