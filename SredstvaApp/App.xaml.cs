@@ -29,9 +29,9 @@ public partial class App : Application
         var dbContext = AppHost.Services.GetRequiredService<SredstvaDbContext>();
         dbContext.Database.EnsureCreated(); // Ensure DB is created on startup
 
-        var mainWindow = AppHost.Services.GetRequiredService<MainWindow>();
-        mainWindow.Show();
-
+        var loginWindow = new Views.Korisnici.LoginWindow(dbContext);
+        loginWindow.Show();
+        
         base.OnStartup(e);
     }
 

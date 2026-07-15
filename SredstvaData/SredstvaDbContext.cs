@@ -16,6 +16,8 @@ public class SredstvaDbContext : DbContext
     public DbSet<ClanKomisije> ClanoviKomisije { get; set; }
     public DbSet<Popis> Popisi { get; set; }
     public DbSet<PopisnaStavka> PopisneStavke { get; set; }
+    
+    public DbSet<Korisnik> Korisnici { get; set; }
 
     public string DbPath { get; }
 
@@ -42,6 +44,17 @@ public class SredstvaDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        
+        // Seed default Admin
+        modelBuilder.Entity<Korisnik>().HasData(new Korisnik
+        {
+            Id = 1,
+            ImePrezime = "Administrator",
+            KorisnickoIme = "admin",
+            LozinkaHash = HashPassword("admin"), // Hardkodovani hash za "admin" za prvi login
+            Uloga = UlogaKorisnika.Administrator,
+            JeAktivan = true
+        });
         
         modelBuilder.Entity<Sredstvo>()
             .HasOne(s => s.Firma)
@@ -93,5 +106,13 @@ public class SredstvaDbContext : DbContext
             .WithMany()
             .HasForeignKey(ps => ps.SredstvoId)
             .OnDelete(DeleteBehavior.Restrict);
+    }
+
+    public static string HashPassword(string password)
+    {
+        using var sha256 = System.Security.Cryptography.SHA256.Create();
+        var bytes = System.Text.Encoding.UTF8.GetBytes(password);
+        var hash = sha256.ComputeHash(bytes);
+        return Convert.ToBase64String(hash);
     }
 }

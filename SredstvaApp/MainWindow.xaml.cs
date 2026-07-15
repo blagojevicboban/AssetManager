@@ -13,8 +13,43 @@ public partial class MainWindow : Window
     public MainWindow(SredstvaDbContext db)
     {
         InitializeComponent();
+        
         _db = db;
-        Loaded += MainWindow_Loaded;
+        
+        UpdateUserInfo();
+        ApplyRolePermissions();
+        
+        // Prikazujemo prvu stranicu (Sredstva)
+        NavigateTo(BtnSredstva, () => new Views.Sredstva.SredstvaPage(_db));
+    }
+
+    private void UpdateUserInfo()
+    {
+        if (AppSession.TrenutniKorisnik != null)
+        {
+            TxtImeKorisnika.Text = AppSession.TrenutniKorisnik.ImePrezime;
+            TxtUlogaKorisnika.Text = AppSession.TrenutniKorisnik.Uloga.ToString();
+        }
+    }
+
+    private void ApplyRolePermissions()
+    {
+        // Gledalac ne sme da vrši promene ni obračune
+        if (AppSession.TrenutniKorisnik?.Uloga == SredstvaData.Models.UlogaKorisnika.Gledalac)
+        {
+            BtnPrijava.Visibility = Visibility.Collapsed;
+            BtnRashod.Visibility = Visibility.Collapsed;
+            BtnAmortizacija.Visibility = Visibility.Collapsed;
+            BtnRevalorizacija.Visibility = Visibility.Collapsed;
+            BtnPodesavanja.Visibility = Visibility.Collapsed;
+        }
+        
+        // Samo Administrator sme da vidi Korisnike i Podešavanja
+        if (AppSession.TrenutniKorisnik?.Uloga != SredstvaData.Models.UlogaKorisnika.Administrator)
+        {
+            BtnKorisnici.Visibility = Visibility.Collapsed;
+            BtnPodesavanja.Visibility = Visibility.Collapsed;
+        }
     }
 
     private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -22,9 +57,6 @@ public partial class MainWindow : Window
         // Prikaži ime firme
         var firma = _db.Firme.FirstOrDefault();
         ImeFirmeText.Text = firma?.Naziv ?? "—";
-
-        // Otvori podrazumevanu stranicu
-        NavigateTo(BtnSredstva, () => new Views.Sredstva.SredstvaPage(_db));
     }
 
     // ── Navigacija ────────────────────────────────────────────────
@@ -67,8 +99,21 @@ public partial class MainWindow : Window
     private void BtnDobavljaci_Click(object sender, RoutedEventArgs e)
         => NavigateTo(BtnDobavljaci, () => new Views.Sifrarnici.DobavljaciPage(_db));
 
+    private void BtnKorisnici_Click(object sender, RoutedEventArgs e)
+        => NavigateTo(BtnKorisnici, () => new Views.Korisnici.KorisniciPage(_db));
+
     private void BtnPodesavanja_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnPodesavanja, () => new Views.Sifrarnici.DobavljaciPage(_db));
+    {
+        // TODO: SettingsPage
+    }
+
+    private void BtnOdjava_Click(object sender, RoutedEventArgs e)
+    {
+        AppSession.TrenutniKorisnik = null;
+        var loginWindow = new SredstvaApp.Views.Korisnici.LoginWindow(_db);
+        loginWindow.Show();
+        this.Close();
+    }
 
     private void FirmaBorder_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {

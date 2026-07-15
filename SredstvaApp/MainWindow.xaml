@@ -110,9 +110,26 @@
                     </StackPanel>
                 </Border>
 
+                <!-- Korisnik info i Odjava -->
+                <Border DockPanel.Dock="Bottom" Margin="12,0,12,12" Background="#10FFFFFF" CornerRadius="8" Padding="12,10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="4"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock x:Name="TxtImeKorisnika" Text="Prijavljeni korisnik" FontSize="11" FontWeight="SemiBold" Foreground="White"/>
+                        <TextBlock x:Name="TxtUlogaKorisnika" Grid.Row="1" Text="Uloga" FontSize="10" Foreground="#95D5B2" Margin="0,2,0,0"/>
+                        
+                        <Button x:Name="BtnOdjava" Grid.Row="4" Content="Odjavi se" Style="{StaticResource OutlineButton}" FontSize="11" Padding="4,4" Foreground="#95D5B2" BorderBrush="#95D5B2" Click="BtnOdjava_Click" Background="Transparent"/>
+                    </Grid>
+                </Border>
+
                 <!-- Verzija dole -->
                 <TextBlock DockPanel.Dock="Bottom" x:Name="VersionText" Text="v1.0.0  •  2026"
-                           FontSize="11" Foreground="#52B788" TextAlignment="Center" Margin="0,0,0,16"/>
+                           FontSize="11" Foreground="#52B788" TextAlignment="Center" Margin="0,0,0,12"/>
 
                 <!-- Navigacija -->
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
@@ -160,6 +177,9 @@
                         <Button x:Name="BtnDobavljaci" Content="🏢  Dobavljači"
                                 Style="{StaticResource NavButton}"
                                 Click="BtnDobavljaci_Click"/>
+                        <Button x:Name="BtnKorisnici" Content="👥  Korisnici"
+                                Style="{StaticResource NavButton}"
+                                Click="BtnKorisnici_Click"/>
                         <Button x:Name="BtnPodesavanja" Content="⚙️  Podešavanja"
                                 Style="{StaticResource NavButton}"
                                 Click="BtnPodesavanja_Click"/>
