@@ -23,7 +23,6 @@ public partial class SredstvaPage : Page
     private void SredstvaPage_Loaded(object sender, RoutedEventArgs e)
     {
         _all = _db.Sredstva
-            .Include(s => s.Firma)
             .OrderBy(s => s.Naziv)
             .ToList();
 

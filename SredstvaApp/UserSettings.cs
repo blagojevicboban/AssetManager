@@ -1,0 +1,58 @@
+using System;
+using System.IO;
+using System.Text.Json;
+
+namespace SredstvaApp;
+
+public class UserSettings
+{
+    private static readonly string SettingsFile = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "SredstvaApp", "settings.json"
+    );
+
+    public string? ActiveDbPath { get; set; }
+
+    private static UserSettings? _instance;
+    public static UserSettings Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = Load();
+            }
+            return _instance;
+        }
+    }
+
+    public static UserSettings Load()
+    {
+        try
+        {
+            if (File.Exists(SettingsFile))
+            {
+                var json = File.ReadAllText(SettingsFile);
+                return JsonSerializer.Deserialize<UserSettings>(json) ?? new UserSettings();
+            }
+        }
+        catch { }
+
+        return new UserSettings();
+    }
+
+    public void Save()
+    {
+        try
+        {
+            var dir = Path.GetDirectoryName(SettingsFile);
+            if (!string.IsNullOrEmpty(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+            var json = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(SettingsFile, json);
+        }
+        catch { }
+    }
+}

@@ -12,23 +12,46 @@ var enc = Encoding.GetEncoding(852);
 var opts = new DbfDataReaderOptions { Encoding = enc };
 var kor28 = @"C:\SREDSTVA\SREDS\KOR28\";
 
-// ── Brisanje stare baze i pocetak ispocetka ──────────────────────────────────
-using var db = new SredstvaDbContext();
-var dbFile = db.DbPath;
+// Prvo citamo firmu da bismo znali ime baze
+var firma = new Firma { Naziv = "KOR28 - Osnovna Sredstva" };
+var korisnicDbf = @"C:\SREDSTVA\SREDS\KORISNIC.DBF";
+if (File.Exists(korisnicDbf))
+{
+    using var rKor = new DbfDataReader.DbfDataReader(korisnicDbf, opts);
+    var colsKor = GetCols(rKor);
+    if (rKor.Read())
+    {
+        var ime = Str(GetSafe(rKor, colsKor, "IME"));
+        if (!string.IsNullOrWhiteSpace(ime)) 
+            firma.Naziv = ime;
+            
+        firma.Mesto = Str(GetSafe(rKor, colsKor, "GRAD"));
+        if (string.IsNullOrWhiteSpace(firma.Mesto)) 
+            firma.Mesto = Str(GetSafe(rKor, colsKor, "MESTO"));
+            
+        firma.PIB = Str(GetSafe(rKor, colsKor, "PIB"));
+        firma.MaticniBroj = Str(GetSafe(rKor, colsKor, "MB"));
+    }
+}
+
+var bazeDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SredstvaApp", "Baze");
+Directory.CreateDirectory(bazeDir);
+
+var pib = !string.IsNullOrWhiteSpace(firma.PIB) ? firma.PIB.Trim() : firma.MaticniBroj?.Trim() ?? "UNKNOWN";
+var nazivClean = string.Concat(firma.Naziv.Trim().Split(Path.GetInvalidFileNameChars())).Replace(" ", "_");
+var dbFile = Path.Combine(bazeDir, $"firma_{pib}_{nazivClean}.db");
+
 if (File.Exists(dbFile))
 {
     File.Delete(dbFile);
     Console.WriteLine("Stara baza obrisana.");
 }
-db.Database.EnsureCreated();
-Console.WriteLine($"Nova baza kreirana: {dbFile}\n");
 
-// ── 1. FIRMA ─────────────────────────────────────────────────────────────────
-var firma = new Firma { Naziv = "KOR28 - Osnovna Sredstva", Mesto = "Novi Sad" };
+using var db = SredstvaDbContext.Create(dbFile);
+Console.WriteLine($"Nova baza kreirana: {dbFile}\n");
 db.Firme.Add(firma);
 db.SaveChanges();
 Console.WriteLine($"[1/5] Firma kreirana (ID={firma.Id})");
-
 // ── 2. DOBAVLJACI (KONTPLAN.DBF) ──────────────────────────────────────────────
 var dobavljaciMap = new Dictionary<int, int>(); // konto -> db.Id
 using (var r = new DbfDataReader.DbfDataReader(kor28 + "KONTPLAN.DBF", opts))
@@ -75,7 +98,6 @@ using (var r = new DbfDataReader.DbfDataReader(kor28 + "SREDSTVA.DBF", opts))
             AmortizacionaGrupa = ToInt(GetSafe(r, cols, "AMORT_GR1")).ToString(),
             DatumAktiviranja = ToDate(GetSafe(r, cols, "DAT_AKT")) ?? DateTime.MinValue,
             DatumNabavke = ToDate(GetSafe(r, cols, "DAT_AKT")) ?? DateTime.MinValue,
-            FirmaId = firma.Id,
             JeAktivno = true
         };
         batch.Add(s);

@@ -20,5 +20,4 @@ public class Firma
     [MaxLength(20)]
     public string PIB { get; set; } = string.Empty;
     
-    public ICollection<Sredstvo> Sredstva { get; set; } = new List<Sredstvo>();
 }

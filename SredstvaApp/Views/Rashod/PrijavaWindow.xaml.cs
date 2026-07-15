@@ -200,7 +200,6 @@ public partial class PrijavaWindow : Window
                     StopaAmortizacije = stavka.StopaAmortizacije,
                     AmortizacionaGrupa = stavka.AmortizacionaGrupa,
                     JeAktivno = true,
-                    FirmaId = firmaId,
                     LegacySifra = 0
                 };
                 _db.Sredstva.Add(sredstvo);

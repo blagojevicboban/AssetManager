@@ -173,7 +173,7 @@ public partial class AmortizacijaPage : Page
                     SredstvoId = res.SredstvoId,
                     Datum = _calcDo,
                     OpisPromene = $"Amortizacija ({_calcOd.Year})",
-                    ObracunskaJedinica = sredstvo.FirmaId, // Ili neka specifična OJ
+                    ObracunskaJedinica = 1, // Ili neka specifična OJ
                     Konto = "", // Ako treba specifičan konto, preuzeti sa sredstva ili prethodne kartice
                     AmortizacionaGrupa1 = 0,
                     AmortizacionaGrupa2 = 0,

@@ -19,13 +19,25 @@ public class SredstvaDbContext : DbContext
     
     public DbSet<Korisnik> Korisnici { get; set; }
 
-    public string DbPath { get; }
+    public string? DbPath { get; internal set; }
 
     public SredstvaDbContext()
     {
-        var folder = Environment.SpecialFolder.LocalApplicationData;
-        var path = Environment.GetFolderPath(folder);
-        DbPath = System.IO.Path.Join(path, "sredstva.db");
+    }
+
+    public static SredstvaDbContext Create(string dbPath)
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<SredstvaDbContext>();
+        optionsBuilder.UseSqlite($"Data Source={dbPath}");
+        var ctx = new SredstvaDbContext(optionsBuilder.Options);
+        ctx.DbPath = dbPath;
+        
+        ctx.Database.EnsureCreated();
+        return ctx;
+    }
+
+    public SredstvaDbContext(DbContextOptions<SredstvaDbContext> options) : base(options)
+    {
     }
     
     public SredstvaDbContext(string dbPath)
@@ -35,7 +47,7 @@ public class SredstvaDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if (!optionsBuilder.IsConfigured)
+        if (!optionsBuilder.IsConfigured && !string.IsNullOrEmpty(DbPath))
         {
             optionsBuilder.UseSqlite($"Data Source={DbPath}");
         }
@@ -56,11 +68,6 @@ public class SredstvaDbContext : DbContext
             JeAktivan = true
         });
         
-        modelBuilder.Entity<Sredstvo>()
-            .HasOne(s => s.Firma)
-            .WithMany(f => f.Sredstva)
-            .HasForeignKey(s => s.FirmaId)
-            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Kartica>()
             .HasOne(k => k.Sredstvo)

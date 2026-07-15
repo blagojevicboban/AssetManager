@@ -95,7 +95,7 @@ public partial class IzvestajiPage : Page
         {
             case "oj":
                 naslov = "🏢  Rekapitulacija po obračunskoj jedinici";
-                grupe = _sredstva.GroupBy(s => s.FirmaId.ToString());
+                grupe = _sredstva.GroupBy(s => "1");
                 break;
             case "amgrupa":
                 naslov = "📈  Rekapitulacija po amortizacionoj grupi";

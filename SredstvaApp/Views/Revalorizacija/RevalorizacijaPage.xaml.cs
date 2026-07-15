@@ -193,7 +193,7 @@ public partial class RevalorizacijaPage : Page
                     SredstvoId = res.SredstvoId,
                     Datum = _calcDo,
                     OpisPromene = $"Revalorizacija ({_calcOd.Year})",
-                    ObracunskaJedinica = sredstvo.FirmaId,
+                    ObracunskaJedinica = 1,
                     Konto = "", 
                     AmortizacionaGrupa1 = 0,
                     AmortizacionaGrupa2 = 0,

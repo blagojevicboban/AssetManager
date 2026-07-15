@@ -15,7 +15,7 @@ public partial class App : Application
         AppHost = Host.CreateDefaultBuilder()
             .ConfigureServices((context, services) =>
             {
-                services.AddDbContext<SredstvaDbContext>();
+                services.AddScoped<SredstvaDbContext>(provider => SredstvaDbContext.Create(AppConfig.DbPath));
                 services.AddSingleton<MainWindow>();
                 services.AddSingleton<MainWindowViewModel>();
             })

@@ -99,13 +99,21 @@ public partial class MainWindow : Window
     private void BtnDobavljaci_Click(object sender, RoutedEventArgs e)
         => NavigateTo(BtnDobavljaci, () => new Views.Sifrarnici.DobavljaciPage(_db));
 
+    private void FirmaBorder_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (_activeNavButton != null)
+        {
+            _activeNavButton.Style = FindResource("NavButton") as Style;
+            _activeNavButton = null;
+        }
+        MainFrame.Navigate(new Views.Firme.FirmePage(_db));
+    }
+
     private void BtnKorisnici_Click(object sender, RoutedEventArgs e)
         => NavigateTo(BtnKorisnici, () => new Views.Korisnici.KorisniciPage(_db));
 
     private void BtnPodesavanja_Click(object sender, RoutedEventArgs e)
-    {
-        // TODO: SettingsPage
-    }
+        => NavigateTo(BtnPodesavanja, () => new Views.Podesavanja.PodesavanjaPage());
 
     private void BtnOdjava_Click(object sender, RoutedEventArgs e)
     {
@@ -115,8 +123,5 @@ public partial class MainWindow : Window
         this.Close();
     }
 
-    private void FirmaBorder_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-    {
-        // Placeholder — za budući dijalog za odabir firme
-    }
+
 }

@@ -24,7 +24,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     private void LoadData()
     {
-        var data = _dbContext.Sredstva.Include(s => s.Firma).ToList();
+        var data = _dbContext.Sredstva.ToList();
         Sredstva = new ObservableCollection<Sredstvo>(data);
     }
 }

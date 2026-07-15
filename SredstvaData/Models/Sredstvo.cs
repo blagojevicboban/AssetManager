@@ -42,9 +42,6 @@ public class Sredstvo
     /// <summary>Originalna SIFRA iz SREDSTVA.DBF — za veze sa Karticom i Prijavom</summary>
     public int LegacySifra { get; set; }
 
-    // Foreign Key
-    public int FirmaId { get; set; }
-    public Firma? Firma { get; set; }
 
     // Navigation
     public ICollection<Kartica> Kartice { get; set; } = new List<Kartica>();
