@@ -154,8 +154,52 @@ db.Rashodi.AddRange(rashodiBatch);
 db.SaveChanges();
 Console.WriteLine($"[5/5] Rashodi uvezeni: {rashodiCount} (preskoceno: {rashodiSkip})");
 
-Console.WriteLine("\n✓ Kompletna migracija završena!");
+// ── 6. PRIJAVE (PRIJAVA.DBF) ────────────────────────────────────────────────────
+int prijaveCount = 0, prijaveSkip = 0;
+var prijaveBatch = new List<Prijava>();
+using (var r = new DbfDataReader.DbfDataReader(kor28 + "PRIJAVA.DBF", opts))
+{
+    var cols = GetCols(r);
+    while (r.Read())
+    {
+        var sifra = ToInt(r.GetValue(cols["SIFRA"]));
+        // Ako je sifra prazna ili Sredstvo nije uvezeno, i dalje možemo uvesti Prijavu, 
+        // ali EF očekuje validan SredstvoId. Zato ćemo preskočiti one bez sredstva.
+        if (!sredstvaMap.TryGetValue(sifra, out var sredstvoId)) { prijaveSkip++; continue; }
+        
+        var p = new Prijava
+        {
+            SredstvoId = sredstvoId,
+            BrojNaloga = ToInt(r.GetValue(cols["BR_NALOGA"])),
+            RedBroj = ToInt(r.GetValue(cols["RED_BROJ"])),
+            ObracunskaJedinica = ToInt(r.GetValue(cols["OBRAC_JED"])),
+            Konto = Str(r.GetValue(cols["KONTO"])),
+            AmortizacionaGrupa1 = ToInt(r.GetValue(cols["AMORT_GR1"])),
+            AmortizacionaGrupa2 = ToInt(r.GetValue(cols["AMORT_GR2"])),
+            StopaAmortizacije = ToDec(r.GetValue(cols["STOPA_AM"])),
+            DatumAktiviranja = ToDate(r.GetValue(cols["DAT_AKT"])) ?? DateTime.MinValue,
+            RevalorizacionaGrupa = ToInt(r.GetValue(cols["REVAL_GR"])),
+            NabavnaVrednost = ToDec(r.GetValue(cols["NABAVNA"])),
+            OtpisanaVrednost = ToDec(r.GetValue(cols["OTPISANA"])),
+            JedinicaMere = Str(r.GetValue(cols["J_MERA"])),
+            Kolicina = ToDec(r.GetValue(cols["KOLICINA"])),
+            InventarskiBroj = Str(r.GetValue(cols["INVEN_BR"])),
+            BrojFakture = Str(r.GetValue(cols["BR_FAKTURE"])),
+            DatumFakture = ToDate(r.GetValue(cols["DAT_FAKTUR"])),
+            BrojNalaznice = ToInt(r.GetValue(cols["BR_NALAZ"])),
+            BrNal = Str(r.GetValue(cols["BR_NAL"])),
+            GodNal = ToInt(r.GetValue(cols["GOD_NAL"])),
+            Knjizen = ToInt(r.GetValue(cols["KNJIZEN"])) == 1
+        };
+        prijaveBatch.Add(p);
+        prijaveCount++;
+    }
+}
+db.Prijave.AddRange(prijaveBatch);
+db.SaveChanges();
+Console.WriteLine($"[6/6] Prijave uvezene: {prijaveCount} (preskoceno: {prijaveSkip})");
 
+Console.WriteLine("\n✓ Kompletna migracija završena!");
 // ── Helpers ───────────────────────────────────────────────────────────────────
 static Dictionary<string, int> GetCols(DbfDataReader.DbfDataReader r)
 {
