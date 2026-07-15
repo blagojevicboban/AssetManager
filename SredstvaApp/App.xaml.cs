@@ -22,6 +22,12 @@ public partial class App : Application
             .Build();
     }
 
+    private void App_Startup(object sender, StartupEventArgs e)
+    {
+        // Global QuestPDF license configuration
+        QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+    }
+
     protected override async void OnStartup(StartupEventArgs e)
     {
         await AppHost!.StartAsync();

@@ -127,7 +127,9 @@
         <!-- FOOTER: Buttons -->
         <DockPanel Grid.Row="8" LastChildFill="False">
             <Button Content="Zatvori" Style="{StaticResource SecondaryButton}" Width="100" Height="36" Click="BtnZatvori_Click" DockPanel.Dock="Left"/>
+            
             <Button x:Name="BtnProknjizi" Content="Proknjiži Nalog" Style="{StaticResource PrimaryButton}" Background="{StaticResource DangerBrush}" Width="140" Height="36" Click="BtnProknjizi_Click" DockPanel.Dock="Right"/>
+            <Button x:Name="BtnStampa" Content="🖨 Štampa (PDF)" Style="{StaticResource SecondaryButton}" Width="140" Height="36" Margin="0,0,10,0" Click="BtnStampa_Click" DockPanel.Dock="Right"/>
         </DockPanel>
     </Grid>
 </Window>

@@ -2,9 +2,13 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.IO;
+using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Fluent;
 using SredstvaData;
 using SredstvaData.Models;
+using SredstvaApp.Views.Rashod.Stampe;
 
 namespace SredstvaApp.Views.Rashod;
 
@@ -256,5 +260,34 @@ public partial class PrijavaWindow : Window
     {
         DialogResult = false;
         Close();
+    }
+
+    private void BtnStampa_Click(object sender, RoutedEventArgs e)
+    {
+        if (Stavke.Count == 0)
+        {
+            MessageBox.Show("Nema stavki za štampu.", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        try
+        {
+            int.TryParse(TxtBrojNaloga.Text.Trim(), out int brojNaloga);
+            var datum = DpDatum.SelectedDate ?? DateTime.Today;
+            var dobavljac = CmbDobavljac.Text;
+            
+            var nazivFirme = _db.Firme.FirstOrDefault()?.Naziv ?? "Nepoznata firma";
+
+            var doc = new PrijavaDocument(brojNaloga, datum, dobavljac, Stavke, nazivFirme);
+            
+            var tempFile = Path.Combine(Path.GetTempPath(), $"Prijava_{brojNaloga}_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+            doc.GeneratePdf(tempFile);
+
+            Process.Start(new ProcessStartInfo(tempFile) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Greška prilikom generisanja PDF-a: {ex.Message}", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 }

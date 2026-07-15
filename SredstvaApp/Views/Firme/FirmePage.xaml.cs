@@ -51,7 +51,7 @@ public partial class FirmePage : Page
                         f = new Firma
                         {
                             Naziv = Path.GetFileNameWithoutExtension(file),
-                            Pib = "000000000"
+                            PIB = "000000000"
                         };
                         fileDb.Firme.Add(f);
                         fileDb.SaveChanges();
@@ -61,10 +61,10 @@ public partial class FirmePage : Page
                     {
                         Id = f.Id,
                         Naziv = f.Naziv,
-                        Pib = f.Pib,
-                        Mb = f.Mb,
-                        Grad = f.Grad,
-                        Telefon = f.Telefon,
+                        Pib = f.PIB,
+                        Mb = f.MaticniBroj,
+                        Grad = f.Mesto,
+                        Telefon = "",
                         DbPath = file,
                         OriginalFirma = f
                     });
@@ -86,9 +86,9 @@ public partial class FirmePage : Page
                         f = new Firma
                         {
                             Naziv = "Zavod za poljoprivredu",
-                            Grad = "Pirot",
-                            Pib = "123456789",
-                            Mb = "98765432"
+                            Mesto = "Pirot",
+                            PIB = "123456789",
+                            MaticniBroj = "98765432"
                         };
                         fileDb.Firme.Add(f);
                         fileDb.SaveChanges();
@@ -98,10 +98,10 @@ public partial class FirmePage : Page
                     {
                         Id = f.Id,
                         Naziv = f.Naziv,
-                        Pib = f.Pib,
-                        Mb = f.Mb,
-                        Grad = f.Grad,
-                        Telefon = f.Telefon,
+                        Pib = f.PIB,
+                        Mb = f.MaticniBroj,
+                        Grad = f.Mesto,
+                        Telefon = "",
                         DbPath = defaultPath,
                         OriginalFirma = f
                     });
@@ -192,19 +192,19 @@ public partial class FirmePage : Page
         FormHeaderTitle.Text = "Detalji firme";
 
         var f = fItem.OriginalFirma;
-        TxtNaziv.Text = f.Naziv;
-        TxtDbPath.Text = fItem.DbPath;
-        TxtPib.Text = f.Pib;
-        TxtMb.Text = f.Mb;
-        TxtAdresa.Text = f.Adresa;
-        TxtGrad.Text = f.Grad;
-        TxtBankovniRacun.Text = f.BankovniRacun;
-        TxtSifraPlacanja.Text = f.SifraPlacanja;
-        TxtTelefon.Text = f.Telefon;
-        TxtEmail.Text = f.Email;
-        TxtNapomena.Text = f.Napomena;
-
-        _isEditing = false;
+            if (f != null)
+            {
+                TxtNaziv.Text = f.Naziv;
+                TxtPib.Text = f.PIB;
+                TxtMb.Text = f.MaticniBroj;
+                TxtAdresa.Text = "";
+                TxtGrad.Text = f.Mesto;
+                TxtBankovniRacun.Text = "";
+                TxtSifraPlacanja.Text = "";
+                TxtTelefon.Text = "";
+                TxtEmail.Text = "";
+                TxtNapomena.Text = "";
+            }_isEditing = false;
         AzurirajDugmadBara();
     }
 
@@ -336,15 +336,9 @@ public partial class FirmePage : Page
                 f = new Firma
                 {
                     Naziv = TxtNaziv.Text.Trim(),
-                    Pib = TxtPib.Text.Trim(),
-                    Mb = TxtMb.Text.Trim(),
-                    Adresa = TxtAdresa.Text.Trim(),
-                    Grad = TxtGrad.Text.Trim(),
-                    BankovniRacun = TxtBankovniRacun.Text.Trim(),
-                    SifraPlacanja = TxtSifraPlacanja.Text.Trim(),
-                    Telefon = TxtTelefon.Text.Trim(),
-                    Email = TxtEmail.Text.Trim(),
-                    Napomena = TxtNapomena.Text.Trim()
+                    PIB = TxtPib.Text.Trim(),
+                    MaticniBroj = TxtMb.Text.Trim(),
+                    Mesto = TxtGrad.Text.Trim()
                 };
                 newDb.Firme.Add(f);
                 newDb.SaveChanges();
@@ -358,15 +352,9 @@ public partial class FirmePage : Page
                 f = editDb.Firme.FirstOrDefault() ?? new Firma();
 
                 f.Naziv = TxtNaziv.Text.Trim();
-                f.Pib = TxtPib.Text.Trim();
-                f.Mb = TxtMb.Text.Trim();
-                f.Adresa = TxtAdresa.Text.Trim();
-                f.Grad = TxtGrad.Text.Trim();
-                f.BankovniRacun = TxtBankovniRacun.Text.Trim();
-                f.SifraPlacanja = TxtSifraPlacanja.Text.Trim();
-                f.Telefon = TxtTelefon.Text.Trim();
-                f.Email = TxtEmail.Text.Trim();
-                f.Napomena = TxtNapomena.Text.Trim();
+                f.PIB = TxtPib.Text.Trim();
+                f.MaticniBroj = TxtMb.Text.Trim();
+                f.Mesto = TxtGrad.Text.Trim();
 
                 editDb.Entry(f).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                 editDb.SaveChanges();
@@ -493,3 +481,4 @@ public class FirmaGridItem
     public bool IsCurrentlyActive => DbPath == AppConfig.DbPath;
     public Firma OriginalFirma { get; set; } = null!;
 }
+

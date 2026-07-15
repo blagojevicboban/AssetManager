@@ -106,7 +106,7 @@ public partial class MainWindow : Window
             _activeNavButton.Style = FindResource("NavButton") as Style;
             _activeNavButton = null;
         }
-        MainFrame.Navigate(new Views.Firme.FirmePage(_db));
+        MainFrame.Navigate(new Views.Firme.FirmePage());
     }
 
     private void BtnKorisnici_Click(object sender, RoutedEventArgs e)
