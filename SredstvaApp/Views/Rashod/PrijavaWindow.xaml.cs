@@ -1,153 +1,261 @@
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
+using Microsoft.EntityFrameworkCore;
 using SredstvaData;
 using SredstvaData.Models;
 
 namespace SredstvaApp.Views.Rashod;
 
+public class PrijavaStavkaViewModel
+{
+    public int RedBroj { get; set; }
+    public string InventarskiBroj { get; set; } = string.Empty;
+    public string Naziv { get; set; } = string.Empty;
+    public decimal NabavnaVrednost { get; set; }
+    public decimal StopaAmortizacije { get; set; }
+    public string AmortizacionaGrupa { get; set; } = string.Empty;
+    public string Konto { get; set; } = string.Empty;
+    public int ObracunskaJedinica { get; set; }
+}
+
 public partial class PrijavaWindow : Window
 {
     private readonly SredstvaDbContext _db;
+    private readonly int? _brojNaloga;
+    public ObservableCollection<PrijavaStavkaViewModel> Stavke { get; set; } = new();
 
-    public PrijavaWindow(SredstvaDbContext db)
+    public PrijavaWindow(SredstvaDbContext db, int? brojNaloga = null)
     {
         InitializeComponent();
         _db = db;
+        _brojNaloga = brojNaloga;
+        DataContext = this;
         Loaded += PrijavaWindow_Loaded;
     }
 
     private void PrijavaWindow_Loaded(object sender, RoutedEventArgs e)
     {
-        // Učitavanje dobavljača za ComboBox
         CmbDobavljac.ItemsSource = _db.Dobavljaci.OrderBy(d => d.OpisKonta).ToList();
+        DpDatum.SelectedDate = DateTime.Today;
 
-        // Inicijalizacija datuma na današnji dan
-        DpNabavka.SelectedDate = DateTime.Today;
-        DpAktiviranje.SelectedDate = DateTime.Today;
+        if (_brojNaloga.HasValue)
+        {
+            Title = $"Pregled Prijave #{_brojNaloga.Value}";
+            UcitajPostojeceNaloge(_brojNaloga.Value);
+        }
+        else
+        {
+            Title = "Nova Prijava (Nalog)";
+            // Autogenerate next Nalog ID based on max in Prijave
+            var maxNalog = _db.Prijave.Any() ? _db.Prijave.Max(p => p.BrojNaloga) : 0;
+            TxtBrojNaloga.Text = (maxNalog + 1).ToString();
+        }
     }
 
-    private void BtnOdustani_Click(object sender, RoutedEventArgs e)
+    private void UcitajPostojeceNaloge(int brojNaloga)
     {
-        DialogResult = false;
-        Close();
+        var prijave = _db.Prijave
+            .Include(p => p.Sredstvo)
+            .Where(p => p.BrojNaloga == brojNaloga)
+            .OrderBy(p => p.RedBroj)
+            .ToList();
+
+        if (prijave.Count == 0) return;
+
+        var prva = prijave.First();
+        TxtBrojNaloga.Text = prva.BrojNaloga.ToString();
+        TxtBrojNaloga.IsReadOnly = true;
+        CmbDobavljac.SelectedValue = prva.DobavljacId;
+        DpDatum.SelectedDate = prva.DatumAktiviranja;
+
+        foreach (var p in prijave)
+        {
+            Stavke.Add(new PrijavaStavkaViewModel
+            {
+                RedBroj = p.RedBroj,
+                InventarskiBroj = p.InventarskiBroj,
+                Naziv = p.Sredstvo?.Naziv ?? "Nepoznato",
+                NabavnaVrednost = p.NabavnaVrednost,
+                StopaAmortizacije = p.StopaAmortizacije,
+                AmortizacionaGrupa = p.AmortizacionaGrupa1.ToString(),
+                Konto = p.Konto,
+                ObracunskaJedinica = p.ObracunskaJedinica
+            });
+        }
+
+        if (prva.Knjizen)
+        {
+            // Lock UI
+            GridNovaStavka.IsEnabled = false;
+            CmbDobavljac.IsEnabled = false;
+            DpDatum.IsEnabled = false;
+            BtnDodaj.Visibility = Visibility.Collapsed;
+            BtnProknjizi.Visibility = Visibility.Collapsed;
+            Title += " (PROKNJIŽENO)";
+            MessageBox.Show("Ovaj nalog je već proknjižen i ne može se menjati.", "Informacija", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
     }
 
-    private void BtnSacuvaj_Click(object sender, RoutedEventArgs e)
+    private void BtnDodajStavku_Click(object sender, RoutedEventArgs e)
     {
-        if (!Validacija()) return;
+        if (string.IsNullOrWhiteSpace(TxtInvBroj.Text) || string.IsNullOrWhiteSpace(TxtNaziv.Text))
+        {
+            MessageBox.Show("Inventarski broj i Naziv su obavezni.", "Greška", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        if (!decimal.TryParse(TxtNabavna.Text.Replace(",", "."), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal nabavna))
+        {
+            MessageBox.Show("Neispravna nabavna vrednost.", "Greška", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+        
+        if (!decimal.TryParse(TxtStopa.Text.Replace(",", "."), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal stopa))
+        {
+            MessageBox.Show("Neispravna stopa amortizacije.", "Greška", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        // Check if InvBroj exists in DB or in current Stavke
+        var invBroj = TxtInvBroj.Text.Trim();
+        if (_db.Sredstva.Any(s => s.InventarskiBroj == invBroj) || Stavke.Any(s => s.InventarskiBroj == invBroj))
+        {
+            MessageBox.Show($"Sredstvo sa inventarskim brojem {invBroj} već postoji!", "Greška", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        int.TryParse(TxtOJ.Text.Trim(), out int oj);
+
+        var novaStavka = new PrijavaStavkaViewModel
+        {
+            RedBroj = Stavke.Count + 1,
+            InventarskiBroj = invBroj,
+            Naziv = TxtNaziv.Text.Trim(),
+            NabavnaVrednost = nabavna,
+            StopaAmortizacije = stopa,
+            AmortizacionaGrupa = TxtGrupa.Text.Trim(),
+            Konto = TxtKonto.Text.Trim(),
+            ObracunskaJedinica = oj
+        };
+
+        Stavke.Add(novaStavka);
+        ObrisiPoljaZaUnos();
+    }
+
+    private void ObrisiPoljaZaUnos()
+    {
+        TxtInvBroj.Text = "";
+        TxtNaziv.Text = "";
+        TxtNabavna.Text = "";
+        TxtStopa.Text = "";
+        TxtGrupa.Text = "";
+        TxtKonto.Text = "";
+        TxtOJ.Text = "";
+        TxtInvBroj.Focus();
+    }
+
+    private void BtnProknjizi_Click(object sender, RoutedEventArgs e)
+    {
+        if (Stavke.Count == 0)
+        {
+            MessageBox.Show("Nalog nema nijednu stavku.", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+        
+        if (!int.TryParse(TxtBrojNaloga.Text.Trim(), out int brojNaloga))
+        {
+            MessageBox.Show("Neispravan broj naloga.", "Greška", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
 
         using var transaction = _db.Database.BeginTransaction();
         try
         {
-            // 1. Kreiranje Sredstva
-            decimal nabavna = decimal.Parse(TxtNabavna.Text.Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture);
-            decimal stopa = decimal.Parse(TxtStopa.Text.Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture);
-            
-            // Provera da li inventarski broj već postoji
-            var invBroj = TxtInventarskiBroj.Text.Trim();
-            if (_db.Sredstva.Any(s => s.InventarskiBroj == invBroj))
-            {
-                MessageBox.Show("Sredstvo sa tim inventarskim brojem već postoji!", "Greška", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
+            var datum = DpDatum.SelectedDate ?? DateTime.Today;
+            int? dobId = CmbDobavljac.SelectedValue as int?;
             var firmaId = _db.Firme.FirstOrDefault()?.Id ?? 1;
-
-            var sredstvo = new Sredstvo
-            {
-                InventarskiBroj = invBroj,
-                Naziv = TxtNaziv.Text.Trim(),
-                DatumNabavke = DpNabavka.SelectedDate ?? DateTime.Today,
-                DatumAktiviranja = DpAktiviranje.SelectedDate ?? DateTime.Today,
-                NabavnaVrednost = nabavna,
-                IspravkaVrednosti = 0,
-                SadasnjaVrednost = nabavna,
-                StopaAmortizacije = stopa,
-                AmortizacionaGrupa = TxtGrupa.Text.Trim(),
-                JeAktivno = true,
-                FirmaId = firmaId,
-                LegacySifra = 0 // Novo sredstvo, nema staru šifru
-            };
             
-            _db.Sredstva.Add(sredstvo);
-            _db.SaveChanges(); // Snimamo da bi dobili Sredstvo.Id
-
-            // 2. Kreiranje prve Kartice (Početno stanje)
-            int.TryParse(TxtOJ.Text.Trim(), out int oj);
-
-            var kartica = new Kartica
+            // Delete existing unposted records for this Nalog if any
+            var postojece = _db.Prijave.Where(p => p.BrojNaloga == brojNaloga).ToList();
+            if (postojece.Any())
             {
-                SredstvoId = sredstvo.Id,
-                RedBroj = 1,
-                Datum = sredstvo.DatumAktiviranja,
-                OpisPromene = "Pocetno stanje / Nabavka",
-                Konto = TxtKonto.Text.Trim(),
-                ObracunskaJedinica = oj,
-                NabavnaVrednost = nabavna,
-                IspravkaVrednosti = 0,
-                StopaAmortizacije = stopa,
-                AmortizacionaGrupa1 = 0, // Može se mapirati ako se unosi kao broj
-                KoeficijentRevalorizacije = 1
-            };
-
-            _db.Kartice.Add(kartica);
-
-            // 3. Kreiranje Prijave (Dokument)
-            int.TryParse(TxtBrojNaloga.Text.Trim(), out int brojNaloga);
-
-            var prijava = new SredstvaData.Models.Prijava
-            {
-                SredstvoId = sredstvo.Id,
-                DatumAktiviranja = sredstvo.DatumAktiviranja,
-                BrojNaloga = brojNaloga,
-                InventarskiBroj = invBroj,
-                NabavnaVrednost = nabavna,
-                StopaAmortizacije = stopa,
-                Konto = TxtKonto.Text.Trim(),
-                ObracunskaJedinica = oj,
-                Knjizen = true
-            };
-
-            if (CmbDobavljac.SelectedValue is int dobId)
-            {
-                prijava.DobavljacId = dobId;
+                _db.Prijave.RemoveRange(postojece);
             }
 
-            _db.Prijave.Add(prijava);
-            _db.SaveChanges();
+            foreach (var stavka in Stavke)
+            {
+                int.TryParse(stavka.AmortizacionaGrupa, out int amGrInt);
 
-            transaction.Commit();
-            MessageBox.Show("Uspešno kreirano sredstvo, prijava i početno stanje u kartici.", "Uspeh", MessageBoxButton.OK, MessageBoxImage.Information);
+                var sredstvo = new Sredstvo
+                {
+                    InventarskiBroj = stavka.InventarskiBroj,
+                    Naziv = stavka.Naziv,
+                    DatumNabavke = datum,
+                    DatumAktiviranja = datum,
+                    NabavnaVrednost = stavka.NabavnaVrednost,
+                    IspravkaVrednosti = 0,
+                    SadasnjaVrednost = stavka.NabavnaVrednost,
+                    StopaAmortizacije = stavka.StopaAmortizacije,
+                    AmortizacionaGrupa = stavka.AmortizacionaGrupa,
+                    JeAktivno = true,
+                    FirmaId = firmaId,
+                    LegacySifra = 0
+                };
+                _db.Sredstva.Add(sredstvo);
+                _db.SaveChanges(); // Potrebno da dobijemo ID
+
+                var kartica = new Kartica
+                {
+                    SredstvoId = sredstvo.Id,
+                    RedBroj = 1,
+                    Datum = datum,
+                    OpisPromene = "Pocetno stanje / Nabavka",
+                    Konto = stavka.Konto,
+                    ObracunskaJedinica = stavka.ObracunskaJedinica,
+                    NabavnaVrednost = stavka.NabavnaVrednost,
+                    IspravkaVrednosti = 0,
+                    StopaAmortizacije = stavka.StopaAmortizacije,
+                    AmortizacionaGrupa1 = amGrInt,
+                    KoeficijentRevalorizacije = 1
+                };
+                _db.Kartice.Add(kartica);
+
+                var prijava = new Prijava
+                {
+                    BrojNaloga = brojNaloga,
+                    RedBroj = stavka.RedBroj,
+                    SredstvoId = sredstvo.Id,
+                    DatumAktiviranja = datum,
+                    InventarskiBroj = stavka.InventarskiBroj,
+                    NabavnaVrednost = stavka.NabavnaVrednost,
+                    StopaAmortizacije = stavka.StopaAmortizacije,
+                    Konto = stavka.Konto,
+                    ObracunskaJedinica = stavka.ObracunskaJedinica,
+                    AmortizacionaGrupa1 = amGrInt,
+                    DobavljacId = dobId,
+                    Knjizen = true
+                };
+                _db.Prijave.Add(prijava);
+            }
             
+            _db.SaveChanges();
+            transaction.Commit();
+            MessageBox.Show("Nalog je uspešno proknjižen!", "Uspeh", MessageBoxButton.OK, MessageBoxImage.Information);
             DialogResult = true;
             Close();
         }
         catch (Exception ex)
         {
             transaction.Rollback();
-            MessageBox.Show($"Došlo je do greške prilikom čuvanja: {ex.Message}", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"Greška prilikom knjiženja: {ex.Message}", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
-    private bool Validacija()
+    private void BtnZatvori_Click(object sender, RoutedEventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(TxtBrojNaloga.Text)) { Warn("Unesite broj naloga."); return false; }
-        if (string.IsNullOrWhiteSpace(TxtInventarskiBroj.Text)) { Warn("Unesite inventarski broj."); return false; }
-        if (string.IsNullOrWhiteSpace(TxtNaziv.Text)) { Warn("Unesite naziv sredstva."); return false; }
-        
-        if (!decimal.TryParse(TxtNabavna.Text.Replace(",", "."), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out _))
-        {
-            Warn("Nabavna vrednost mora biti ispravan broj."); 
-            return false;
-        }
-
-        if (!decimal.TryParse(TxtStopa.Text.Replace(",", "."), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out _))
-        {
-            Warn("Stopa amortizacije mora biti ispravan broj."); 
-            return false;
-        }
-
-        return true;
+        DialogResult = false;
+        Close();
     }
-
-    private void Warn(string msg) => MessageBox.Show(msg, "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Warning);
 }

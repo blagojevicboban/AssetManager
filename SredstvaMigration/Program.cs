@@ -36,13 +36,13 @@ using (var r = new DbfDataReader.DbfDataReader(kor28 + "KONTPLAN.DBF", opts))
     var cols = GetCols(r);
     while (r.Read())
     {
-        var konto = ToInt(r.GetValue(cols["KONTO"]));
+        var konto = ToInt(GetSafe(r, cols, "KONTO"));
         var d = new Dobavljac
         {
             Konto = konto,
-            OpisKonta = Str(r.GetValue(cols["OPIS_KONTA"])),
-            UlicaIBroj = Str(r.GetValue(cols["ULICA_I_BR"])),
-            MestoIBroj = Str(r.GetValue(cols["MESTO_I_BR"]))
+            OpisKonta = Str(GetSafe(r, cols, "OPIS_KONTA")),
+            UlicaIBroj = Str(GetSafe(r, cols, "ULICA_I_BR")),
+            MestoIBroj = Str(GetSafe(r, cols, "MESTO_I_BR"))
         };
         db.Dobavljaci.Add(d);
         db.SaveChanges();
@@ -59,22 +59,22 @@ using (var r = new DbfDataReader.DbfDataReader(kor28 + "SREDSTVA.DBF", opts))
     var batch = new List<Sredstvo>();
     while (r.Read())
     {
-        var sifra = ToInt(r.GetValue(cols["SIFRA"]));
-        var invenBr = Str(r.GetValue(cols["INVEN_BR"]));
-        var nabavna = ToDec(r.GetValue(cols["NABAVNA"]));
-        var otpisana = ToDec(r.GetValue(cols["OTPISANA"]));
+        var sifra = ToInt(GetSafe(r, cols, "SIFRA"));
+        var invenBr = Str(GetSafe(r, cols, "INVEN_BR"));
+        var nabavna = ToDec(GetSafe(r, cols, "NABAVNA"));
+        var otpisana = ToDec(GetSafe(r, cols, "OTPISANA"));
         var s = new Sredstvo
         {
             LegacySifra = sifra,
             InventarskiBroj = string.IsNullOrWhiteSpace(invenBr) ? sifra.ToString() : invenBr,
-            Naziv = Str(r.GetValue(cols["NAZIV"])),
+            Naziv = Str(GetSafe(r, cols, "NAZIV")),
             NabavnaVrednost = nabavna,
             IspravkaVrednosti = otpisana,
             SadasnjaVrednost = nabavna - otpisana,
-            StopaAmortizacije = ToDec(r.GetValue(cols["STOPA_AM"])),
-            AmortizacionaGrupa = ToInt(r.GetValue(cols["AMORT_GR1"])).ToString(),
-            DatumAktiviranja = ToDate(r.GetValue(cols["DAT_AKT"])) ?? DateTime.MinValue,
-            DatumNabavke = ToDate(r.GetValue(cols["DAT_AKT"])) ?? DateTime.MinValue,
+            StopaAmortizacije = ToDec(GetSafe(r, cols, "STOPA_AM")),
+            AmortizacionaGrupa = ToInt(GetSafe(r, cols, "AMORT_GR1")).ToString(),
+            DatumAktiviranja = ToDate(GetSafe(r, cols, "DAT_AKT")) ?? DateTime.MinValue,
+            DatumNabavke = ToDate(GetSafe(r, cols, "DAT_AKT")) ?? DateTime.MinValue,
             FirmaId = firma.Id,
             JeAktivno = true
         };
@@ -96,23 +96,23 @@ using (var r = new DbfDataReader.DbfDataReader(kor28 + "KARTICA.DBF", opts))
     var cols = GetCols(r);
     while (r.Read())
     {
-        var sifra = ToInt(r.GetValue(cols["SIFRA"]));
+        var sifra = ToInt(GetSafe(r, cols, "SIFRA"));
         if (!sredstvaMap.TryGetValue(sifra, out var sredstvoId)) { karticeSkip++; continue; }
         var k = new Kartica
         {
             SredstvoId = sredstvoId,
-            RedBroj = ToInt(r.GetValue(cols["RED_BROJ"])),
-            Datum = ToDate(r.GetValue(cols["DATUM"])) ?? DateTime.MinValue,
-            OpisPromene = Str(r.GetValue(cols["OPIS_PROM"])),
-            ObracunskaJedinica = ToInt(r.GetValue(cols["OBRAC_JED"])),
-            Konto = Str(r.GetValue(cols["KONTO"])),
-            AmortizacionaGrupa1 = ToInt(r.GetValue(cols["AMORT_GR1"])),
-            AmortizacionaGrupa2 = ToInt(r.GetValue(cols["AMORT_GR2"])),
-            StopaAmortizacije = ToDec(r.GetValue(cols["STOPA_AM"])),
-            KoeficijentRevalorizacije = ToDec(r.GetValue(cols["KOEFIC_REV"])),
-            Kolicina = ToDec(r.GetValue(cols["KOLICINA"])),
-            NabavnaVrednost = ToDec(r.GetValue(cols["NABAVNA"])),
-            IspravkaVrednosti = ToDec(r.GetValue(cols["OTPISANA"]))
+            RedBroj = ToInt(GetSafe(r, cols, "RED_BROJ")),
+            Datum = ToDate(GetSafe(r, cols, "DATUM")) ?? DateTime.MinValue,
+            OpisPromene = Str(GetSafe(r, cols, "OPIS_PROM")),
+            ObracunskaJedinica = ToInt(GetSafe(r, cols, "OBRAC_JED")),
+            Konto = Str(GetSafe(r, cols, "KONTO")),
+            AmortizacionaGrupa1 = ToInt(GetSafe(r, cols, "AMORT_GR1")),
+            AmortizacionaGrupa2 = ToInt(GetSafe(r, cols, "AMORT_GR2")),
+            StopaAmortizacije = ToDec(GetSafe(r, cols, "STOPA_AM")),
+            KoeficijentRevalorizacije = ToDec(GetSafe(r, cols, "KOEFIC_REV")),
+            Kolicina = ToDec(GetSafe(r, cols, "KOLICINA")),
+            NabavnaVrednost = ToDec(GetSafe(r, cols, "NABAVNA")),
+            IspravkaVrednosti = ToDec(GetSafe(r, cols, "OTPISANA"))
         };
         karticeBatch.Add(k);
         karticeCount++;
@@ -130,21 +130,21 @@ using (var r = new DbfDataReader.DbfDataReader(kor28 + "RASHOD.DBF", opts))
     var cols = GetCols(r);
     while (r.Read())
     {
-        var sifra = ToInt(r.GetValue(cols["SIFRA"]));
+        var sifra = ToInt(GetSafe(r, cols, "SIFRA"));
         if (!sredstvaMap.TryGetValue(sifra, out var sredstvoId)) { rashodiSkip++; continue; }
-        var kodInt = ToInt(r.GetValue(cols["KOD"]));
+        var kodInt = ToInt(GetSafe(r, cols, "KOD"));
         var rash = new Rashod
         {
             SredstvoId = sredstvoId,
-            BrojNaloga = ToInt(r.GetValue(cols["BR_NALOGA"])),
-            RedBroj = ToInt(r.GetValue(cols["RED_BROJ"])),
+            BrojNaloga = ToInt(GetSafe(r, cols, "BR_NALOGA")),
+            RedBroj = ToInt(GetSafe(r, cols, "RED_BROJ")),
             Kod = Enum.IsDefined(typeof(TipoviPromena), kodInt) ? (TipoviPromena)kodInt : TipoviPromena.Rashodovanje,
-            KodTekst = Str(r.GetValue(cols["KOD_TEXT"])),
-            Datum = ToDate(r.GetValue(cols["DATUM"])) ?? DateTime.MinValue,
-            DokumentBroj = Str(r.GetValue(cols["DOKUM_BROJ"])),
-            Podaci = ToDec(r.GetValue(cols["PODACI"])),
-            ObracunskaJedinica = ToInt(r.GetValue(cols["OBRAC_JED"])),
-            Knjizen = ToInt(r.GetValue(cols["KNJIZEN"])) == 1
+            KodTekst = Str(GetSafe(r, cols, "KOD_TEXT")),
+            Datum = ToDate(GetSafe(r, cols, "DATUM")) ?? DateTime.MinValue,
+            DokumentBroj = Str(GetSafe(r, cols, "DOKUM_BROJ")),
+            Podaci = ToDec(GetSafe(r, cols, "PODACI")),
+            ObracunskaJedinica = ToInt(GetSafe(r, cols, "OBRAC_JED")),
+            Knjizen = ToInt(GetSafe(r, cols, "KNJIZEN")) == 1
         };
         rashodiBatch.Add(rash);
         rashodiCount++;
@@ -162,7 +162,7 @@ using (var r = new DbfDataReader.DbfDataReader(kor28 + "PRIJAVA.DBF", opts))
     var cols = GetCols(r);
     while (r.Read())
     {
-        var sifra = ToInt(r.GetValue(cols["SIFRA"]));
+        var sifra = ToInt(GetSafe(r, cols, "SIFRA"));
         // Ako je sifra prazna ili Sredstvo nije uvezeno, i dalje možemo uvesti Prijavu, 
         // ali EF očekuje validan SredstvoId. Zato ćemo preskočiti one bez sredstva.
         if (!sredstvaMap.TryGetValue(sifra, out var sredstvoId)) { prijaveSkip++; continue; }
@@ -170,26 +170,26 @@ using (var r = new DbfDataReader.DbfDataReader(kor28 + "PRIJAVA.DBF", opts))
         var p = new Prijava
         {
             SredstvoId = sredstvoId,
-            BrojNaloga = ToInt(r.GetValue(cols["BR_NALOGA"])),
-            RedBroj = ToInt(r.GetValue(cols["RED_BROJ"])),
-            ObracunskaJedinica = ToInt(r.GetValue(cols["OBRAC_JED"])),
-            Konto = Str(r.GetValue(cols["KONTO"])),
-            AmortizacionaGrupa1 = ToInt(r.GetValue(cols["AMORT_GR1"])),
-            AmortizacionaGrupa2 = ToInt(r.GetValue(cols["AMORT_GR2"])),
-            StopaAmortizacije = ToDec(r.GetValue(cols["STOPA_AM"])),
-            DatumAktiviranja = ToDate(r.GetValue(cols["DAT_AKT"])) ?? DateTime.MinValue,
-            RevalorizacionaGrupa = ToInt(r.GetValue(cols["REVAL_GR"])),
-            NabavnaVrednost = ToDec(r.GetValue(cols["NABAVNA"])),
-            OtpisanaVrednost = ToDec(r.GetValue(cols["OTPISANA"])),
-            JedinicaMere = Str(r.GetValue(cols["J_MERA"])),
-            Kolicina = ToDec(r.GetValue(cols["KOLICINA"])),
-            InventarskiBroj = Str(r.GetValue(cols["INVEN_BR"])),
-            BrojFakture = Str(r.GetValue(cols["BR_FAKTURE"])),
-            DatumFakture = ToDate(r.GetValue(cols["DAT_FAKTUR"])),
-            BrojNalaznice = ToInt(r.GetValue(cols["BR_NALAZ"])),
-            BrNal = Str(r.GetValue(cols["BR_NAL"])),
-            GodNal = ToInt(r.GetValue(cols["GOD_NAL"])),
-            Knjizen = ToInt(r.GetValue(cols["KNJIZEN"])) == 1
+            BrojNaloga = ToInt(GetSafe(r, cols, "BR_NALOGA")),
+            RedBroj = ToInt(GetSafe(r, cols, "RED_BROJ")),
+            ObracunskaJedinica = ToInt(GetSafe(r, cols, "OBRAC_JED")),
+            Konto = Str(GetSafe(r, cols, "KONTO")),
+            AmortizacionaGrupa1 = ToInt(GetSafe(r, cols, "AMORT_GR1")),
+            AmortizacionaGrupa2 = ToInt(GetSafe(r, cols, "AMORT_GR2")),
+            StopaAmortizacije = ToDec(GetSafe(r, cols, "STOPA_AM")),
+            DatumAktiviranja = ToDate(GetSafe(r, cols, "DAT_AKT")) ?? DateTime.MinValue,
+            RevalorizacionaGrupa = ToInt(GetSafe(r, cols, "REVAL_GR")),
+            NabavnaVrednost = ToDec(GetSafe(r, cols, "NABAVNA")),
+            OtpisanaVrednost = ToDec(GetSafe(r, cols, "OTPISANA")),
+            JedinicaMere = Str(GetSafe(r, cols, "J_MERA")),
+            Kolicina = ToDec(GetSafe(r, cols, "KOLICINA")),
+            InventarskiBroj = Str(GetSafe(r, cols, "INVEN_BR")),
+            BrojFakture = Str(GetSafe(r, cols, "BR_FAKTURE")),
+            DatumFakture = ToDate(GetSafe(r, cols, "DAT_FAKTUR")),
+            BrojNalaznice = ToInt(GetSafe(r, cols, "BR_NALAZ")),
+            BrNal = Str(GetSafe(r, cols, "BR_NAL")),
+            GodNal = ToInt(GetSafe(r, cols, "GOD_NAL")),
+            Knjizen = ToInt(GetSafe(r, cols, "KNJIZEN")) == 1
         };
         prijaveBatch.Add(p);
         prijaveCount++;
@@ -203,9 +203,14 @@ Console.WriteLine("\n✓ Kompletna migracija završena!");
 // ── Helpers ───────────────────────────────────────────────────────────────────
 static Dictionary<string, int> GetCols(DbfDataReader.DbfDataReader r)
 {
-    var d = new Dictionary<string, int>();
+    var d = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
     for (int i = 0; i < r.FieldCount; i++) d[r.GetName(i)] = i;
     return d;
+}
+static object? GetSafe(DbfDataReader.DbfDataReader r, Dictionary<string, int> cols, string key)
+{
+    if (cols.TryGetValue(key, out int idx)) return r.GetValue(idx);
+    return null;
 }
 static string Str(object? v) => v?.ToString()?.Trim() ?? string.Empty;
 static int ToInt(object? v) { try { return Convert.ToInt32(v); } catch { return 0; } }

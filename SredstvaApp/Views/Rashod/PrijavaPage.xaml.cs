@@ -1,26 +1,23 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.EntityFrameworkCore;
 using SredstvaData;
-using SredstvaData.Models;
 
 namespace SredstvaApp.Views.Rashod;
 
-/// <summary>Red u listi prijava sa izvedenim prikaznim properijama.</summary>
 public class PrijavaRedViewModel
 {
     public int BrojNaloga { get; init; }
-    public int SredstvoId { get; init; }
-    public string NazivSredstva { get; init; } = string.Empty;
-    public string InventarskiBroj { get; init; } = string.Empty;
-    public string Konto { get; init; } = string.Empty;
-    public int ObracunskaJedinica { get; init; }
     public DateTime DatumAktiviranja { get; init; }
-    public decimal NabavnaVrednost { get; init; }
-    public decimal StopaAmortizacije { get; init; }
+    public int BrojStavki { get; init; }
+    public decimal UkupnaNabavnaVrednost { get; init; }
     public bool Knjizen { get; init; }
-    public string KnjizenTekst => Knjizen ? "✓ Da" : "◌ Ne";
+    public string KnjizenTekst => Knjizen ? "✔️ Da" : "❌ Ne";
+    public string DobavljacNaziv { get; init; } = string.Empty;
 }
 
 public partial class PrijavaPage : Page
@@ -38,12 +35,11 @@ public partial class PrijavaPage : Page
     private void PrijavaPage_Loaded(object sender, RoutedEventArgs e)
     {
         var prijave = _db.Prijave
-            .Include(p => p.Sredstvo)
+            .Include(p => p.Dobavljac)
             .OrderBy(p => p.BrojNaloga)
             .ThenBy(p => p.RedBroj)
             .ToList();
 
-        // Grupisanje: jedan red po nalogu (uzimamo prvu stavku naloga)
         _all = prijave
             .GroupBy(p => p.BrojNaloga)
             .Select(g =>
@@ -51,16 +47,12 @@ public partial class PrijavaPage : Page
                 var first = g.First();
                 return new PrijavaRedViewModel
                 {
-                    BrojNaloga = first.BrojNaloga,
-                    SredstvoId = first.SredstvoId,
-                    NazivSredstva = first.Sredstvo?.Naziv ?? "—",
-                    InventarskiBroj = first.InventarskiBroj,
-                    Konto = first.Konto,
-                    ObracunskaJedinica = first.ObracunskaJedinica,
+                    BrojNaloga = g.Key,
                     DatumAktiviranja = first.DatumAktiviranja,
-                    NabavnaVrednost = first.NabavnaVrednost,
-                    StopaAmortizacije = first.StopaAmortizacije,
-                    Knjizen = first.Knjizen
+                    BrojStavki = g.Count(),
+                    UkupnaNabavnaVrednost = g.Sum(x => x.NabavnaVrednost),
+                    Knjizen = first.Knjizen,
+                    DobavljacNaziv = first.Dobavljac?.OpisKonta ?? "Nepoznat dobavljač"
                 };
             })
             .ToList();
@@ -80,32 +72,34 @@ public partial class PrijavaPage : Page
         else
         {
             PrijavaGrid.ItemsSource = _all.Where(p =>
-                p.NazivSredstva.Contains(q, StringComparison.OrdinalIgnoreCase) ||
                 p.BrojNaloga.ToString().Contains(q) ||
-                p.InventarskiBroj.Contains(q, StringComparison.OrdinalIgnoreCase)).ToList();
+                p.DobavljacNaziv.Contains(q, StringComparison.OrdinalIgnoreCase)).ToList();
         }
     }
 
     private void PrijavaGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (PrijavaGrid.SelectedItem is PrijavaRedViewModel p)
-            StatusText.Text = $"Nalog #{p.BrojNaloga}: {p.NazivSredstva}  •  Dupli klik za prikaz kartice sredstva";
+            StatusText.Text = $"Nalog #{p.BrojNaloga}  •  Dupli klik za pregled naloga";
     }
 
     private void PrijavaGrid_DoubleClick(object sender, MouseButtonEventArgs e)
     {
         if (PrijavaGrid.SelectedItem is PrijavaRedViewModel p)
         {
-            NavigationService?.Navigate(new Views.Kartice.KarticaPage(_db, p.SredstvoId));
+            var w = new PrijavaWindow(_db, p.BrojNaloga);
+            if (w.ShowDialog() == true)
+            {
+                PrijavaPage_Loaded(null!, null!);
+            }
         }
     }
 
     private void BtnNova_Click(object sender, RoutedEventArgs e)
     {
-        var w = new PrijavaWindow(_db);
+        var w = new PrijavaWindow(_db, null);
         if (w.ShowDialog() == true)
         {
-            // Osvežavamo listu nakon uspešne prijave
             PrijavaPage_Loaded(null!, null!);
         }
     }
