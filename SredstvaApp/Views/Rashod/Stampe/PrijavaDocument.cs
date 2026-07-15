@@ -95,7 +95,11 @@ public class PrijavaDocument : IDocument
 
                     static IContainer CellStyle(IContainer container)
                     {
-                        return container.DefaultTextStyle(x => x.SemiBold()).PaddingVertical(5).BorderBottom(1).BorderColor(Colors.Black);
+                        return container.DefaultTextStyle(x => x.SemiBold())
+                                        .PaddingVertical(5)
+                                        .PaddingRight(5)
+                                        .BorderBottom(1)
+                                        .BorderColor(Colors.Black);
                     }
                 });
 
@@ -112,7 +116,10 @@ public class PrijavaDocument : IDocument
 
                     static IContainer CellStyle(IContainer container)
                     {
-                        return container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);
+                        return container.BorderBottom(1)
+                                        .BorderColor(Colors.Grey.Lighten2)
+                                        .PaddingVertical(5)
+                                        .PaddingRight(5);
                     }
                 }
             });
