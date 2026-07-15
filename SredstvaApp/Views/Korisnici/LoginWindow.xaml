@@ -38,7 +38,7 @@
         
         <Button x:Name="BtnLogin" Grid.Row="6" Content="Prijavi se" Height="44" Style="{StaticResource PrimaryButton}" FontSize="15" Click="BtnLogin_Click"/>
         
-        <TextBlock x:Name="TxtError" Grid.Row="7" Foreground="{StaticResource ErrorBrush}" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,16,0,0" Visibility="Collapsed"/>
+        <TextBlock x:Name="TxtError" Grid.Row="7" Foreground="{StaticResource DangerBrush}" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,16,0,0" Visibility="Collapsed"/>
         
         <TextBlock Grid.Row="8" Text="Sistem za osnovna sredstva © 2026" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
     </Grid>
