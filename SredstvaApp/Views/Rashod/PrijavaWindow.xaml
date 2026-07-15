@@ -60,11 +60,14 @@
                     <DataGridTextColumn Header="#" Binding="{Binding RedBroj}" Width="40"/>
                     <DataGridTextColumn Header="Inv. Br." Binding="{Binding InventarskiBroj}" Width="100"/>
                     <DataGridTextColumn Header="Naziv sredstva" Binding="{Binding Naziv}" Width="*" MinWidth="200"/>
+                    <DataGridTextColumn Header="Količina" Binding="{Binding Kolicina, StringFormat=N0}" Width="60"/>
+                    <DataGridTextColumn Header="Faktura" Binding="{Binding BrojFakture}" Width="90"/>
                     <DataGridTextColumn Header="Konto" Binding="{Binding Konto}" Width="80"/>
-                    <DataGridTextColumn Header="Nabavna Vr." Binding="{Binding NabavnaVrednost, StringFormat=N2}" Width="120"/>
-                    <DataGridTextColumn Header="Stopa %" Binding="{Binding StopaAmortizacije, StringFormat=N2}" Width="80"/>
-                    <DataGridTextColumn Header="Am. Gr." Binding="{Binding AmortizacionaGrupa}" Width="70"/>
-                    <DataGridTextColumn Header="OJ" Binding="{Binding ObracunskaJedinica}" Width="70"/>
+                    <DataGridTextColumn Header="Nabavna Vr." Binding="{Binding NabavnaVrednost, StringFormat=N2}" Width="110"/>
+                    <DataGridTextColumn Header="Otpisana Vr." Binding="{Binding OtpisanaVrednost, StringFormat=N2}" Width="110"/>
+                    <DataGridTextColumn Header="Stopa %" Binding="{Binding StopaAmortizacije, StringFormat=N2}" Width="70"/>
+                    <DataGridTextColumn Header="Am. Gr." Binding="{Binding AmortizacionaGrupa}" Width="60"/>
+                    <DataGridTextColumn Header="OJ" Binding="{Binding ObracunskaJedinica}" Width="60"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Border>

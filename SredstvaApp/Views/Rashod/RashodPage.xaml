@@ -77,16 +77,13 @@
 
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="🔍" FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                    <TextBox x:Name="SearchBox" Width="220" Height="34"
+                    <TextBox x:Name="SearchBox" Width="260" Height="34"
                              TextChanged="SearchBox_TextChanged"/>
-
-                    <TextBlock Text="Tip:" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}"
-                               VerticalAlignment="Center" Margin="16,0,6,0"/>
-                    <ComboBox x:Name="TipFilter" Width="180" Height="34"
-                              SelectionChanged="TipFilter_SelectionChanged"/>
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="🖨 Štampa" Style="{StaticResource SecondaryButton}"
+                            Height="34" Margin="0,0,10,0" Click="BtnStampa_Click"/>
                     <Button Content="📤  Novi nalog" Style="{StaticResource PrimaryButton}"
                             Height="34" Click="BtnNoviRashod_Click"/>
                 </StackPanel>
@@ -117,29 +114,29 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Naziv Sredstva" Binding="{Binding NazivSredstva}" Width="*" MinWidth="180"/>
-                    <DataGridTemplateColumn Header="Vrsta Promene" Width="170">
+                    <DataGridTextColumn Header="Dokument" Binding="{Binding DokumentBroj}" Width="120"/>
+                    <DataGridTextColumn Header="Br. stavki" Binding="{Binding BrojStavki}" Width="80">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTemplateColumn Header="Dominantan tip" Width="180">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Border CornerRadius="4" Padding="6,2" HorizontalAlignment="Left" Margin="4,2">
                                     <Border.Background>
                                         <Binding Path="TipBoja"/>
                                     </Border.Background>
-                                    <TextBlock Text="{Binding KodTekst}" FontSize="11"
+                                    <TextBlock Text="{Binding DominantanTip}" FontSize="11"
                                                FontWeight="SemiBold" Foreground="White"/>
                                 </Border>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="Dokument" Binding="{Binding DokumentBroj}" Width="100"/>
-                    <DataGridTextColumn Header="OJ" Binding="{Binding ObracunskaJedinica}" Width="50">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Center"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Header="Podaci (RSD)" Binding="{Binding Podaci, StringFormat=N2}" Width="130">
+                    <DataGridTextColumn Header="Ukupno (RSD)" Binding="{Binding UkupnoPodaci, StringFormat=N2}" Width="130">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Right"/>

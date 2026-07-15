@@ -123,5 +123,27 @@ public partial class MainWindow : Window
         this.Close();
     }
 
-
+    private void BtnPomoc_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var helpPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Help", "uputstvo.html");
+            if (System.IO.File.Exists(helpPath))
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = helpPath,
+                    UseShellExecute = true
+                });
+            }
+            else
+            {
+                MessageBox.Show("Uputstvo nije pronađeno. Fajl ne postoji na putanji: " + helpPath, "Greška", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Nije moguće otvoriti uputstvo: " + ex.Message, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
 }

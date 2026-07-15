@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="sr-RS">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SredstvaApp - Korisničko uputstvo</title>
+    <style>
+        :root {
+            --primary-color: #2B4B80;
+            --secondary-color: #f8f9fa;
+            --text-main: #333;
+            --accent: #E63946;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            background-color: var(--secondary-color);
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 { color: var(--primary-color); }
+        h1 { border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; }
+        h2 { margin-top: 30px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+        .highlight { background-color: #e9ecef; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+        .note { background-color: #e3f2fd; border-left: 4px solid var(--primary-color); padding: 15px; margin: 20px 0; }
+        .warning { background-color: #fdf2f2; border-left: 4px solid var(--accent); padding: 15px; margin: 20px 0; }
+        ul { margin-top: 10px; }
+        li { margin-bottom: 10px; }
+        .footer { text-align: center; margin-top: 50px; font-size: 0.9em; color: #777; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SredstvaApp — Korisničko Uputstvo</h1>
+        
+        <p>Dobrodošli u novi sistem za <strong>Evidenciju i obračun osnovnih sredstava</strong>. Ova aplikacija menja Vaš stari (Clipper) softver i donosi moderno grafičko okruženje sa integrisanim sistemom za kreiranje i štampu PDF izveštaja.</p>
+
+        <div class="note">
+            <strong>Napomena o starim podacima:</strong> Svi vaši podaci iz starih programa automatski su migrirani. Stara šifra sredstva iz DBF datoteke čuva se unutar kartice sredstva pod opcijom "Legacy Šifra".
+        </div>
+
+        <h2>1. Osnovna Sredstva (Kartice)</h2>
+        <p>Ovaj modul vam omogućava upravljanje katalogom svih osnovnih sredstava preduzeća.</p>
+        <ul>
+            <li><strong>Pregled:</strong> U tabeli možete videti stanje, nabavnu i otpisanu vrednost za svako sredstvo.</li>
+            <li><strong>Izmene:</strong> Dvoklikom na red tabele ili klikom na olovku otvara se ekran za detaljno podešavanje stopa amortizacije i datuma aktivacije.</li>
+            <li><strong>Prijave i Rashodi:</strong> Kroz dodatne module sredstvo može biti evidentirano kao trajno otuđeno (rashodovano).</li>
+        </ul>
+
+        <h2>2. Amortizacija</h2>
+        <p>Proces godišnje amortizacije obračunava finansijski pad vrednosti sredstava po definisanim amortizacionim grupama i stopama.</p>
+        <ul>
+            <li>Idite na tab <strong>Amortizacija</strong>, odaberite godinu i kliknite na dugme <span class="highlight">Obracunaj</span>.</li>
+            <li>Program proračunava nabavne i otpisane vrednosti za svako sredstvo na dan bilansiranja.</li>
+            <li>Završene obracune možete PDF štampati koristeći dugme <span class="highlight">Štampa Izveštaja</span>. Izveštaj se sumira po Obračunskim jedinicama (RJ).</li>
+        </ul>
+
+        <h2>3. Revalorizacija</h2>
+        <p>Revalorizacija se radi radi usklađivanja knjigovodstvene vrednosti sredstava sa inflacijom ili trenutnim tržišnim stanjem, primenom revalorizacionih koeficijenata.</p>
+        <div class="warning">
+            Pre izvođenja Revalorizacije morate uneti <strong>Godišnji i Mesečni koeficijent</strong>. U starom sistemu ovo su bili parametri na glavnom ekranu aplikacije.
+        </div>
+        <ul>
+            <li>Unesite željene parametre u input polja.</li>
+            <li>Kliknite na dugme <span class="highlight">⚙️ Obračunaj</span>.</li>
+            <li>Program će kreirati novu liniju u tabeli koju kasnije možete <strong>Štampati</strong> kao PDF ili kliknuti <strong>Proknjiži</strong> kako bi se ažurirale vrednosti nad osnovnim sredstvima u glavnoj bazi.</li>
+        </ul>
+
+        <h2>4. Popis</h2>
+        <p>Na kraju godine sprovodi se obavezni popis inventara radi utvrđivanja eventualnih odstupanja između knjigovodstvenog i stvarnog stanja.</p>
+        <ul>
+            <li><strong>Kreiranje Komisije:</strong> U Tab-u "Komisije" dodajte novo ime popisne komisije.</li>
+            <li><strong>Novi Popis:</strong> Kreirajte novu popisnu listu (unosi se godina, datum popisa i bira komisija).</li>
+            <li><strong>Rad na terenu:</strong> Selektujte novokreirani popis i kliknite na <span class="highlight">🖨 Štampaj Praznu Listu</span>. Program će Vam otvoriti PDF koji štampate i delite radnicima da olovkom unesu stvarna stanja!</li>
+            <li><strong>Unos Razlika:</strong> Dvoklikom na selektovani popis otvara se poseban ekran gde masovno unosite brojčano "Stvarnu količinu" za svako sredstvo.</li>
+            <li><strong>Završni Izveštaj:</strong> Klikom na <span class="highlight">🖨 Štampaj Izveštaj o Popisu</span> dobijate detaljan račun viškova i manjkova objedinjen po Kontima.</li>
+        </ul>
+
+        <div class="footer">
+            <p>SredstvaApp &copy; 2026</p>
+        </div>
+    </div>
+</body>
+</html>

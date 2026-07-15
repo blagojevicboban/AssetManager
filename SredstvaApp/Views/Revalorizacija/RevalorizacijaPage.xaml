@@ -66,7 +66,7 @@
                              FontFamily="Consolas" FontWeight="Bold" FontSize="16"
                              TextAlignment="Right" Padding="0,0,10,0"/>
 
-                    <Button Content="⚙️  Obračunaj" Margin="0,20,0,0"
+                    <Button Content="⚙️ Obračunaj" Margin="0,20,0,0"
                             Style="{StaticResource PrimaryButton}" Height="38"
                             Click="BtnObracunaj_Click"/>
                 </StackPanel>
@@ -81,54 +81,54 @@
                     <UniformGrid Columns="3" Rows="4" Margin="0,4,0,0">
                         <StackPanel Margin="0,0,16,12">
                             <TextBlock Text="01 Januar" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"/>
-                            <TextBox x:Name="TxtMesec1" Text="1.00" Height="28" TextAlignment="Right" FontFamily="Consolas" Padding="4"/>
+                            <TextBox x:Name="TxtMesec1" Text="1.00" Height="32" TextAlignment="Right" FontFamily="Consolas" Padding="4,0" VerticalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Margin="0,0,16,12">
                             <TextBlock Text="02 Februar" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"/>
-                            <TextBox x:Name="TxtMesec2" Text="1.00" Height="28" TextAlignment="Right" FontFamily="Consolas" Padding="4"/>
+                            <TextBox x:Name="TxtMesec2" Text="1.00" Height="32" TextAlignment="Right" FontFamily="Consolas" Padding="4,0" VerticalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Margin="0,0,0,12">
                             <TextBlock Text="03 Mart" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"/>
-                            <TextBox x:Name="TxtMesec3" Text="1.00" Height="28" TextAlignment="Right" FontFamily="Consolas" Padding="4"/>
+                            <TextBox x:Name="TxtMesec3" Text="1.00" Height="32" TextAlignment="Right" FontFamily="Consolas" Padding="4,0" VerticalContentAlignment="Center"/>
                         </StackPanel>
 
                         <StackPanel Margin="0,0,16,12">
                             <TextBlock Text="04 April" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"/>
-                            <TextBox x:Name="TxtMesec4" Text="1.00" Height="28" TextAlignment="Right" FontFamily="Consolas" Padding="4"/>
+                            <TextBox x:Name="TxtMesec4" Text="1.00" Height="32" TextAlignment="Right" FontFamily="Consolas" Padding="4,0" VerticalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Margin="0,0,16,12">
                             <TextBlock Text="05 Maj" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"/>
-                            <TextBox x:Name="TxtMesec5" Text="1.00" Height="28" TextAlignment="Right" FontFamily="Consolas" Padding="4"/>
+                            <TextBox x:Name="TxtMesec5" Text="1.00" Height="32" TextAlignment="Right" FontFamily="Consolas" Padding="4,0" VerticalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Margin="0,0,0,12">
                             <TextBlock Text="06 Jun" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"/>
-                            <TextBox x:Name="TxtMesec6" Text="1.00" Height="28" TextAlignment="Right" FontFamily="Consolas" Padding="4"/>
+                            <TextBox x:Name="TxtMesec6" Text="1.00" Height="32" TextAlignment="Right" FontFamily="Consolas" Padding="4,0" VerticalContentAlignment="Center"/>
                         </StackPanel>
 
                         <StackPanel Margin="0,0,16,12">
                             <TextBlock Text="07 Jul" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"/>
-                            <TextBox x:Name="TxtMesec7" Text="1.00" Height="28" TextAlignment="Right" FontFamily="Consolas" Padding="4"/>
+                            <TextBox x:Name="TxtMesec7" Text="1.00" Height="32" TextAlignment="Right" FontFamily="Consolas" Padding="4,0" VerticalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Margin="0,0,16,12">
                             <TextBlock Text="08 Avgust" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"/>
-                            <TextBox x:Name="TxtMesec8" Text="1.00" Height="28" TextAlignment="Right" FontFamily="Consolas" Padding="4"/>
+                            <TextBox x:Name="TxtMesec8" Text="1.00" Height="32" TextAlignment="Right" FontFamily="Consolas" Padding="4,0" VerticalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Margin="0,0,0,12">
                             <TextBlock Text="09 Septembar" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"/>
-                            <TextBox x:Name="TxtMesec9" Text="1.00" Height="28" TextAlignment="Right" FontFamily="Consolas" Padding="4"/>
+                            <TextBox x:Name="TxtMesec9" Text="1.00" Height="32" TextAlignment="Right" FontFamily="Consolas" Padding="4,0" VerticalContentAlignment="Center"/>
                         </StackPanel>
 
                         <StackPanel Margin="0,0,16,0">
                             <TextBlock Text="10 Oktobar" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"/>
-                            <TextBox x:Name="TxtMesec10" Text="1.00" Height="28" TextAlignment="Right" FontFamily="Consolas" Padding="4"/>
+                            <TextBox x:Name="TxtMesec10" Text="1.00" Height="32" TextAlignment="Right" FontFamily="Consolas" Padding="4,0" VerticalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Margin="0,0,16,0">
                             <TextBlock Text="11 Novembar" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"/>
-                            <TextBox x:Name="TxtMesec11" Text="1.00" Height="28" TextAlignment="Right" FontFamily="Consolas" Padding="4"/>
+                            <TextBox x:Name="TxtMesec11" Text="1.00" Height="32" TextAlignment="Right" FontFamily="Consolas" Padding="4,0" VerticalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Margin="0,0,0,0">
                             <TextBlock Text="12 Decembar" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"/>
-                            <TextBox x:Name="TxtMesec12" Text="1.00" Height="28" TextAlignment="Right" FontFamily="Consolas" Padding="4"/>
+                            <TextBox x:Name="TxtMesec12" Text="1.00" Height="32" TextAlignment="Right" FontFamily="Consolas" Padding="4,0" VerticalContentAlignment="Center"/>
                         </StackPanel>
                     </UniformGrid>
                 </StackPanel>
@@ -249,6 +249,9 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button x:Name="BtnStampa" Content="🖨 Štampa"
+                            Style="{StaticResource SecondaryButton}" Height="34" Margin="0,0,12,0"
+                            IsEnabled="False" Click="BtnStampa_Click"/>
                     <Button x:Name="BtnExport" Content="💾 Eksport (CSV)"
                             Style="{StaticResource SecondaryButton}" Height="34" Margin="0,0,12,0"
                             IsEnabled="False" Click="BtnExport_Click"/>

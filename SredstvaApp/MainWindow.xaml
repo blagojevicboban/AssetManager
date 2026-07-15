@@ -183,6 +183,12 @@
                         <Button x:Name="BtnPodesavanja" Content="⚙️  Podešavanja"
                                 Style="{StaticResource NavButton}"
                                 Click="BtnPodesavanja_Click"/>
+                                
+                        <TextBlock Text="DOKUMENTACIJA" FontSize="10" FontWeight="SemiBold"
+                                   Foreground="#52B788" Margin="24,10,0,3"/>
+                        <Button x:Name="BtnPomoc" Content="❓  Pomoć (Uputstvo)"
+                                Style="{StaticResource NavButton}"
+                                Click="BtnPomoc_Click"/>
 
                     </StackPanel>
                 </ScrollViewer>

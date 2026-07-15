@@ -58,8 +58,16 @@ public partial class PrijavaPage : Page
             .ToList();
 
         PrijavaGrid.ItemsSource = _all;
+
+        // Stat kartice
         var proknjizeno = _all.Count(p => p.Knjizen);
-        SubtitleText.Text = $"Ukupno {_all.Count} naloga  •  Proknjiženo: {proknjizeno}  •  Na čekanju: {_all.Count - proknjizeno}";
+        StatUkupno.Text = _all.Count.ToString();
+        StatStavki.Text = prijave.Count.ToString();
+        StatUkupnaVrednost.Text = prijave.Sum(p => p.NabavnaVrednost).ToString("N2");
+        StatKnjizeno.Text = proknjizeno.ToString();
+        StatCekanje.Text = (_all.Count - proknjizeno).ToString();
+
+        SubtitleText.Text = $"Ukupno {_all.Count} naloga  •  {prijave.Count} stavki  •  Proknjiženo: {proknjizeno}";
     }
 
     private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)

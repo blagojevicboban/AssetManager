@@ -155,6 +155,9 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button x:Name="BtnStampa" Content="🖨 Štampa"
+                            Style="{StaticResource SecondaryButton}" Height="34" Margin="0,0,12,0"
+                            IsEnabled="False" Click="BtnStampa_Click"/>
                     <Button x:Name="BtnExport" Content="💾 Eksport (CSV)"
                             Style="{StaticResource SecondaryButton}" Height="34" Margin="0,0,12,0"
                             IsEnabled="False" Click="BtnExport_Click"/>

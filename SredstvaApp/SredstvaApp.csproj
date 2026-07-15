@@ -1,13 +1,20 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\SredstvaData\SredstvaData.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Resources\Help\uputstvo.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="QuestPDF" Version="2026.7.1" />
+    <PackageReference Include="Velopack" Version="1.2.0" />
   </ItemGroup>
 
   <PropertyGroup>

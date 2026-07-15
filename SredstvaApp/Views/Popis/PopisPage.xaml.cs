@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using Microsoft.EntityFrameworkCore;
 using SredstvaData;
 using SredstvaData.Models;
+using QuestPDF.Fluent;
 
 namespace SredstvaApp.Views.Popis;
 
@@ -139,6 +140,97 @@ public partial class PopisPage : Page
             var window = new UpisPopisaWindow(popis.Id, _db);
             window.ShowDialog();
             LoadPopisi(); // Osvježi nakon povratka
+        }
+    }
+
+    private void PopisGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        bool hasSelection = PopisGrid.SelectedItem != null;
+        if (BtnStampaPrazne != null) BtnStampaPrazne.IsEnabled = hasSelection;
+        if (BtnStampaIzvestaj != null) BtnStampaIzvestaj.IsEnabled = hasSelection;
+    }
+
+    private void BtnStampaPrazne_Click(object sender, RoutedEventArgs e)
+    {
+        if (PopisGrid.SelectedItem is SredstvaData.Models.Popis popis)
+        {
+            var stavke = _db.PopisneStavke
+                .Include(s => s.Sredstvo)
+                .Where(s => s.PopisId == popis.Id)
+                .OrderBy(s => s.Sredstvo.ObracunskaJedinica)
+                .ThenBy(s => s.Sredstvo.Konto)
+                .ToList();
+
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                FileName = $"PraznaPopisnaLista_{popis.Godina}.pdf",
+                DefaultExt = ".pdf",
+                Filter = "PDF documents (.pdf)|*.pdf"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                try
+                {
+                    var document = new PraznaPopisnaListaDocument(popis, stavke);
+                    document.GeneratePdf(dialog.FileName);
+                    
+                    if (MessageBox.Show("PDF je uspešno generisan. Da li želite da ga otvorite?", "Uspeh", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    {
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                        {
+                            FileName = dialog.FileName,
+                            UseShellExecute = true
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Greška prilikom generisanja PDF-a: " + ex.Message, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+    }
+
+    private void BtnStampaIzvestaj_Click(object sender, RoutedEventArgs e)
+    {
+        if (PopisGrid.SelectedItem is SredstvaData.Models.Popis popis)
+        {
+            var stavke = _db.PopisneStavke
+                .Include(s => s.Sredstvo)
+                .Where(s => s.PopisId == popis.Id)
+                .OrderBy(s => s.Sredstvo.ObracunskaJedinica)
+                .ThenBy(s => s.Sredstvo.Konto)
+                .ToList();
+
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                FileName = $"IzvestajOPopisu_{popis.Godina}.pdf",
+                DefaultExt = ".pdf",
+                Filter = "PDF documents (.pdf)|*.pdf"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                try
+                {
+                    var document = new PopisIzvestajDocument(popis, stavke);
+                    document.GeneratePdf(dialog.FileName);
+                    
+                    if (MessageBox.Show("PDF je uspešno generisan. Da li želite da ga otvorite?", "Uspeh", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    {
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                        {
+                            FileName = dialog.FileName,
+                            UseShellExecute = true
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Greška prilikom generisanja PDF-a: " + ex.Message, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
     }
 }

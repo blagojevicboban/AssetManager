@@ -22,6 +22,9 @@ public class PrijavaStavkaViewModel
     public string AmortizacionaGrupa { get; set; } = string.Empty;
     public string Konto { get; set; } = string.Empty;
     public int ObracunskaJedinica { get; set; }
+    public decimal Kolicina { get; set; } = 1m;
+    public decimal OtpisanaVrednost { get; set; }
+    public string BrojFakture { get; set; } = string.Empty;
 }
 
 public partial class PrijavaWindow : Window
@@ -85,7 +88,10 @@ public partial class PrijavaWindow : Window
                 StopaAmortizacije = p.StopaAmortizacije,
                 AmortizacionaGrupa = p.AmortizacionaGrupa1.ToString(),
                 Konto = p.Konto,
-                ObracunskaJedinica = p.ObracunskaJedinica
+                ObracunskaJedinica = p.ObracunskaJedinica,
+                Kolicina = p.Kolicina,
+                OtpisanaVrednost = p.OtpisanaVrednost,
+                BrojFakture = p.BrojFakture
             });
         }
 
@@ -141,7 +147,10 @@ public partial class PrijavaWindow : Window
             StopaAmortizacije = stopa,
             AmortizacionaGrupa = TxtGrupa.Text.Trim(),
             Konto = TxtKonto.Text.Trim(),
-            ObracunskaJedinica = oj
+            ObracunskaJedinica = oj,
+            Kolicina = 1m, // Podrazumevana količina, kasnije možemo dodati unos na UI ako treba
+            OtpisanaVrednost = 0m,
+            BrojFakture = ""
         };
 
         Stavke.Add(novaStavka);
@@ -237,6 +246,9 @@ public partial class PrijavaWindow : Window
                     Konto = stavka.Konto,
                     ObracunskaJedinica = stavka.ObracunskaJedinica,
                     AmortizacionaGrupa1 = amGrInt,
+                    Kolicina = stavka.Kolicina,
+                    OtpisanaVrednost = stavka.OtpisanaVrednost,
+                    BrojFakture = stavka.BrojFakture,
                     DobavljacId = dobId,
                     Knjizen = true
                 };

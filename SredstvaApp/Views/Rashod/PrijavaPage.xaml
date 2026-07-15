@@ -4,59 +4,164 @@
       Title="Prijava Sredstava"
       Background="{StaticResource SurfaceBrush}">
 
-    <Grid Margin="24">
+    <Grid Margin="28,24,24,24">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>   <!-- Naslov -->
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="Auto"/>   <!-- Stat kartice -->
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="Auto"/>   <!-- Toolbar -->
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="*"/>      <!-- DataGrid -->
+            <RowDefinition Height="Auto"/>   <!-- Status bar -->
         </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <DockPanel Grid.Row="0" Margin="0,0,0,16">
-            <StackPanel DockPanel.Dock="Left">
-                <TextBlock Text="Prijava Sredstava" FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
-                <TextBlock x:Name="SubtitleText" Text="Učitavanje..." FontSize="14" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0"/>
-            </StackPanel>
-        </DockPanel>
+        <!-- Naslov -->
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="Prijava Sredstava" Style="{StaticResource PageTitle}"/>
+            <TextBlock x:Name="SubtitleText" Text="Učitavanje..."
+                       Style="{StaticResource PageSubtitle}"/>
+        </StackPanel>
 
-        <!-- Search / Filter -->
-        <Border Grid.Row="1" Background="{StaticResource CardBrush}" CornerRadius="8" Padding="16" Margin="0,0,0,16">
-            <DockPanel>
-                <Button DockPanel.Dock="Right" Content="+ Nova prijava" Style="{StaticResource PrimaryButton}" Click="BtnNova_Click"/>
-                
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="🔍" VerticalAlignment="Center" Margin="0,0,8,0" FontSize="18"/>
-                    <TextBox x:Name="SearchBox" Width="300" Height="32" VerticalContentAlignment="Center" Padding="8,0" TextChanged="SearchBox_TextChanged" />
-                    <TextBlock Text="Pretraga po broju naloga ili dobavljaču" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" Margin="12,0,0,0"/>
+        <!-- Stat kartice -->
+        <UniformGrid Grid.Row="2" Columns="5">
+            <Border Style="{StaticResource StatCard}" Margin="0,0,10,0">
+                <StackPanel>
+                    <TextBlock Text="UKUPNO NALOGA" FontSize="10" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
+                    <TextBlock x:Name="StatUkupno" Text="—" FontSize="22" FontWeight="Bold"
+                               Foreground="{StaticResource TextPrimaryBrush}"/>
                 </StackPanel>
-            </DockPanel>
+            </Border>
+            <Border Style="{StaticResource StatCard}" Margin="0,0,10,0">
+                <StackPanel>
+                    <TextBlock Text="UKUPNO STAVKI" FontSize="10" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
+                    <TextBlock x:Name="StatStavki" Text="—" FontSize="22" FontWeight="Bold"
+                               Foreground="{StaticResource AccentBrush}"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource StatCard}" Margin="0,0,10,0">
+                <StackPanel>
+                    <TextBlock Text="UKUPNA NABAVNA VR." FontSize="10" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
+                    <TextBlock x:Name="StatUkupnaVrednost" Text="—" FontSize="16" FontWeight="Bold"
+                               Foreground="{StaticResource TextPrimaryBrush}" FontFamily="Consolas"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource StatCard}" Margin="0,0,10,0">
+                <StackPanel>
+                    <TextBlock Text="PROKNJIŽENO" FontSize="10" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
+                    <TextBlock x:Name="StatKnjizeno" Text="—" FontSize="22" FontWeight="Bold"
+                               Foreground="{StaticResource SuccessBrush}"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource StatCard}">
+                <StackPanel>
+                    <TextBlock Text="NA ČEKANJU" FontSize="10" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
+                    <TextBlock x:Name="StatCekanje" Text="—" FontSize="22" FontWeight="Bold"
+                               Foreground="{StaticResource WarningBrush}"/>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <!-- Toolbar -->
+        <Border Grid.Row="4" Style="{StaticResource Card}" Padding="16,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="🔍" FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBox x:Name="SearchBox" Width="260" Height="34"
+                             TextChanged="SearchBox_TextChanged"/>
+                    <TextBlock Text="Pretraga po broju naloga ili dobavljaču"
+                               Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"
+                               VerticalAlignment="Center" Margin="12,0,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="+ Nova prijava" Style="{StaticResource PrimaryButton}"
+                            Height="34" Click="BtnNova_Click"/>
+                </StackPanel>
+            </Grid>
         </Border>
 
-        <!-- Grid -->
-        <Border Grid.Row="2" Style="{StaticResource Card}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                
-                <DataGrid x:Name="PrijavaGrid" AutoGenerateColumns="False" 
-                          IsReadOnly="True" BorderThickness="0" Background="Transparent"
-                          SelectionChanged="PrijavaGrid_SelectionChanged" MouseDoubleClick="PrijavaGrid_DoubleClick">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Br. Naloga" Binding="{Binding BrojNaloga}" Width="100"/>
-                        <DataGridTextColumn Header="Dobavljač" Binding="{Binding DobavljacNaziv}" Width="*" MinWidth="150"/>
-                        <DataGridTextColumn Header="Datum Aktiv." Binding="{Binding DatumAktiviranja, StringFormat=dd.MM.yyyy}" Width="110"/>
-                        <DataGridTextColumn Header="Br. Stavki" Binding="{Binding BrojStavki}" Width="90"/>
-                        <DataGridTextColumn Header="Ukupna Nabavna Vr." Binding="{Binding UkupnaNabavnaVrednost, StringFormat=N2}" Width="160"/>
-                        <DataGridTextColumn Header="Proknjižen" Binding="{Binding KnjizenTekst}" Width="100"/>
-                    </DataGrid.Columns>
-                </DataGrid>
+        <!-- DataGrid -->
+        <Border Grid.Row="6" Style="{StaticResource Card}" Padding="0">
+            <DataGrid x:Name="PrijavaGrid" AutoGenerateColumns="False"
+                      IsReadOnly="True" BorderThickness="0" Background="Transparent"
+                      CanUserSortColumns="True"
+                      SelectionChanged="PrijavaGrid_SelectionChanged"
+                      MouseDoubleClick="PrijavaGrid_DoubleClick">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Br. Naloga" Binding="{Binding BrojNaloga}" Width="90">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Dobavljač" Binding="{Binding DobavljacNaziv}" Width="*" MinWidth="150"/>
+                    <DataGridTextColumn Header="Datum aktiv." Binding="{Binding DatumAktiviranja, StringFormat=dd.MM.yyyy}" Width="110">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Br. stavki" Binding="{Binding BrojStavki}" Width="90">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Ukupna nabavna vr." Binding="{Binding UkupnaNabavnaVrednost, StringFormat=N2}" Width="160">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Right"/>
+                                <Setter Property="Padding" Value="0,0,10,0"/>
+                                <Setter Property="FontFamily" Value="Consolas"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTemplateColumn Header="Status" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding KnjizenTekst}"
+                                           HorizontalAlignment="Center"
+                                           FontWeight="SemiBold">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Knjizen}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Knjizen}" Value="False">
+                                                    <Setter Property="Foreground" Value="{StaticResource WarningBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
 
-                <Border Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderBrush}" Padding="16,8">
-                    <TextBlock x:Name="StatusText" Text="Spremno." Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
-                </Border>
-            </Grid>
+        <!-- Status bar -->
+        <Border Grid.Row="7" Padding="0,8,0,0">
+            <TextBlock x:Name="StatusText" Text="Dupli klik na nalog za pregled"
+                       Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
         </Border>
     </Grid>
 </Page>

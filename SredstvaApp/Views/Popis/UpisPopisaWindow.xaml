@@ -61,7 +61,7 @@
                                 <Setter Property="FontWeight" Value="SemiBold"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding ImaRazliku}" Value="True">
-                                        <Setter Property="Foreground" Value="{StaticResource ErrorBrush}"/>
+                                        <Setter Property="Foreground" Value="#E63946"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>

@@ -1,9 +1,11 @@
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
+using QuestPDF.Fluent;
 using SredstvaData;
 using SredstvaData.Models;
 
@@ -165,6 +167,7 @@ public partial class RevalorizacijaPage : Page
         UkupnoEfekatIspravkaTxt.Text = ukupnoEfekatIspravka.ToString("N2");
 
         BtnExport.IsEnabled = true;
+        BtnStampa.IsEnabled = true;
         BtnProknjizi.IsEnabled = _results.Any();
     }
 
@@ -240,6 +243,7 @@ public partial class RevalorizacijaPage : Page
             PlaceholderPanel.Visibility = Visibility.Visible;
             BtnProknjizi.IsEnabled = false;
             BtnExport.IsEnabled = false;
+            BtnStampa.IsEnabled = false;
             UkupnoEfekatNabavnaTxt.Text = "0.00";
             UkupnoEfekatIspravkaTxt.Text = "0.00";
         }
@@ -247,6 +251,29 @@ public partial class RevalorizacijaPage : Page
         {
             transaction.Rollback();
             MessageBox.Show($"Greška pri knjiženju: {ex.Message}", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void BtnStampa_Click(object sender, RoutedEventArgs e)
+    {
+        if (_results.Count == 0)
+        {
+            MessageBox.Show("Nema podataka za štampu. Pokrenite obračun.", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        try
+        {
+            var nazivFirme = _db.Firme.FirstOrDefault()?.Naziv ?? "Nepoznata firma";
+            var godKoef = ParseKoef(TxtGodisnjiKoef); // Učitavanje sa polja jer nam treba za zaglavlje PDF-a
+            var doc = new RevalorizacijaDocument(_results, nazivFirme, _calcOd, _calcDo, godKoef);
+            var tempFile = Path.Combine(Path.GetTempPath(), $"Revalorizacija_{_calcOd.Year}_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+            doc.GeneratePdf(tempFile);
+            Process.Start(new ProcessStartInfo(tempFile) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Greška pri generisanju PDF-a: {ex.Message}", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 

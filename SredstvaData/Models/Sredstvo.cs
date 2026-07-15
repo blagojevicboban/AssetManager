@@ -31,6 +31,11 @@ public class Sredstvo
     
     public string AmortizacionaGrupa { get; set; } = string.Empty;
     
+    [MaxLength(20)]
+    public string Konto { get; set; } = string.Empty;
+    
+    public int ObracunskaJedinica { get; set; }
+
     [Column(TypeName = "decimal(5,2)")]
     public decimal StopaAmortizacije { get; set; }
     

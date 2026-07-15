@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SredstvaApp.ViewModels;
 using SredstvaData;
+using Velopack;
 
 namespace SredstvaApp;
 
@@ -24,6 +25,8 @@ public partial class App : Application
 
     protected override async void OnStartup(StartupEventArgs e)
     {
+        VelopackApp.Build().Run();
+        
         QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
         await AppHost!.StartAsync();
         
