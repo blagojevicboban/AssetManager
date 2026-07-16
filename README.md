@@ -78,3 +78,87 @@ Aplikacija se instalira u profil korisnika bez administratorskih prava, a svako 
 
 ---
 *Aplikacija služi za prelaz sa nasleđenog Clipper MS-DOS softvera i u potpunosti replikuje logiku iz originalnih PRG modula (AMORTIZ.PRG, REVALOR.PRG, POPIS.PRG).*
+
+<br/>
+<br/>
+
+# 🏢 SredstvaSystem — Fixed Assets Management (English)
+
+> Desktop application for fixed assets management, depreciation, revaluation, and annual inventory — developed in C# / .NET 8 / WPF.
+
+---
+
+## ✨ Features
+
+- 📁 **Assets (Cards)** — registration, creation, and tracking of fixed assets (purchase and written-off value).
+- 📉 **Depreciation** — automatic annual calculation of depreciation, with the creation of detailed PDF reports (by account and accounting units).
+- 📈 **Revaluation** — revaluation calculation according to defined coefficients and updating the present value of assets.
+- 📋 **Inventory Lists** — creation of inventory commissions, printing of empty lists for field work, and processing accounting deviations and surpluses/shortages through an integrated UI.
+- 📄 **Printing and Reports** — reports are generated in PDF format via the **QuestPDF** library and are adapted for A3/A4 landscape printing format.
+
+---
+
+## 🛠️ Technologies
+
+| Area | Technology |
+|---|---|
+| Language | C# 12 / .NET 8.0 |
+| UI | WPF (Windows Presentation Foundation) |
+| Architecture | Code-Behind (without strict MVVM for development speed) |
+| Database | SQLite |
+| ORM | Entity Framework Core 8 |
+| Reports / PDF | QuestPDF |
+| Packaging / Update | Velopack |
+| CI/CD | GitHub Actions |
+
+---
+
+## 📁 Project Structure
+
+```
+SredstvaSystem/
+├── SredstvaApp/            # Main WPF project (Pages, PDF Documents)
+│   ├── Views/              # Submodules (Depreciation, Revaluation, Inventory, Cards)
+│   └── Resources/          # Styles, Manual (Help documentation)
+├── SredstvaData/           # Data Access Layer (EF Core entities, DbContext)
+│   └── Models/             # Asset, Card, Registration, Write-off, Inventory...
+├── SredstvaMigration/      # Migration tool for legacy data from old DBF Clipper files
+├── .github/workflows/      # GitHub Actions for CI/CD and automatic release
+└── version.txt             # File from which the script reads the current version for auto-update
+```
+
+---
+
+## 🚀 Running the Project (for development)
+
+### Prerequisites
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8)
+- Visual Studio 2022+ or JetBrains Rider
+
+### Steps
+```bash
+# 1. Clone the repository
+git clone https://github.com/blagojevicboban/AssetManager.git
+cd AssetManager
+
+# 2. Build the project
+dotnet build
+
+# 3. Run the application
+dotnet run --project SredstvaApp/SredstvaApp.csproj
+```
+> **Note:** The local SQLite database (`sredstva.db`) is automatically created on the first instance if it doesn't already exist. If you have DBF data, first run the `SredstvaMigration` project.
+
+---
+
+## 📦 Installation (for end users)
+When CI/CD is active, download the latest `SredstvaAppSetup.exe` from the GitHub Releases page.
+The application is installed in the user's profile without administrator privileges, and every new update (New version in `version.txt`) will be applied automatically through **Velopack Delta Update**.
+
+---
+
+## 🔒 Database Notes
+- The local `sredstva.db` file containing company data is **excluded from the Git repository** and remains exclusively on the user's local machine.
+
+---
+*The application serves for the transition from the legacy Clipper MS-DOS software and fully replicates the logic from the original PRG modules.*

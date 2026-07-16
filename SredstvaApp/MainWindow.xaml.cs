@@ -15,6 +15,11 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         
+        if (UserSettings.Instance.StartMaximized)
+        {
+            WindowState = WindowState.Maximized;
+        }
+        
         _db = db;
         
         UpdateUserInfo();

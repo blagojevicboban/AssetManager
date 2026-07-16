@@ -84,6 +84,54 @@
             <li><strong>Završni Izveštaj:</strong> Klikom na <span class="highlight">🖨 Štampaj Izveštaj o Popisu</span> dobijate detaljan račun viškova i manjkova objedinjen po Kontima.</li>
         </ul>
 
+        <!-- ENGLISH VERSION -->
+        <hr style="margin: 60px 0 40px 0; border: 1px solid #ddd;" />
+
+        <h1>SredstvaApp — User Manual (English)</h1>
+        
+        <p>Welcome to the new system for <strong>Fixed Assets Management and Calculation</strong>. This application replaces your old (Clipper) software and brings a modern graphical environment with an integrated system for creating and printing PDF reports.</p>
+
+        <div class="note">
+            <strong>Note on legacy data:</strong> All your data from the old programs has been automatically migrated. The old asset code from the DBF file is stored inside the asset card under the "Legacy Code" option.
+        </div>
+
+        <h2>1. Fixed Assets (Cards)</h2>
+        <p>This module allows you to manage the catalog of all fixed assets of the company.</p>
+        <ul>
+            <li><strong>Overview:</strong> In the table, you can see the condition, purchase, and written-off value for each asset.</li>
+            <li><strong>Modifications:</strong> Double-clicking a table row or clicking the pencil opens a screen for detailed configuration of depreciation rates and activation dates.</li>
+            <li><strong>Registrations and Write-offs:</strong> Through additional modules, an asset can be recorded as permanently alienated (written off).</li>
+        </ul>
+
+        <h2>2. Depreciation</h2>
+        <p>The annual depreciation process calculates the financial decrease in the value of assets according to defined depreciation groups and rates.</p>
+        <ul>
+            <li>Go to the <strong>Amortizacija</strong> (Depreciation) tab, select the year, and click the <span class="highlight">Obracunaj</span> (Calculate) button.</li>
+            <li>The program calculates the purchase and written-off values for each asset on the balance sheet date.</li>
+            <li>Completed calculations can be printed as PDFs using the <span class="highlight">Štampa Izveštaja</span> (Print Report) button. The report is summarized by Accounting Units (RJ).</li>
+        </ul>
+
+        <h2>3. Revaluation</h2>
+        <p>Revaluation is performed to align the book value of assets with inflation or current market conditions, by applying revaluation coefficients.</p>
+        <div class="warning">
+            Before performing Revaluation, you must enter the <strong>Annual and Monthly coefficient</strong>. In the old system, these were parameters on the main application screen.
+        </div>
+        <ul>
+            <li>Enter the desired parameters into the input fields.</li>
+            <li>Click the <span class="highlight">⚙️ Obračunaj</span> (Calculate) button.</li>
+            <li>The program will create a new line in the table that you can later <strong>Print</strong> as a PDF or click <strong>Proknjiži</strong> (Post) to update the asset values in the main database.</li>
+        </ul>
+
+        <h2>4. Inventory</h2>
+        <p>At the end of the year, a mandatory inventory is conducted to determine any discrepancies between the accounting and actual state.</p>
+        <ul>
+            <li><strong>Creating a Commission:</strong> In the "Komisije" (Commissions) tab, add a new name for the inventory commission.</li>
+            <li><strong>New Inventory:</strong> Create a new inventory list (enter the year, inventory date, and select a commission).</li>
+            <li><strong>Field Work:</strong> Select the newly created inventory and click <span class="highlight">🖨 Štampaj Praznu Listu</span> (Print Empty List). The program will open a PDF for you to print and distribute to workers so they can write down the actual quantities with a pen!</li>
+            <li><strong>Entering Differences:</strong> Double-clicking the selected inventory opens a special screen where you massively enter the numerical "Actual quantity" for each asset.</li>
+            <li><strong>Final Report:</strong> By clicking <span class="highlight">🖨 Štampaj Izveštaj o Popisu</span> (Print Inventory Report), you get a detailed calculation of surpluses and shortages consolidated by Accounts.</li>
+        </ul>
+
         <div class="footer">
             <p>SredstvaApp &copy; 2026</p>
         </div>

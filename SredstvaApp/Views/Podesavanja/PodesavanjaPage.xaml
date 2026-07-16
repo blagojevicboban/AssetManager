@@ -150,6 +150,34 @@
                     </Border>
                 </Grid>
             </TabItem>
+
+            <!-- TAB: Postavke programa -->
+            <TabItem Header="💻 Postavke programa">
+                <Grid Margin="0,12,0,0">
+                    <StackPanel>
+                        <Border Style="{StaticResource Card}" Padding="20">
+                            <StackPanel>
+                                <TextBlock Text="Postavke programa" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,4"/>
+                                <TextBlock Text="Opšte postavke vezane za izgled i ponašanje programa." Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,16"/>
+                                
+                                <Border Background="#F9FAFB" CornerRadius="8" Padding="16" BorderBrush="#E5E7EB" BorderThickness="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Pokretanje programa maksimizovano" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                            <TextBlock Text="Program će se automatski otvoriti u celom ekranu pri sledećem pokretanju." Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                        <CheckBox x:Name="ChkStartMaximized" Grid.Column="1" VerticalAlignment="Center" Checked="ChkStartMaximized_Changed" Unchecked="ChkStartMaximized_Changed"/>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
         </TabControl>
 
         <!-- STATUS BAR -->

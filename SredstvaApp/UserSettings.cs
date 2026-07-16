@@ -12,6 +12,7 @@ public class UserSettings
     );
 
     public string? ActiveDbPath { get; set; }
+    public bool StartMaximized { get; set; } = true;
 
     private static UserSettings? _instance;
     public static UserSettings Instance

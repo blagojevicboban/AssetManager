@@ -22,7 +22,18 @@ public partial class PodesavanjaPage : Page
         }
         catch { }
 
+        ChkStartMaximized.IsChecked = UserSettings.Instance.StartMaximized;
+
         OsveziIstorijuKopija();
+    }
+
+    private void ChkStartMaximized_Changed(object sender, RoutedEventArgs e)
+    {
+        if (ChkStartMaximized.IsChecked.HasValue)
+        {
+            UserSettings.Instance.StartMaximized = ChkStartMaximized.IsChecked.Value;
+            UserSettings.Instance.Save();
+        }
     }
 
     private void OsveziIstorijuKopija()
