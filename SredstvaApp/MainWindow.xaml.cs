@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using SredstvaApp.ViewModels;
 using SredstvaData;
+using Velopack;
 
 namespace SredstvaApp;
 
@@ -21,6 +22,32 @@ public partial class MainWindow : Window
         
         // Prikazujemo prvu stranicu (Sredstva)
         NavigateTo(BtnSredstva, () => new Views.Sredstva.SredstvaPage(_db));
+
+        // Provera ažuriranja u pozadini
+        _ = CheckForUpdatesAsync();
+    }
+
+    private async System.Threading.Tasks.Task CheckForUpdatesAsync()
+    {
+        try
+        {
+            var source = new Velopack.Sources.GithubSource(
+                "https://github.com/blagojevicboban/AssetManager",
+                null, // null = javni repozitorijum, nema potrebe za tokenom
+                false);
+            var mgr = new UpdateManager(source);
+            var newVersion = await mgr.CheckForUpdatesAsync();
+            if (newVersion != null)
+            {
+                var dialog = new UpdateDialog(newVersion, mgr);
+                dialog.Owner = this;
+                dialog.ShowDialog();
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Greška pri proveri ažuriranja: {ex.Message}");
+        }
     }
 
     private void UpdateUserInfo()
