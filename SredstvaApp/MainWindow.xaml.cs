@@ -20,6 +20,15 @@ public partial class MainWindow : Window
         UpdateUserInfo();
         ApplyRolePermissions();
         
+        AppSession.TrenutnaFirmaChanged += () =>
+        {
+            Dispatcher.Invoke(() => 
+            {
+                ImeFirmeText.Text = AppSession.TrenutnaFirma?.Naziv ?? "—";
+            });
+        };
+        ImeFirmeText.Text = AppSession.TrenutnaFirma?.Naziv ?? "—";
+        
         // Prikazujemo prvu stranicu (Sredstva)
         NavigateTo(BtnSredstva, () => new Views.Sredstva.SredstvaPage(_db));
 

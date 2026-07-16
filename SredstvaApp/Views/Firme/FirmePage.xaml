@@ -91,11 +91,11 @@
                           SelectionChanged="FirmeGrid_SelectionChanged">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Naziv firme" Binding="{Binding Naziv}" Width="*"/>
-                        <DataGridTextColumn Header="PIB" Binding="{Binding Pib}" Width="110"/>
-                        <DataGridTextColumn Header="Matični broj" Binding="{Binding Mb}" Width="110"/>
-                        <DataGridTextColumn Header="Grad" Binding="{Binding Grad}" Width="120"/>
-                        <DataGridTextColumn Header="Telefon" Binding="{Binding Telefon}" Width="120"/>
-                        <DataGridTextColumn Header="Fajl baze" Binding="{Binding DbPath}" Width="250"/>
+                        <DataGridTextColumn Header="PIB" Binding="{Binding Pib}" Width="80"/>
+                        <DataGridTextColumn Header="Matični broj" Binding="{Binding Mb}" Width="80"/>
+                        <DataGridTextColumn Header="Grad" Binding="{Binding Grad}" Width="100"/>
+                        <DataGridTextColumn Header="Telefon" Binding="{Binding Telefon}" Width="100"/>
+                        <DataGridTextColumn Header="Fajl baze" Binding="{Binding DbPath}" Width="150"/>
                         <DataGridTemplateColumn Header="Aktivna" Width="80">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>

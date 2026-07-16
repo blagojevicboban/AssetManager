@@ -4,6 +4,7 @@
         Title="Prijava u sistem" Height="550" Width="400"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
+        Icon="app.ico"
         Background="{StaticResource SurfaceBrush}">
     
     <Grid Margin="32">
