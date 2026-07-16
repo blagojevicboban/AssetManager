@@ -198,7 +198,8 @@ public partial class PopisPage : Page
             {
                 try
                 {
-                    var document = new PraznaPopisnaListaDocument(popis, stavke);
+                    var firma = _db.Firme.FirstOrDefault();
+                    var document = new PraznaPopisnaListaDocument(popis, stavke, firma);
                     document.GeneratePdf(dialog.FileName);
                     
                     if (MessageBox.Show("PDF je uspešno generisan. Da li želite da ga otvorite?", "Uspeh", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
@@ -240,7 +241,8 @@ public partial class PopisPage : Page
             {
                 try
                 {
-                    var document = new PopisIzvestajDocument(popis, stavke);
+                    var firma = _db.Firme.FirstOrDefault();
+                    var document = new PopisIzvestajDocument(popis, stavke, firma);
                     document.GeneratePdf(dialog.FileName);
                     
                     if (MessageBox.Show("PDF je uspešno generisan. Da li želite da ga otvorite?", "Uspeh", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)

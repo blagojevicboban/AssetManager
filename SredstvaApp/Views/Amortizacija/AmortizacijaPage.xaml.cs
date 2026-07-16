@@ -250,8 +250,8 @@ public partial class AmortizacijaPage : Page
 
         try
         {
-            var nazivFirme = _db.Firme.FirstOrDefault()?.Naziv ?? "Nepoznata firma";
-            var doc = new AmortizacijaDocument(_results, nazivFirme, _calcOd, _calcDo);
+            var firma = _db.Firme.FirstOrDefault();
+            var doc = new AmortizacijaDocument(_results, firma, _calcOd, _calcDo);
             var tempFile = Path.Combine(Path.GetTempPath(), $"Amortizacija_{_calcOd.Year}_{DateTime.Now:yyyyMMddHHmmss}.pdf");
             doc.GeneratePdf(tempFile);
             Process.Start(new ProcessStartInfo(tempFile) { UseShellExecute = true });

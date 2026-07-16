@@ -13,20 +13,21 @@ public class PrijavaDocument : IDocument
     private readonly DateTime _datumAktiviranja;
     private readonly string _dobavljac;
     private readonly IEnumerable<PrijavaStavkaViewModel> _stavke;
-    private readonly string _nazivFirme;
+    private readonly SredstvaData.Models.Firma? _firma;
+    private readonly string _primaryColor = "#2B4B80";
 
     public PrijavaDocument(
         int brojNaloga, 
         DateTime datumAktiviranja, 
         string dobavljac, 
         IEnumerable<PrijavaStavkaViewModel> stavke, 
-        string nazivFirme)
+        SredstvaData.Models.Firma? firma)
     {
         _brojNaloga = brojNaloga;
         _datumAktiviranja = datumAktiviranja;
         _dobavljac = dobavljac;
         _stavke = stavke;
-        _nazivFirme = nazivFirme;
+        _firma = firma;
     }
 
     public void Compose(IDocumentContainer container)
@@ -51,15 +52,22 @@ public class PrijavaDocument : IDocument
         {
             row.RelativeItem().Column(col =>
             {
-                col.Item().Text(_nazivFirme).Bold().FontSize(12);
-                col.Item().PaddingTop(10).Text($"PRIJAVA (NALOG ZA KNJIŽENJE) BR: {_brojNaloga}").Bold().FontSize(16);
-                col.Item().Text($"Datum prijave: {_datumAktiviranja:dd.MM.yyyy.}");
-                col.Item().Text($"Dobavljač/Partner: {_dobavljac}");
+                col.Item().PaddingTop(10).Text($"PRIJAVA (NALOG ZA KNJIŽENJE) BR: {_brojNaloga}").SemiBold().FontSize(16).FontColor(_primaryColor);
+                col.Item().Text($"Datum prijave: {_datumAktiviranja:dd.MM.yyyy.}").FontSize(10).FontColor(Colors.Grey.Medium);
+                col.Item().Text($"Dobavljač/Partner: {_dobavljac}").FontSize(10).FontColor(Colors.Grey.Medium);
             });
 
-            row.ConstantItem(150).AlignRight().Column(col =>
+            row.ConstantItem(250).AlignRight().Column(column =>
             {
-                col.Item().Text($"Datum štampe: {DateTime.Now:dd.MM.yyyy.}").FontSize(8).FontColor(Colors.Grey.Darken1);
+                if (_firma != null)
+                {
+                    column.Item().AlignRight().Text(_firma.Naziv).FontSize(12).SemiBold().FontColor(Colors.Black);
+                    if (!string.IsNullOrEmpty(_firma.Adresa) || !string.IsNullOrEmpty(_firma.Mesto))
+                        column.Item().AlignRight().Text($"{_firma.Adresa}, {_firma.Mesto}".Trim(',', ' ')).FontSize(10).FontColor(Colors.Grey.Darken2);
+                    if (!string.IsNullOrEmpty(_firma.PIB))
+                        column.Item().AlignRight().Text($"PIB: {_firma.PIB}").FontSize(10).FontColor(Colors.Grey.Darken2);
+                }
+                column.Item().PaddingTop(5).AlignRight().Text($"Datum štampe: {DateTime.Now:dd.MM.yyyy.}").FontSize(8).FontColor(Colors.Grey.Darken1);
             });
         });
     }

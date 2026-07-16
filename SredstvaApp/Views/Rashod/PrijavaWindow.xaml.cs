@@ -287,10 +287,8 @@ public partial class PrijavaWindow : Window
             int.TryParse(TxtBrojNaloga.Text.Trim(), out int brojNaloga);
             var datum = DpDatum.SelectedDate ?? DateTime.Today;
             var dobavljac = CmbDobavljac.Text;
-            
-            var nazivFirme = _db.Firme.FirstOrDefault()?.Naziv ?? "Nepoznata firma";
-
-            var doc = new PrijavaDocument(brojNaloga, datum, dobavljac, Stavke, nazivFirme);
+            var firma = _db.Firme.FirstOrDefault();
+            var doc = new PrijavaDocument(brojNaloga, datum, dobavljac, Stavke, firma);
             
             var tempFile = Path.Combine(Path.GetTempPath(), $"Prijava_{brojNaloga}_{DateTime.Now:yyyyMMddHHmmss}.pdf");
             doc.GeneratePdf(tempFile);

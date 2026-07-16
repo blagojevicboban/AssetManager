@@ -28,12 +28,13 @@ public class RashodNalogInfo
 public class RashodDocument : IDocument
 {
     private readonly List<RashodNalogInfo> _nalozi;
-    private readonly string _nazivFirme;
+    private readonly SredstvaData.Models.Firma? _firma;
+    private readonly string _primaryColor = "#2B4B80";
 
-    public RashodDocument(List<RashodNalogInfo> nalozi, string nazivFirme)
+    public RashodDocument(List<RashodNalogInfo> nalozi, SredstvaData.Models.Firma? firma)
     {
         _nalozi = nalozi;
-        _nazivFirme = nazivFirme;
+        _firma = firma;
     }
 
     public void Compose(IDocumentContainer container)
@@ -55,15 +56,22 @@ public class RashodDocument : IDocument
     {
         container.Row(row =>
         {
-            row.RelativeItem().Column(col =>
+            row.RelativeItem().Column(column =>
             {
-                col.Item().Text(_nazivFirme).Bold().FontSize(12);
-                col.Item().PaddingTop(8).Text("PROMENE OSNOVNIH SREDSTAVA").Bold().FontSize(16);
+                column.Item().Text($"REKAPITULACIJA RASHODA (NALOZI)").FontSize(16).SemiBold().FontColor(_primaryColor);
+                column.Item().Text($"Datum štampe: {DateTime.Now:dd.MM.yyyy}").FontSize(10).FontColor(Colors.Grey.Medium);
             });
-            row.ConstantItem(180).AlignRight().Column(col =>
+
+            row.ConstantItem(250).AlignRight().Column(column =>
             {
-                col.Item().Text($"Datum štampe: {DateTime.Now:dd.MM.yyyy.}").FontSize(8).FontColor(Colors.Grey.Darken1);
-                col.Item().Text($"Broj naloga: {_nalozi.Count}").FontSize(8).FontColor(Colors.Grey.Darken1);
+                if (_firma != null)
+                {
+                    column.Item().AlignRight().Text(_firma.Naziv).FontSize(12).SemiBold().FontColor(Colors.Black);
+                    if (!string.IsNullOrEmpty(_firma.Adresa) || !string.IsNullOrEmpty(_firma.Mesto))
+                        column.Item().AlignRight().Text($"{_firma.Adresa}, {_firma.Mesto}".Trim(',', ' ')).FontSize(10).FontColor(Colors.Grey.Darken2);
+                    if (!string.IsNullOrEmpty(_firma.PIB))
+                        column.Item().AlignRight().Text($"PIB: {_firma.PIB}").FontSize(10).FontColor(Colors.Grey.Darken2);
+                }
             });
         });
     }

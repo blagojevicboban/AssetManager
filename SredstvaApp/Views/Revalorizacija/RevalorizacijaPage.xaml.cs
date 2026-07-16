@@ -265,9 +265,9 @@ public partial class RevalorizacijaPage : Page
 
         try
         {
-            var nazivFirme = _db.Firme.FirstOrDefault()?.Naziv ?? "Nepoznata firma";
+            var firma = _db.Firme.FirstOrDefault();
             var godKoef = ParseKoef(TxtGodisnjiKoef); // Učitavanje sa polja jer nam treba za zaglavlje PDF-a
-            var doc = new RevalorizacijaDocument(_results, nazivFirme, _calcOd, _calcDo, godKoef);
+            var doc = new RevalorizacijaDocument(_results, firma, _calcOd, _calcDo, godKoef);
             var tempFile = Path.Combine(Path.GetTempPath(), $"Revalorizacija_{_calcOd.Year}_{DateTime.Now:yyyyMMddHHmmss}.pdf");
             doc.GeneratePdf(tempFile);
             Process.Start(new ProcessStartInfo(tempFile) { UseShellExecute = true });

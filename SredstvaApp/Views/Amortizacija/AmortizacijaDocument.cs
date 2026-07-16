@@ -9,21 +9,18 @@ namespace SredstvaApp.Views.Amortizacija;
 
 public class AmortizacijaDocument : IDocument
 {
-    private readonly List<AmortizacijaResultViewModel> _stavke;
-    private readonly string _nazivFirme;
-    private readonly DateTime _od;
-    private readonly DateTime _do;
+    private readonly List<AmortizacijaResultViewModel> _rezultati;
+    private readonly SredstvaData.Models.Firma? _firma;
+    private readonly DateTime _odDatuma;
+    private readonly DateTime _doDatuma;
+    private readonly string _primaryColor = "#2B4B80";
 
-    public AmortizacijaDocument(
-        List<AmortizacijaResultViewModel> stavke,
-        string nazivFirme,
-        DateTime od,
-        DateTime do_)
+    public AmortizacijaDocument(List<AmortizacijaResultViewModel> rezultati, SredstvaData.Models.Firma? firma, DateTime odDatuma, DateTime doDatuma)
     {
-        _stavke = stavke;
-        _nazivFirme = nazivFirme;
-        _od = od;
-        _do = do_;
+        _rezultati = rezultati;
+        _firma = firma;
+        _odDatuma = odDatuma;
+        _doDatuma = doDatuma;
     }
 
     public void Compose(IDocumentContainer container)
@@ -45,16 +42,22 @@ public class AmortizacijaDocument : IDocument
     {
         container.Row(row =>
         {
-            row.RelativeItem().Column(col =>
+            row.RelativeItem().Column(column =>
             {
-                col.Item().Text(_nazivFirme).Bold().FontSize(12);
-                col.Item().PaddingTop(6).Text("AMORTIZACIJA OSNOVNIH SREDSTAVA").Bold().FontSize(15);
-                col.Item().Text($"Period: {_od:dd.MM.yyyy.} — {_do:dd.MM.yyyy.}").FontSize(9).FontColor(Colors.Grey.Darken1);
+                column.Item().Text($"OBRAČUN AMORTIZACIJE OSNOVNIH SREDSTAVA").FontSize(16).SemiBold().FontColor(_primaryColor);
+                column.Item().Text($"Za period: {_odDatuma:dd.MM.yyyy} - {_doDatuma:dd.MM.yyyy}").FontSize(12).FontColor(Colors.Grey.Darken2);
             });
-            row.ConstantItem(160).AlignRight().Column(col =>
+
+            row.ConstantItem(250).AlignRight().Column(column =>
             {
-                col.Item().Text($"Datum štampe: {DateTime.Now:dd.MM.yyyy.}").FontSize(8).FontColor(Colors.Grey.Darken1);
-                col.Item().Text($"Broj sredstava: {_stavke.Count}").FontSize(8).FontColor(Colors.Grey.Darken1);
+                if (_firma != null)
+                {
+                    column.Item().AlignRight().Text(_firma.Naziv).FontSize(12).SemiBold().FontColor(Colors.Black);
+                    if (!string.IsNullOrEmpty(_firma.Adresa) || !string.IsNullOrEmpty(_firma.Mesto))
+                        column.Item().AlignRight().Text($"{_firma.Adresa}, {_firma.Mesto}".Trim(',', ' ')).FontSize(10).FontColor(Colors.Grey.Darken2);
+                    if (!string.IsNullOrEmpty(_firma.PIB))
+                        column.Item().AlignRight().Text($"PIB: {_firma.PIB}").FontSize(10).FontColor(Colors.Grey.Darken2);
+                }
             });
         });
     }
@@ -63,7 +66,7 @@ public class AmortizacijaDocument : IDocument
     {
         container.PaddingVertical(6).Column(col =>
         {
-            var ojGroups = _stavke.GroupBy(x => x.ObracunskaJedinica).OrderBy(g => g.Key).ToList();
+            var ojGroups = _rezultati.GroupBy(x => x.ObracunskaJedinica).OrderBy(g => g.Key).ToList();
 
             foreach (var ojGroup in ojGroups)
             {

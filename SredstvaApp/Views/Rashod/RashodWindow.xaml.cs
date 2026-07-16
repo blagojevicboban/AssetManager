@@ -354,8 +354,8 @@ public partial class RashodWindow : Window
                     DokumentBroj = TxtDokumentBroj.Text.Trim()
                 }).ToList()
             };
-
-            var doc = new RashodDocument(new System.Collections.Generic.List<RashodNalogInfo> { nalog }, nazivFirme);
+            var firma = _db.Firme.FirstOrDefault();
+            var doc = new RashodDocument(new System.Collections.Generic.List<RashodNalogInfo> { nalog }, firma);
             var tempFile = Path.Combine(Path.GetTempPath(), $"Rashod_{nalogBr}_{DateTime.Now:yyyyMMddHHmmss}.pdf");
             doc.GeneratePdf(tempFile);
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(tempFile) { UseShellExecute = true });

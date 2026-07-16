@@ -12,13 +12,15 @@ public class PopisIzvestajDocument : IDocument
 {
     private readonly SredstvaData.Models.Popis _popis;
     private readonly List<PopisnaStavka> _stavke;
+    private readonly Firma? _firma;
     private readonly string _primaryColor = "#2B4B80"; 
     private readonly string _accentColor = "#E63946"; 
 
-    public PopisIzvestajDocument(SredstvaData.Models.Popis popis, List<PopisnaStavka> stavke)
+    public PopisIzvestajDocument(SredstvaData.Models.Popis popis, List<PopisnaStavka> stavke, Firma? firma)
     {
         _popis = popis;
         _stavke = stavke;
+        _firma = firma;
     }
 
     public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
@@ -45,11 +47,23 @@ public class PopisIzvestajDocument : IDocument
         {
             row.RelativeItem().Column(column =>
             {
-                column.Item().Text($"ZAVRŠNI IZVEŠTAJ O POPISU (SA RAZLIKAMA)").FontSize(16).SemiBold().FontColor(_primaryColor);
+                column.Item().Text($"IZVEŠTAJ O POPISU OSNOVNIH SREDSTAVA").FontSize(16).SemiBold().FontColor(_primaryColor);
                 column.Item().Text($"Za godinu: {_popis.Godina}").FontSize(12).FontColor(Colors.Grey.Darken2);
                 column.Item().Text($"Datum popisa: {_popis.DatumPopisa:dd.MM.yyyy}").FontSize(10).FontColor(Colors.Grey.Medium);
             });
-            row.ConstantItem(120).AlignRight().Text($"Popis ID: {_popis.Id}").FontSize(14).SemiBold().FontColor(Colors.Grey.Lighten1);
+
+            row.ConstantItem(250).AlignRight().Column(column =>
+            {
+                if (_firma != null)
+                {
+                    column.Item().AlignRight().Text(_firma.Naziv).FontSize(12).SemiBold().FontColor(Colors.Black);
+                    if (!string.IsNullOrEmpty(_firma.Adresa) || !string.IsNullOrEmpty(_firma.Mesto))
+                        column.Item().AlignRight().Text($"{_firma.Adresa}, {_firma.Mesto}".Trim(',', ' ')).FontSize(10).FontColor(Colors.Grey.Darken2);
+                    if (!string.IsNullOrEmpty(_firma.PIB))
+                        column.Item().AlignRight().Text($"PIB: {_firma.PIB}").FontSize(10).FontColor(Colors.Grey.Darken2);
+                }
+                column.Item().PaddingTop(5).AlignRight().Text($"Popis ID: {_popis.Id}").FontSize(10).SemiBold().FontColor(Colors.Grey.Lighten1);
+            });
         });
     }
 

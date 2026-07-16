@@ -136,8 +136,7 @@ public partial class RashodPage : Page
 
         try
         {
-            var nazivFirme = _db.Firme.FirstOrDefault()?.Naziv ?? "Nepoznata firma";
-
+            var firma = _db.Firme.FirstOrDefault();
             var brajevi = trenutniPrikaz.Select(n => n.BrojNaloga).ToHashSet();
             var rashodi = _db.Rashodi
                 .Include(r => r.Sredstvo)
@@ -163,8 +162,8 @@ public partial class RashodPage : Page
                         DokumentBroj = r.DokumentBroj
                     }).ToList()
                 }).ToList();
-
-            var doc = new RashodDocument(nalozi, nazivFirme);
+            var firma = _db.Firme.FirstOrDefault();
+            var doc = new RashodDocument(nalozi, firma);
             var tempFile = Path.Combine(Path.GetTempPath(), $"Rashod_{DateTime.Now:yyyyMMddHHmmss}.pdf");
             doc.GeneratePdf(tempFile);
             Process.Start(new ProcessStartInfo(tempFile) { UseShellExecute = true });
