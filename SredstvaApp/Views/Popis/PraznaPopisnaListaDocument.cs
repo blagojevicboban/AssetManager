@@ -13,7 +13,6 @@ public class PraznaPopisnaListaDocument : IDocument
     private readonly SredstvaData.Models.Popis _popis;
     private readonly List<PopisnaStavka> _stavke;
     private readonly Firma? _firma;
-    private readonly string _primaryColor = "#2B4B80";
 
     public PraznaPopisnaListaDocument(SredstvaData.Models.Popis popis, List<PopisnaStavka> stavke, Firma? firma)
     {
@@ -46,7 +45,7 @@ public class PraznaPopisnaListaDocument : IDocument
         {
             row.RelativeItem().Column(column =>
             {
-                column.Item().Text($"POPISNA LISTA OSNOVNIH SREDSTAVA").FontSize(13).SemiBold().FontColor(_primaryColor);
+                column.Item().Text($"POPISNA LISTA OSNOVNIH SREDSTAVA").FontSize(13).SemiBold().FontColor(Colors.Indigo.Darken4);
                 column.Item().Text($"Za godinu: {_popis.Godina}").FontSize(12).FontColor(Colors.Grey.Darken2);
                 column.Item().Text($"Datum popisa: {_popis.DatumPopisa:dd.MM.yyyy}").FontSize(10).FontColor(Colors.Grey.Medium);
             });
@@ -68,7 +67,7 @@ public class PraznaPopisnaListaDocument : IDocument
 
     private void ComposeContent(IContainer container)
     {
-        container.PaddingVertical(10).Column(column =>
+        container.PaddingVertical(6).Column(column =>
         {
             var poObracunskimJedinicama = _stavke.GroupBy(s => s.Sredstvo.ObracunskaJedinica).OrderBy(g => g.Key).ToList();
 
@@ -82,8 +81,7 @@ public class PraznaPopisnaListaDocument : IDocument
                 decimal ojOtpisana = 0;
                 decimal ojSadasnja = 0;
 
-                column.Item().PaddingTop(5).PaddingBottom(2).Text($"Popisno mesto / Obračunska jedinica: {ojGroup.Key}")
-                    .FontSize(11).Bold().FontColor(_primaryColor).Underline();
+                column.Item().PaddingTop(10).Text($"Obračunska jedinica: {ojGroup.Key}").FontSize(12).Bold().FontColor(Colors.Indigo.Darken3);
 
                 var poKontima = ojGroup.GroupBy(s => s.Sredstvo.Konto).OrderBy(g => g.Key).ToList();
 
@@ -93,7 +91,9 @@ public class PraznaPopisnaListaDocument : IDocument
                     decimal kontoOtpisana = 0;
                     decimal kontoSadasnja = 0;
 
-                    column.Item().PaddingBottom(2).Table(table =>
+                    column.Item().PaddingTop(5).Text($"Konto: {kontoGroup.Key}").FontSize(11).Bold().FontColor(Colors.Indigo.Darken2);
+
+                    column.Item().Table(table =>
                     {
                         table.ColumnsDefinition(columns =>
                         {
@@ -101,29 +101,27 @@ public class PraznaPopisnaListaDocument : IDocument
                             columns.ConstantColumn(50);  // Šifra
                             columns.ConstantColumn(60);  // Inv. Broj
                             columns.RelativeColumn();    // Naziv
-                            columns.ConstantColumn(40);  // Konto
                             columns.ConstantColumn(55);  // Kolicina
-                            columns.ConstantColumn(75);  // Nabavna
-                            columns.ConstantColumn(75);  // Otpisana
-                            columns.ConstantColumn(75);  // Sadasnja
+                            columns.ConstantColumn(80);  // Nabavna
+                            columns.ConstantColumn(80);  // Otpisana
+                            columns.ConstantColumn(80);  // Sadasnja
                         });
 
                         table.Header(header =>
                         {
-                            header.Cell().Element(HeaderStyle).Text("R.Br");
-                            header.Cell().Element(HeaderStyle).Text("Šifra");
-                            header.Cell().Element(HeaderStyle).Text("Inv. Broj");
-                            header.Cell().Element(HeaderStyle).Text("Naziv osnovnog sredstva");
-                            header.Cell().Element(HeaderStyle).Text("Konto");
-                            header.Cell().Element(HeaderStyle).AlignRight().Text("Količina");
-                            header.Cell().Element(HeaderStyle).AlignRight().Text("Nabavna vred.");
-                            header.Cell().Element(HeaderStyle).AlignRight().Text("Otpisana vred.");
-                            header.Cell().Element(HeaderStyle).AlignRight().Text("Sadašnja vred.");
+                            header.Cell().Element(HeaderStyle).Text("R.Br").Bold();
+                            header.Cell().Element(HeaderStyle).Text("Šifra").Bold();
+                            header.Cell().Element(HeaderStyle).Text("Inv. Broj").Bold();
+                            header.Cell().Element(HeaderStyle).Text("Naziv osnovnog sredstva").Bold();
+                            header.Cell().Element(HeaderStyle).AlignRight().Text("Količina").Bold();
+                            header.Cell().Element(HeaderStyle).AlignRight().Text("Nabavna vred.").Bold();
+                            header.Cell().Element(HeaderStyle).AlignRight().Text("Otpisana vred.").Bold();
+                            header.Cell().Element(HeaderStyle).AlignRight().Text("Sadašnja vred.").Bold();
 
-                            static IContainer HeaderStyle(IContainer container)
-                            {
-                                return container.DefaultTextStyle(x => x.SemiBold().FontColor(Colors.White).FontSize(8.5f)).PaddingVertical(2).PaddingHorizontal(2).Background("#2B4B80").BorderBottom(1).BorderColor(Colors.Black);
-                            }
+                            static IContainer HeaderStyle(IContainer c)
+                                => c.Background(Colors.Indigo.Darken4)
+                                    .PaddingVertical(4).PaddingHorizontal(4)
+                                    .DefaultTextStyle(x => x.SemiBold().FontColor(Colors.White).FontSize(8.5f));
                         });
 
                         int rbr = 1;
@@ -137,17 +135,20 @@ public class PraznaPopisnaListaDocument : IDocument
                             kontoOtpisana += otpisana;
                             kontoSadasnja += sadasnja;
 
-                            table.Cell().Element(CellStyle).Text(rbr.ToString());
-                            table.Cell().Element(CellStyle).Text(stavka.Sredstvo.LegacySifra.ToString());
-                            table.Cell().Element(CellStyle).Text(stavka.Sredstvo.InventarskiBroj);
-                            table.Cell().Element(CellStyle).Text(stavka.Sredstvo.Naziv);
-                            table.Cell().Element(CellStyle).Text(stavka.Sredstvo.Konto);
-                            table.Cell().Element(CellStyle).AlignRight().Text(stavka.Sredstvo.Kolicina.ToString());
+                            table.Cell().Element(RowStyle).Text(rbr.ToString());
+                            table.Cell().Element(RowStyle).Text(stavka.Sredstvo.LegacySifra.ToString());
+                            table.Cell().Element(RowStyle).Text(stavka.Sredstvo.InventarskiBroj);
+                            table.Cell().Element(RowStyle).Text(stavka.Sredstvo.Naziv);
+                            table.Cell().Element(RowStyle).AlignRight().Text(stavka.Sredstvo.Kolicina.ToString());
                             
-                            table.Cell().Element(CellStyle).AlignRight().Text(nabavna.ToString("N2"));
-                            table.Cell().Element(CellStyle).AlignRight().Text(otpisana.ToString("N2"));
-                            table.Cell().Element(CellStyle).AlignRight().Text(sadasnja.ToString("N2"));
+                            table.Cell().Element(RowStyle).AlignRight().Text(nabavna.ToString("N2"));
+                            table.Cell().Element(RowStyle).AlignRight().Text(otpisana.ToString("N2"));
+                            table.Cell().Element(RowStyle).AlignRight().Text(sadasnja.ToString("N2"));
 
+                            static IContainer RowStyle(IContainer c)
+                                => c.BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2)
+                                    .PaddingVertical(3).PaddingHorizontal(4)
+                                    .DefaultTextStyle(x => x.FontSize(8.5f));
                             rbr++;
                         }
 
@@ -156,20 +157,16 @@ public class PraznaPopisnaListaDocument : IDocument
                         ojSadasnja += kontoSadasnja;
 
                         // Ukupno za konto
-                        table.Cell().ColumnSpan(6).Element(SumStyle).AlignRight().Text($"Ukupno za konto : {kontoGroup.Key}").Bold();
-                        table.Cell().Element(SumStyle).AlignRight().Text(kontoNabavna.ToString("N2")).Bold();
-                        table.Cell().Element(SumStyle).AlignRight().Text(kontoOtpisana.ToString("N2")).Bold();
-                        table.Cell().Element(SumStyle).AlignRight().Text(kontoSadasnja.ToString("N2")).Bold();
+                        table.Cell().ColumnSpan(5).Element(KontoSumStyle).Text($"Zbir za konto {kontoGroup.Key}").Bold();
+                        table.Cell().Element(KontoSumStyle).AlignRight().Text(kontoNabavna.ToString("N2")).Bold();
+                        table.Cell().Element(KontoSumStyle).AlignRight().Text(kontoOtpisana.ToString("N2")).Bold();
+                        table.Cell().Element(KontoSumStyle).AlignRight().Text(kontoSadasnja.ToString("N2")).Bold();
 
-                        static IContainer CellStyle(IContainer container)
-                        {
-                            return container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(1).PaddingHorizontal(2).DefaultTextStyle(x => x.FontSize(8.5f));
-                        }
-                        
-                        static IContainer SumStyle(IContainer container)
-                        {
-                            return container.Background(Colors.Indigo.Lighten5).BorderTop(1).BorderColor(Colors.Indigo.Darken2).PaddingVertical(2).PaddingHorizontal(2).DefaultTextStyle(x => x.FontSize(9f));
-                        }
+                        static IContainer KontoSumStyle(IContainer c)
+                            => c.BorderTop(1).BorderBottom(1).BorderColor(Colors.Grey.Darken1)
+                                .Background(Colors.Grey.Lighten3)
+                                .PaddingVertical(4).PaddingHorizontal(4)
+                                .DefaultTextStyle(x => x.SemiBold().FontSize(9f));
                     });
                 }
                 
@@ -177,54 +174,60 @@ public class PraznaPopisnaListaDocument : IDocument
                 grandOtpisana += ojOtpisana;
                 grandSadasnja += ojSadasnja;
 
-                column.Item().PaddingTop(5).Table(table =>
+                column.Item().PaddingTop(4).Table(ojSumTable =>
                 {
-                    table.ColumnsDefinition(columns =>
+                    ojSumTable.ColumnsDefinition(c =>
                     {
-                        columns.RelativeColumn();
-                        columns.ConstantColumn(75);
-                        columns.ConstantColumn(75);
-                        columns.ConstantColumn(75);
+                        c.ConstantColumn(30);
+                        c.ConstantColumn(50);
+                        c.ConstantColumn(60);
+                        c.RelativeColumn();
+                        c.ConstantColumn(55);
+                        c.ConstantColumn(80);
+                        c.ConstantColumn(80);
+                        c.ConstantColumn(80);
                     });
                     
-                    table.Cell().Element(OjSumStyle).AlignRight().PaddingRight(5).Text($"Ukupno za obračunsku jedinicu : {ojGroup.Key}").Bold();
-                    table.Cell().Element(OjSumStyle).AlignRight().Text(ojNabavna.ToString("N2")).Bold();
-                    table.Cell().Element(OjSumStyle).AlignRight().Text(ojOtpisana.ToString("N2")).Bold();
-                    table.Cell().Element(OjSumStyle).AlignRight().Text(ojSadasnja.ToString("N2")).Bold();
+                    ojSumTable.Cell().ColumnSpan(5).Element(OjSumStyle).Text($"Zbir za obračunsku jedinicu {ojGroup.Key}").Bold();
+                    ojSumTable.Cell().Element(OjSumStyle).AlignRight().Text(ojNabavna.ToString("N2")).Bold();
+                    ojSumTable.Cell().Element(OjSumStyle).AlignRight().Text(ojOtpisana.ToString("N2")).Bold();
+                    ojSumTable.Cell().Element(OjSumStyle).AlignRight().Text(ojSadasnja.ToString("N2")).Bold();
                     
-                    static IContainer OjSumStyle(IContainer container)
-                    {
-                        return container.Background(Colors.Indigo.Lighten4).BorderTop(1).BorderColor(Colors.Indigo.Darken3).PaddingVertical(5).PaddingHorizontal(2).DefaultTextStyle(x => x.FontSize(9.5f));
-                    }
-                });
-                
-                column.Item().PaddingTop(20).PaddingBottom(40).Row(row =>
-                {
-                    row.RelativeItem().AlignCenter().Text("Služba osnovnih sredstava\n___________________________").FontSize(10);
-                    row.RelativeItem().AlignCenter().Text("Računopolagač\n___________________________").FontSize(10);
-                    row.RelativeItem().AlignCenter().Text("Članovi komisije\n1. _______________________\n2. _______________________").FontSize(10);
+                    static IContainer OjSumStyle(IContainer c)
+                        => c.Background(Colors.Indigo.Lighten4)
+                            .BorderTop(1).BorderColor(Colors.Indigo.Darken3)
+                            .PaddingVertical(5).PaddingHorizontal(4)
+                            .DefaultTextStyle(x => x.FontSize(9.5f));
                 });
             }
 
             column.Item().PaddingTop(15).Table(table =>
             {
-                table.ColumnsDefinition(columns =>
+                table.ColumnsDefinition(c =>
                 {
-                    columns.RelativeColumn();
-                    columns.ConstantColumn(75);
-                    columns.ConstantColumn(75);
-                    columns.ConstantColumn(75);
+                    c.RelativeColumn();
+                    c.ConstantColumn(80);
+                    c.ConstantColumn(80);
+                    c.ConstantColumn(80);
                 });
                 
-                table.Cell().Element(GrandSumStyle).AlignRight().PaddingRight(5).Text("UKUPNO :").Bold();
+                table.Cell().Element(GrandSumStyle).AlignRight().PaddingRight(5).Text("UKUPAN POPIS:").Bold();
                 table.Cell().Element(GrandSumStyle).AlignRight().Text(grandNabavna.ToString("N2")).Bold();
                 table.Cell().Element(GrandSumStyle).AlignRight().Text(grandOtpisana.ToString("N2")).Bold();
                 table.Cell().Element(GrandSumStyle).AlignRight().Text(grandSadasnja.ToString("N2")).Bold();
                 
-                static IContainer GrandSumStyle(IContainer container)
-                {
-                    return container.Background(Colors.Grey.Lighten3).BorderTop(2).BorderBottom(2).BorderColor(Colors.Black).PaddingVertical(6).PaddingHorizontal(2).DefaultTextStyle(x => x.FontSize(10f));
-                }
+                static IContainer GrandSumStyle(IContainer c)
+                    => c.Background(Colors.Grey.Lighten3)
+                        .BorderTop(2).BorderBottom(2).BorderColor(Colors.Black)
+                        .PaddingVertical(6).PaddingHorizontal(4)
+                        .DefaultTextStyle(x => x.FontSize(10f));
+            });
+            
+            column.Item().PaddingTop(30).PaddingBottom(20).Row(row =>
+            {
+                row.RelativeItem().AlignCenter().Text("Služba osnovnih sredstava\n___________________________").FontSize(10);
+                row.RelativeItem().AlignCenter().Text("Računopolagač\n___________________________").FontSize(10);
+                row.RelativeItem().AlignCenter().Text("Članovi komisije\n1. _______________________\n2. _______________________").FontSize(10);
             });
         });
     }

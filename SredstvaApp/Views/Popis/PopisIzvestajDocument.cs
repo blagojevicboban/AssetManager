@@ -13,8 +13,6 @@ public class PopisIzvestajDocument : IDocument
     private readonly SredstvaData.Models.Popis _popis;
     private readonly List<PopisnaStavka> _stavke;
     private readonly Firma? _firma;
-    private readonly string _primaryColor = "#2B4B80"; 
-    private readonly string _accentColor = "#E63946"; 
 
     public PopisIzvestajDocument(SredstvaData.Models.Popis popis, List<PopisnaStavka> stavke, Firma? firma)
     {
@@ -47,7 +45,7 @@ public class PopisIzvestajDocument : IDocument
         {
             row.RelativeItem().Column(column =>
             {
-                column.Item().Text($"IZVEŠTAJ O POPISU OSNOVNIH SREDSTAVA").FontSize(13).SemiBold().FontColor(_primaryColor);
+                column.Item().Text($"IZVEŠTAJ O POPISU OSNOVNIH SREDSTAVA").FontSize(13).SemiBold().FontColor(Colors.Indigo.Darken4);
                 column.Item().Text($"Za godinu: {_popis.Godina}").FontSize(12).FontColor(Colors.Grey.Darken2);
                 column.Item().Text($"Datum popisa: {_popis.DatumPopisa:dd.MM.yyyy}").FontSize(10).FontColor(Colors.Grey.Medium);
             });
@@ -69,7 +67,7 @@ public class PopisIzvestajDocument : IDocument
 
     private void ComposeContent(IContainer container)
     {
-        container.PaddingVertical(10).Column(column =>
+        container.PaddingVertical(6).Column(column =>
         {
             var poRj = _stavke.GroupBy(s => s.Sredstvo.ObracunskaJedinica).OrderBy(g => g.Key).ToList();
             
@@ -81,48 +79,47 @@ public class PopisIzvestajDocument : IDocument
                 decimal rjKnjVred = 0;
                 decimal rjProcVred = 0;
 
-                column.Item().PaddingTop(5).PaddingBottom(2).Text($"Obračunska jedinica: {rjGroup.Key}")
-                    .FontSize(11).Bold().FontColor(_primaryColor).Underline();
+                column.Item().PaddingTop(10).Text($"Obračunska jedinica: {rjGroup.Key}").FontSize(12).Bold().FontColor(Colors.Indigo.Darken3);
 
                 var poKontu = rjGroup.GroupBy(s => s.Sredstvo.Konto).OrderBy(g => g.Key).ToList();
 
-                column.Item().PaddingBottom(2).Table(table =>
+                foreach (var kontoGroup in poKontu)
                 {
-                    table.ColumnsDefinition(columns =>
-                    {
-                        columns.ConstantColumn(60);  // Inv. Broj
-                        columns.RelativeColumn();    // Naziv
-                        columns.ConstantColumn(50);  // Konto
-                        columns.ConstantColumn(50);  // Knj. Kol
-                        columns.ConstantColumn(50);  // Stv. Kol
-                        columns.ConstantColumn(50);  // Razl. Kol
-                        columns.ConstantColumn(75);  // Knj. Vred
-                        columns.ConstantColumn(75);  // Proc. Vred
-                        columns.ConstantColumn(75);  // Razl. Vred
-                    });
+                    decimal kontoKnjVred = 0;
+                    decimal kontoProcVred = 0;
 
-                    table.Header(header =>
-                    {
-                        header.Cell().Element(HeaderStyle).Text("Inv. Broj");
-                        header.Cell().Element(HeaderStyle).Text("Naziv osnovnog sredstva");
-                        header.Cell().Element(HeaderStyle).Text("Konto");
-                        header.Cell().Element(HeaderStyle).AlignRight().Text("Knj. Kol.");
-                        header.Cell().Element(HeaderStyle).AlignRight().Text("Stv. Kol.");
-                        header.Cell().Element(HeaderStyle).AlignRight().Text("Razlika");
-                        header.Cell().Element(HeaderStyle).AlignRight().Text("Knj. Vred.");
-                        header.Cell().Element(HeaderStyle).AlignRight().Text("Stv. Vred.");
-                        header.Cell().Element(HeaderStyle).AlignRight().Text("Odstupanje");
+                    column.Item().PaddingTop(5).Text($"Konto: {kontoGroup.Key}").FontSize(11).Bold().FontColor(Colors.Indigo.Darken2);
 
-                        static IContainer HeaderStyle(IContainer container)
+                    column.Item().Table(table =>
+                    {
+                        table.ColumnsDefinition(columns =>
                         {
-                            return container.DefaultTextStyle(x => x.SemiBold().FontColor(Colors.White)).PaddingVertical(2).PaddingHorizontal(2).Background("#2B4B80").BorderBottom(1).BorderColor(Colors.Black);
-                        }
-                    });
+                            columns.ConstantColumn(60);  // Inv. Broj
+                            columns.RelativeColumn();    // Naziv
+                            columns.ConstantColumn(40);  // Knj. Kol
+                            columns.ConstantColumn(40);  // Stv. Kol
+                            columns.ConstantColumn(40);  // Razl. Kol
+                            columns.ConstantColumn(80);  // Knj. Vred
+                            columns.ConstantColumn(80);  // Proc. Vred
+                            columns.ConstantColumn(80);  // Razl. Vred
+                        });
 
-                    foreach (var kontoGroup in poKontu)
-                    {
-                        decimal kontoKnjVred = 0;
-                        decimal kontoProcVred = 0;
+                        table.Header(header =>
+                        {
+                            header.Cell().Element(HeaderStyle).Text("Inv. Broj").Bold();
+                            header.Cell().Element(HeaderStyle).Text("Naziv sredstva").Bold();
+                            header.Cell().Element(HeaderStyle).AlignRight().Text("Knj.kol").Bold();
+                            header.Cell().Element(HeaderStyle).AlignRight().Text("Stv.kol").Bold();
+                            header.Cell().Element(HeaderStyle).AlignRight().Text("Razlika").Bold();
+                            header.Cell().Element(HeaderStyle).AlignRight().Text("Knj. Vred.").Bold();
+                            header.Cell().Element(HeaderStyle).AlignRight().Text("Stv. Vred.").Bold();
+                            header.Cell().Element(HeaderStyle).AlignRight().Text("Odstupanje").Bold();
+
+                            static IContainer HeaderStyle(IContainer c)
+                                => c.Background(Colors.Indigo.Darken4)
+                                    .PaddingVertical(4).PaddingHorizontal(4)
+                                    .DefaultTextStyle(x => x.SemiBold().FontColor(Colors.White).FontSize(8.5f));
+                        });
 
                         foreach (var stavka in kontoGroup.OrderBy(x => x.Sredstvo.InventarskiBrojSort))
                         {
@@ -132,70 +129,93 @@ public class PopisIzvestajDocument : IDocument
                             var kolRazlika = stavka.PopisanaKolicina - stavka.KnjiznaKolicina;
                             var vredRazlika = stavka.ProcenjenaVrednost - stavka.KnjiznaVrednost;
 
-                            table.Cell().Element(CellStyle).Text(stavka.Sredstvo.InventarskiBroj);
-                            table.Cell().Element(CellStyle).Text(stavka.Sredstvo.Naziv);
-                            table.Cell().Element(CellStyle).Text(stavka.Sredstvo.Konto);
-                            table.Cell().Element(CellStyle).AlignRight().Text(stavka.KnjiznaKolicina.ToString());
-                            table.Cell().Element(CellStyle).AlignRight().Text(stavka.PopisanaKolicina.ToString());
-                            table.Cell().Element(CellStyle).AlignRight().Text(kolRazlika != 0 ? kolRazlika.ToString() : "").FontColor(kolRazlika < 0 ? _accentColor : Colors.Green.Darken2);
-                            table.Cell().Element(CellStyle).AlignRight().Text(stavka.KnjiznaVrednost.ToString("N2"));
-                            table.Cell().Element(CellStyle).AlignRight().Text(stavka.ProcenjenaVrednost.ToString("N2"));
-                            table.Cell().Element(CellStyle).AlignRight().Text(vredRazlika != 0 ? vredRazlika.ToString("N2") : "").FontColor(vredRazlika < 0 ? _accentColor : Colors.Green.Darken2);
+                            table.Cell().Element(RowStyle).Text(stavka.Sredstvo.InventarskiBroj);
+                            table.Cell().Element(RowStyle).Text(stavka.Sredstvo.Naziv);
+                            table.Cell().Element(RowStyle).AlignRight().Text(stavka.KnjiznaKolicina.ToString());
+                            table.Cell().Element(RowStyle).AlignRight().Text(stavka.PopisanaKolicina.ToString());
+                            table.Cell().Element(RowStyle).AlignRight().Text(kolRazlika != 0 ? kolRazlika.ToString() : "").FontColor(kolRazlika < 0 ? Colors.Orange.Darken2 : Colors.Green.Darken2);
+                            table.Cell().Element(RowStyle).AlignRight().Text(stavka.KnjiznaVrednost.ToString("N2"));
+                            table.Cell().Element(RowStyle).AlignRight().Text(stavka.ProcenjenaVrednost.ToString("N2"));
+                            table.Cell().Element(RowStyle).AlignRight().Text(vredRazlika != 0 ? vredRazlika.ToString("N2") : "").FontColor(vredRazlika < 0 ? Colors.Orange.Darken2 : Colors.Green.Darken2);
                         }
+
+                        static IContainer RowStyle(IContainer c)
+                            => c.BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2)
+                                .PaddingVertical(3).PaddingHorizontal(4)
+                                .DefaultTextStyle(x => x.FontSize(8.5f));
 
                         rjKnjVred += kontoKnjVred;
                         rjProcVred += kontoProcVred;
 
                         // Zbirni red za Konto
-                        table.Cell().ColumnSpan(6).Element(SubTotalStyle).AlignRight().Text($"UKUPNO ZA KONTO {kontoGroup.Key}:");
-                        table.Cell().Element(SubTotalStyle).AlignRight().Text(kontoKnjVred.ToString("N2"));
-                        table.Cell().Element(SubTotalStyle).AlignRight().Text(kontoProcVred.ToString("N2"));
+                        table.Cell().ColumnSpan(5).Element(KontoSumStyle).Text($"Zbir za konto {kontoGroup.Key}").Bold();
+                        table.Cell().Element(KontoSumStyle).AlignRight().Text(kontoKnjVred.ToString("N2")).Bold();
+                        table.Cell().Element(KontoSumStyle).AlignRight().Text(kontoProcVred.ToString("N2")).Bold();
                         var odstupanje = kontoProcVred - kontoKnjVred;
-                        table.Cell().Element(SubTotalStyle).AlignRight().Text(odstupanje.ToString("N2")).FontColor(odstupanje < 0 ? _accentColor : (odstupanje > 0 ? Colors.Green.Darken2 : Colors.Black));
-                    }
+                        table.Cell().Element(KontoSumStyle).AlignRight().Text(odstupanje.ToString("N2")).Bold().FontColor(odstupanje < 0 ? Colors.Orange.Darken2 : (odstupanje > 0 ? Colors.Green.Darken2 : Colors.Black));
+
+                        static IContainer KontoSumStyle(IContainer c)
+                            => c.BorderTop(1).BorderBottom(1).BorderColor(Colors.Grey.Darken1)
+                                .Background(Colors.Grey.Lighten3)
+                                .PaddingVertical(4).PaddingHorizontal(4)
+                                .DefaultTextStyle(x => x.SemiBold().FontSize(9f));
+                    });
+                }
+                
+                ukupnoKnjVred += rjKnjVred;
+                ukupnoProcVred += rjProcVred;
+
+                // Zbirni red za RJ
+                column.Item().PaddingTop(4).Table(ojSumTable =>
+                {
+                    ojSumTable.ColumnsDefinition(c =>
+                    {
+                        c.ConstantColumn(60);
+                        c.RelativeColumn();
+                        c.ConstantColumn(40);
+                        c.ConstantColumn(40);
+                        c.ConstantColumn(40);
+                        c.ConstantColumn(80);
+                        c.ConstantColumn(80);
+                        c.ConstantColumn(80);
+                    });
                     
-                    ukupnoKnjVred += rjKnjVred;
-                    ukupnoProcVred += rjProcVred;
-
-                    // Zbirni red za RJ
-                    table.Cell().ColumnSpan(6).Element(TotalStyle).AlignRight().Text($"UKUPNO ZA RJ {rjGroup.Key}:");
-                    table.Cell().Element(TotalStyle).AlignRight().Text(rjKnjVred.ToString("N2"));
-                    table.Cell().Element(TotalStyle).AlignRight().Text(rjProcVred.ToString("N2"));
+                    ojSumTable.Cell().ColumnSpan(5).Element(OjSumStyle).Text($"Zbir za obračunsku jedinicu {rjGroup.Key}").Bold();
+                    ojSumTable.Cell().Element(OjSumStyle).AlignRight().Text(rjKnjVred.ToString("N2")).Bold();
+                    ojSumTable.Cell().Element(OjSumStyle).AlignRight().Text(rjProcVred.ToString("N2")).Bold();
                     var rjOdstupanje = rjProcVred - rjKnjVred;
-                    table.Cell().Element(TotalStyle).AlignRight().Text(rjOdstupanje.ToString("N2")).FontColor(rjOdstupanje < 0 ? _accentColor : (rjOdstupanje > 0 ? Colors.Green.Darken2 : Colors.White));
-
-                    static IContainer CellStyle(IContainer container)
-                    {
-                        return container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(1).PaddingHorizontal(2);
-                    }
-                    static IContainer SubTotalStyle(IContainer container)
-                    {
-                        return container.BorderTop(1).BorderBottom(1).BorderColor(Colors.Grey.Darken1).Background(Colors.Grey.Lighten3).PaddingVertical(2).PaddingHorizontal(2).DefaultTextStyle(x => x.SemiBold());
-                    }
-                    static IContainer TotalStyle(IContainer container)
-                    {
-                        return container.BorderTop(2).BorderColor(Colors.Black).Background("#2B4B80").PaddingVertical(3).PaddingHorizontal(2).DefaultTextStyle(x => x.Bold().FontColor(Colors.White));
-                    }
+                    ojSumTable.Cell().Element(OjSumStyle).AlignRight().Text(rjOdstupanje.ToString("N2")).Bold().FontColor(rjOdstupanje < 0 ? Colors.Orange.Darken2 : (rjOdstupanje > 0 ? Colors.Green.Darken2 : Colors.Black));
+                    
+                    static IContainer OjSumStyle(IContainer c)
+                        => c.Background(Colors.Indigo.Lighten4)
+                            .BorderTop(1).BorderColor(Colors.Indigo.Darken3)
+                            .PaddingVertical(5).PaddingHorizontal(4)
+                            .DefaultTextStyle(x => x.FontSize(9.5f));
                 });
             }
 
             // Apsolutni zbir
-            column.Item().PaddingTop(10).Table(table =>
+            column.Item().PaddingTop(15).Table(table =>
             {
-                table.ColumnsDefinition(columns =>
+                table.ColumnsDefinition(c =>
                 {
-                    columns.RelativeColumn();
-                    columns.ConstantColumn(100);
-                    columns.ConstantColumn(100);
-                    columns.ConstantColumn(100);
+                    c.RelativeColumn();
+                    c.ConstantColumn(80);
+                    c.ConstantColumn(80);
+                    c.ConstantColumn(80);
                 });
                 
-                table.Cell().AlignRight().PaddingRight(10).Text("UKUPAN POPIS SVIH SREDSTAVA:").FontSize(12).Bold();
-                table.Cell().AlignRight().Text(ukupnoKnjVred.ToString("N2")).FontSize(12).Bold();
-                table.Cell().AlignRight().Text(ukupnoProcVred.ToString("N2")).FontSize(12).Bold();
-                
+                table.Cell().Element(GrandSumStyle).AlignRight().PaddingRight(5).Text("UKUPAN POPIS:").Bold();
+                table.Cell().Element(GrandSumStyle).AlignRight().Text(ukupnoKnjVred.ToString("N2")).Bold();
+                table.Cell().Element(GrandSumStyle).AlignRight().Text(ukupnoProcVred.ToString("N2")).Bold();
                 var totalOdstupanje = ukupnoProcVred - ukupnoKnjVred;
-                table.Cell().AlignRight().Text(totalOdstupanje.ToString("N2")).FontSize(12).Bold().FontColor(totalOdstupanje < 0 ? _accentColor : (totalOdstupanje > 0 ? Colors.Green.Darken2 : Colors.Black));
+                table.Cell().Element(GrandSumStyle).AlignRight().Text(totalOdstupanje.ToString("N2")).Bold().FontColor(totalOdstupanje < 0 ? Colors.Orange.Darken2 : (totalOdstupanje > 0 ? Colors.Green.Darken2 : Colors.Black));
+                
+                static IContainer GrandSumStyle(IContainer c)
+                    => c.Background(Colors.Grey.Lighten3)
+                        .BorderTop(2).BorderBottom(2).BorderColor(Colors.Black)
+                        .PaddingVertical(6).PaddingHorizontal(4)
+                        .DefaultTextStyle(x => x.FontSize(10f));
             });
             
             column.Item().PaddingTop(30).PaddingBottom(20).Row(row =>
