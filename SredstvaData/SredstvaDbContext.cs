@@ -58,13 +58,27 @@ public class SredstvaDbContext : DbContext
         cmd.CommandText = "DROP INDEX IF EXISTS \"IX_Sredstva_FirmaId\";";
         cmd.ExecuteNonQuery();
 
-        // 3. Preimenuj FirmaId -> ObracunskaJedinica ako FirmaId jos postoji
-        cmd.CommandText = "SELECT COUNT(*) FROM pragma_table_info('Sredstva') WHERE name='FirmaId'";
-        var firmaIdExists = (long)(cmd.ExecuteScalar() ?? 0L) > 0;
-        if (firmaIdExists)
+        // 3. Resavanje ObracunskaJedinica kolone (ranije se zvala FirmaId)
+        cmd.CommandText = "SELECT COUNT(*) FROM pragma_table_info('Sredstva') WHERE name='ObracunskaJedinica'";
+        var obracunskaJedinicaExists = (long)(cmd.ExecuteScalar() ?? 0L) > 0;
+
+        if (!obracunskaJedinicaExists)
         {
-            cmd.CommandText = "ALTER TABLE \"Sredstva\" RENAME COLUMN \"FirmaId\" TO \"ObracunskaJedinica\";";
-            cmd.ExecuteNonQuery();
+            cmd.CommandText = "SELECT COUNT(*) FROM pragma_table_info('Sredstva') WHERE name='FirmaId'";
+            var firmaIdExists = (long)(cmd.ExecuteScalar() ?? 0L) > 0;
+            
+            if (firmaIdExists)
+            {
+                // Stara baza - preimenuj postojecu kolonu
+                cmd.CommandText = "ALTER TABLE \"Sredstva\" RENAME COLUMN \"FirmaId\" TO \"ObracunskaJedinica\";";
+                cmd.ExecuteNonQuery();
+            }
+            else
+            {
+                // Jako stara baza - nema ni FirmaId, znaci moramo dodati kolonu od nule
+                cmd.CommandText = "ALTER TABLE \"Sredstva\" ADD COLUMN \"ObracunskaJedinica\" INTEGER NOT NULL DEFAULT 0;";
+                cmd.ExecuteNonQuery();
+            }
         }
 
         // 4. Dodaj Konto kolonu ako ne postoji
