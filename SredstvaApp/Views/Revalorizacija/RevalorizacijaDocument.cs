@@ -99,7 +99,7 @@ public class RevalorizacijaDocument : IDocument
                 });
 
                 // Redovi
-                foreach (var r in _stavke)
+                foreach (var r in _stavke.OrderBy(x => x.InventarskiBrojSort))
                 {
                     bool imaEfekat = r.EfekatNabavna != 0;
 

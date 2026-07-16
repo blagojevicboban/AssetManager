@@ -110,7 +110,7 @@ public class PopisIzvestajDocument : IDocument
                         decimal kontoKnjVred = 0;
                         decimal kontoProcVred = 0;
 
-                        foreach (var stavka in kontoGroup)
+                        foreach (var stavka in kontoGroup.OrderBy(x => x.Sredstvo.InventarskiBrojSort))
                         {
                             kontoKnjVred += stavka.KnjiznaVrednost;
                             kontoProcVred += stavka.ProcenjenaVrednost;

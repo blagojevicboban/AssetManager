@@ -111,7 +111,7 @@ public class AmortizacijaDocument : IDocument
 
                         foreach (var amGroup in amGroups)
                         {
-                            foreach (var r in amGroup)
+                            foreach (var r in amGroup.OrderBy(x => x.InventarskiBrojSort))
                             {
                                 bool imaAmort = r.NovaAmortizacija > 0;
 
