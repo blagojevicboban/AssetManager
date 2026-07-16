@@ -27,6 +27,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    
+    <!-- Citamo verziju direktno iz version.txt kako bi bila ispravna i pri buildu iz Visual Studio-a -->
+    <Version>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\version.txt').Trim())</Version>
   </PropertyGroup>
 
 </Project>
