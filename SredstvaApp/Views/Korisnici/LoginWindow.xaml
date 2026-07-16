@@ -40,6 +40,6 @@
         
         <TextBlock x:Name="TxtError" Grid.Row="7" Foreground="{StaticResource DangerBrush}" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,16,0,0" Visibility="Collapsed"/>
         
-        <TextBlock Grid.Row="8" Text="Sistem za osnovna sredstva © 2026" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="TxtVersion" Grid.Row="8" Text="Sistem za osnovna sredstva © 2026" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
     </Grid>
 </Window>

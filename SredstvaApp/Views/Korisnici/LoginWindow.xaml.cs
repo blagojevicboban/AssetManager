@@ -15,6 +15,9 @@ public partial class LoginWindow : Window
         InitializeComponent();
         _db = db;
         TxtUsername.Focus();
+        
+        var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+        TxtVersion.Text = $"Sistem za osnovna sredstva © 2026 - v{version?.ToString(3)}";
     }
 
     private void Input_KeyDown(object sender, KeyEventArgs e)
