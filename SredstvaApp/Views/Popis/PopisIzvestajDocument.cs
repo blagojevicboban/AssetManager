@@ -47,7 +47,7 @@ public class PopisIzvestajDocument : IDocument
         {
             row.RelativeItem().Column(column =>
             {
-                column.Item().Text($"IZVEŠTAJ O POPISU OSNOVNIH SREDSTAVA").FontSize(16).SemiBold().FontColor(_primaryColor);
+                column.Item().Text($"IZVEŠTAJ O POPISU OSNOVNIH SREDSTAVA").FontSize(13).SemiBold().FontColor(_primaryColor);
                 column.Item().Text($"Za godinu: {_popis.Godina}").FontSize(12).FontColor(Colors.Grey.Darken2);
                 column.Item().Text($"Datum popisa: {_popis.DatumPopisa:dd.MM.yyyy}").FontSize(10).FontColor(Colors.Grey.Medium);
             });
@@ -56,7 +56,7 @@ public class PopisIzvestajDocument : IDocument
             {
                 if (_firma != null)
                 {
-                    column.Item().AlignRight().Text(_firma.Naziv).FontSize(12).SemiBold().FontColor(Colors.Black);
+                    column.Item().AlignRight().Text(_firma.Naziv).FontSize(11).SemiBold().FontColor(Colors.Black);
                     if (!string.IsNullOrEmpty(_firma.Mesto))
                         column.Item().AlignRight().Text(_firma.Mesto).FontSize(10).FontColor(Colors.Grey.Darken2);
                     if (!string.IsNullOrEmpty(_firma.PIB))
@@ -69,7 +69,7 @@ public class PopisIzvestajDocument : IDocument
 
     private void ComposeContent(IContainer container)
     {
-        container.PaddingVertical(1, Unit.Centimetre).Column(column =>
+        container.PaddingVertical(10).Column(column =>
         {
             var poRj = _stavke.GroupBy(s => s.Sredstvo.ObracunskaJedinica).OrderBy(g => g.Key).ToList();
             
@@ -81,12 +81,12 @@ public class PopisIzvestajDocument : IDocument
                 decimal rjKnjVred = 0;
                 decimal rjProcVred = 0;
 
-                column.Item().PaddingTop(10).PaddingBottom(5).Text($"Obračunska jedinica: {rjGroup.Key}")
-                    .FontSize(12).Bold().FontColor(_primaryColor).Underline();
+                column.Item().PaddingTop(5).PaddingBottom(2).Text($"Obračunska jedinica: {rjGroup.Key}")
+                    .FontSize(11).Bold().FontColor(_primaryColor).Underline();
 
                 var poKontu = rjGroup.GroupBy(s => s.Sredstvo.Konto).OrderBy(g => g.Key).ToList();
 
-                column.Item().PaddingBottom(10).Table(table =>
+                column.Item().PaddingBottom(2).Table(table =>
                 {
                     table.ColumnsDefinition(columns =>
                     {
@@ -115,7 +115,7 @@ public class PopisIzvestajDocument : IDocument
 
                         static IContainer HeaderStyle(IContainer container)
                         {
-                            return container.DefaultTextStyle(x => x.SemiBold().FontColor(Colors.White)).PaddingVertical(4).PaddingHorizontal(2).Background("#2B4B80").BorderBottom(1).BorderColor(Colors.Black);
+                            return container.DefaultTextStyle(x => x.SemiBold().FontColor(Colors.White)).PaddingVertical(2).PaddingHorizontal(2).Background("#2B4B80").BorderBottom(1).BorderColor(Colors.Black);
                         }
                     });
 
@@ -166,15 +166,15 @@ public class PopisIzvestajDocument : IDocument
 
                     static IContainer CellStyle(IContainer container)
                     {
-                        return container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(4).PaddingHorizontal(2);
+                        return container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(1).PaddingHorizontal(2);
                     }
                     static IContainer SubTotalStyle(IContainer container)
                     {
-                        return container.BorderTop(1).BorderBottom(1).BorderColor(Colors.Grey.Darken1).Background(Colors.Grey.Lighten3).PaddingVertical(4).PaddingHorizontal(2).DefaultTextStyle(x => x.SemiBold());
+                        return container.BorderTop(1).BorderBottom(1).BorderColor(Colors.Grey.Darken1).Background(Colors.Grey.Lighten3).PaddingVertical(2).PaddingHorizontal(2).DefaultTextStyle(x => x.SemiBold());
                     }
                     static IContainer TotalStyle(IContainer container)
                     {
-                        return container.BorderTop(2).BorderColor(Colors.Black).Background("#2B4B80").PaddingVertical(6).PaddingHorizontal(2).DefaultTextStyle(x => x.Bold().FontColor(Colors.White));
+                        return container.BorderTop(2).BorderColor(Colors.Black).Background("#2B4B80").PaddingVertical(3).PaddingHorizontal(2).DefaultTextStyle(x => x.Bold().FontColor(Colors.White));
                     }
                 });
             }
