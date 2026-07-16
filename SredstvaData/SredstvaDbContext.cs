@@ -31,48 +31,56 @@ public class SredstvaDbContext : DbContext
         optionsBuilder.UseSqlite($"Data Source={dbPath}");
         var ctx = new SredstvaDbContext(optionsBuilder.Options);
         ctx.DbPath = dbPath;
-        
-        try
+
+        // EnsureCreated kreira bazu sa TRENUTNIM modelom ako ne postoji.
+        // Za novu bazu: kreira sve tabele + seed admin korisnika.
+        // Za postojecu: ne radi nista (sigurno za sve slucajeve).
+        ctx.Database.EnsureCreated();
+
+        // Primenimo sve schema promene idempotentno direktnim SQL-om.
+        // Ovaj pristup radi za SVE stanja baze:
+        //   A) Nova baza (EnsureCreated upravo kreirao) - sve je vec tu
+        //   B) Stara baza sa FirmaId (pre promene modela) - treba rename + add kolone
+        //   C) Baza sa novim modelom (EnsureCreated posle promene) - samo markiranje
+        using var conn = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbPath}");
+        conn.Open();
+        using var cmd = conn.CreateCommand();
+
+        // 1. Kreiraj migrations history tabelu i markiraj AddKorisnici kao Done
+        cmd.CommandText = @"
+            CREATE TABLE IF NOT EXISTS __EFMigrationsHistory (
+                MigrationId TEXT NOT NULL CONSTRAINT PK___EFMigrationsHistory PRIMARY KEY,
+                ProductVersion TEXT NOT NULL);
+            INSERT OR IGNORE INTO __EFMigrationsHistory VALUES ('20260715165530_AddKorisnici', '8.0.0');";
+        cmd.ExecuteNonQuery();
+
+        // 2. Sigurno ukloni FK index ako postoji (IF EXISTS - ne pada ako nema)
+        cmd.CommandText = "DROP INDEX IF EXISTS \"IX_Sredstva_FirmaId\";";
+        cmd.ExecuteNonQuery();
+
+        // 3. Preimenuj FirmaId -> ObracunskaJedinica ako FirmaId jos postoji
+        cmd.CommandText = "SELECT COUNT(*) FROM pragma_table_info('Sredstva') WHERE name='FirmaId'";
+        var firmaIdExists = (long)(cmd.ExecuteScalar() ?? 0L) > 0;
+        if (firmaIdExists)
         {
-            // Pokusaj sa Migrate() - radi ispravno za:
-            //   a) Novu bazu (kreira sve)
-            //   b) Vec migrisanu bazu (primenjuje samo nove migracije)
-            ctx.Database.Migrate();
+            cmd.CommandText = "ALTER TABLE \"Sredstva\" RENAME COLUMN \"FirmaId\" TO \"ObracunskaJedinica\";";
+            cmd.ExecuteNonQuery();
         }
-        catch (Microsoft.Data.Sqlite.SqliteException ex) when (ex.SqliteErrorCode == 1 && ex.Message.Contains("already exists"))
+
+        // 4. Dodaj Konto kolonu ako ne postoji
+        cmd.CommandText = "SELECT COUNT(*) FROM pragma_table_info('Sredstva') WHERE name='Konto'";
+        var kontoExists = (long)(cmd.ExecuteScalar() ?? 0L) > 0;
+        if (!kontoExists)
         {
-            // Baza je kreirana starim EnsureCreated() kodom - nema __EFMigrationsHistory.
-            // Resenje: direktno ubacimo history red i ponovo pozovemo Migrate()
-            // koji ce ovaj put preskociti vec postojece tabele.
-            try
-            {
-                using var conn = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbPath}");
-                conn.Open();
-                
-                // Kreiraj history tabelu
-                using (var cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = @"
-                        CREATE TABLE IF NOT EXISTS __EFMigrationsHistory (
-                            MigrationId TEXT NOT NULL CONSTRAINT PK___EFMigrationsHistory PRIMARY KEY,
-                            ProductVersion TEXT NOT NULL
-                        );
-                        INSERT OR IGNORE INTO __EFMigrationsHistory VALUES ('20260715165530_AddKorisnici', '8.0.0');
-                    ";
-                    cmd.ExecuteNonQuery();
-                }
-                conn.Close();
-                
-                // Sada Migrate() ce primeniti samo migracije kojih nema u history
-                ctx.Database.Migrate();
-            }
-            catch
-            {
-                // Poslednji fallback - radi uvek za potpuno novu bazu
-                ctx.Database.EnsureCreated();
-            }
+            cmd.CommandText = "ALTER TABLE \"Sredstva\" ADD COLUMN \"Konto\" TEXT NOT NULL DEFAULT '';";
+            cmd.ExecuteNonQuery();
         }
-        
+
+        // 5. Markiraj DodatiKontoObracunskaJedinica kao Done
+        cmd.CommandText = "INSERT OR IGNORE INTO __EFMigrationsHistory VALUES ('20260716093143_DodatiKontoObracunskaJedinica', '8.0.0');";
+        cmd.ExecuteNonQuery();
+
+        conn.Close();
         return ctx;
     }
 
