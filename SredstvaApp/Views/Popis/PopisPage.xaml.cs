@@ -22,9 +22,35 @@ public partial class PopisPage : Page
 
     private void PopisPage_Loaded(object sender, RoutedEventArgs e)
     {
+        SyncSredstvaSaKarticama(_db);
         LoadGodine();
         LoadKomisije();
         LoadPopisi();
+    }
+
+    private void SyncSredstvaSaKarticama(SredstvaDbContext db)
+    {
+        var sredstva = db.Sredstva.Where(s => s.ObracunskaJedinica == 0 || s.Konto == "").ToList();
+        if (sredstva.Count == 0) return;
+
+        foreach (var s in sredstva)
+        {
+            var kartice = db.Kartice.Where(k => k.SredstvoId == s.Id).ToList();
+            if (kartice.Count > 0)
+            {
+                var lastKartica = kartice.OrderByDescending(k => k.Datum).ThenByDescending(k => k.Id).First();
+                s.Konto = lastKartica.Konto ?? "";
+                if (lastKartica.ObracunskaJedinica > 0)
+                {
+                    s.ObracunskaJedinica = lastKartica.ObracunskaJedinica;
+                }
+                
+                s.NabavnaVrednost = kartice.Sum(k => k.NabavnaVrednost);
+                s.IspravkaVrednosti = kartice.Sum(k => k.IspravkaVrednosti);
+                s.SadasnjaVrednost = s.NabavnaVrednost - s.IspravkaVrednosti;
+            }
+        }
+        db.SaveChanges();
     }
 
     private void LoadGodine()
