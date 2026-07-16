@@ -224,4 +224,8 @@
         </Setter>
     </Style>
 
-</ResourceDictionary>
+  <!-- Added missing TextBrush used by LoginWindow -->
+  <SolidColorBrush x:Key="TextBrush" Color="#FF222222" />
+</ResourceDictionary>  
+
+<!-- Note: this replacement appends a TextBrush definition just before the ResourceDictionary end -->

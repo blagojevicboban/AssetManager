@@ -4,13 +4,14 @@
         Title="Prijava u sistem" Height="550" Width="400"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Icon="app.ico"
         Background="{StaticResource SurfaceBrush}">
     
     <Grid Margin="32">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="32"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="16"/>
             <RowDefinition Height="Auto"/>
@@ -24,23 +25,28 @@
         <StackPanel Grid.Row="0" HorizontalAlignment="Center">
             <TextBlock Text="🏭" FontSize="48" HorizontalAlignment="Center"/>
             <TextBlock Text="SREDSTVA" FontSize="24" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" HorizontalAlignment="Center" Margin="0,8,0,0"/>
-            <TextBlock Text="Prijava korisnika" FontSize="14" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+            <TextBlock Text="Osnovna sredstva preduzeća" FontSize="14" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
         </StackPanel>
-        
+
         <StackPanel Grid.Row="2">
+            <TextBlock Text="Firma:" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
+            <TextBlock x:Name="TxtFirma" Height="40" FontSize="14" VerticalAlignment="Center" Padding="8,8" Foreground="{StaticResource TextBrush}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="4">
             <TextBlock Text="Korisničko ime" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
             <TextBox x:Name="TxtUsername" Height="40" FontSize="14" VerticalContentAlignment="Center" Padding="8,0" KeyDown="Input_KeyDown"/>
         </StackPanel>
-        
-        <StackPanel Grid.Row="4">
+
+        <StackPanel Grid.Row="6">
             <TextBlock Text="Lozinka" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
             <PasswordBox x:Name="TxtPassword" Height="40" FontSize="14" VerticalContentAlignment="Center" Padding="8,0" KeyDown="Input_KeyDown"/>
         </StackPanel>
-        
-        <Button x:Name="BtnLogin" Grid.Row="6" Content="Prijavi se" Height="44" Style="{StaticResource PrimaryButton}" FontSize="15" Click="BtnLogin_Click"/>
-        
-        <TextBlock x:Name="TxtError" Grid.Row="7" Foreground="{StaticResource DangerBrush}" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,16,0,0" Visibility="Collapsed"/>
-        
-        <TextBlock x:Name="TxtVersion" Grid.Row="8" Text="Sistem za osnovna sredstva © 2026" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+
+        <Button x:Name="BtnLogin" Grid.Row="8" Content="Prijavi se" Height="44" Style="{StaticResource PrimaryButton}" FontSize="15" Click="BtnLogin_Click"/>
+
+        <TextBlock x:Name="TxtError" Grid.Row="9" Foreground="{StaticResource DangerBrush}" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,16,0,0" Visibility="Collapsed"/>
+
+        <TextBlock x:Name="TxtVersion" Grid.Row="10" Text="Sistem za osnovna sredstva © 2026" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
     </Grid>
 </Window>

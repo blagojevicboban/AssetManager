@@ -14,10 +14,26 @@ public partial class LoginWindow : Window
     {
         InitializeComponent();
         _db = db;
+
+        LoadCompanyInfo();
         TxtUsername.Focus();
-        
+
         var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
         TxtVersion.Text = $"Sistem za osnovna sredstva © 2026 - v{version?.ToString(3)}";
+    }
+
+    private void LoadCompanyInfo()
+    {
+        var firma = _db.Firme.FirstOrDefault();
+        if (firma != null)
+        {
+            TxtFirma.Text = firma.Naziv;
+            AppSession.TrenutnaFirma = firma;
+        }
+        else
+        {
+            TxtFirma.Text = "Nije dostupna kompanija";
+        }
     }
 
     private void Input_KeyDown(object sender, KeyEventArgs e)
