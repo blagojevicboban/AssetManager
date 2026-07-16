@@ -56,8 +56,8 @@ public class PraznaPopisnaListaDocument : IDocument
                 if (_firma != null)
                 {
                     column.Item().AlignRight().Text(_firma.Naziv).FontSize(12).SemiBold().FontColor(Colors.Black);
-                    if (!string.IsNullOrEmpty(_firma.Adresa) || !string.IsNullOrEmpty(_firma.Mesto))
-                        column.Item().AlignRight().Text($"{_firma.Adresa}, {_firma.Mesto}".Trim(',', ' ')).FontSize(10).FontColor(Colors.Grey.Darken2);
+                    if (!string.IsNullOrEmpty(_firma.Mesto))
+                        column.Item().AlignRight().Text(_firma.Mesto).FontSize(10).FontColor(Colors.Grey.Darken2);
                     if (!string.IsNullOrEmpty(_firma.PIB))
                         column.Item().AlignRight().Text($"PIB: {_firma.PIB}").FontSize(10).FontColor(Colors.Grey.Darken2);
                 }
@@ -72,8 +72,6 @@ public class PraznaPopisnaListaDocument : IDocument
         {
             var poObracunskimJedinicama = _stavke.GroupBy(s => s.Sredstvo.ObracunskaJedinica).OrderBy(g => g.Key).ToList();
 
-            decimal grandKnj = 0;
-            decimal grandProc = 0;
             decimal grandNabavna = 0;
             decimal grandOtpisana = 0;
             decimal grandSadasnja = 0;

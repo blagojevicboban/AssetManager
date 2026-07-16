@@ -62,8 +62,8 @@ public class PrijavaDocument : IDocument
                 if (_firma != null)
                 {
                     column.Item().AlignRight().Text(_firma.Naziv).FontSize(12).SemiBold().FontColor(Colors.Black);
-                    if (!string.IsNullOrEmpty(_firma.Adresa) || !string.IsNullOrEmpty(_firma.Mesto))
-                        column.Item().AlignRight().Text($"{_firma.Adresa}, {_firma.Mesto}".Trim(',', ' ')).FontSize(10).FontColor(Colors.Grey.Darken2);
+                    if (!string.IsNullOrEmpty(_firma.Mesto))
+                        column.Item().AlignRight().Text(_firma.Mesto).FontSize(10).FontColor(Colors.Grey.Darken2);
                     if (!string.IsNullOrEmpty(_firma.PIB))
                         column.Item().AlignRight().Text($"PIB: {_firma.PIB}").FontSize(10).FontColor(Colors.Grey.Darken2);
                 }

@@ -53,8 +53,8 @@ public class AmortizacijaDocument : IDocument
                 if (_firma != null)
                 {
                     column.Item().AlignRight().Text(_firma.Naziv).FontSize(12).SemiBold().FontColor(Colors.Black);
-                    if (!string.IsNullOrEmpty(_firma.Adresa) || !string.IsNullOrEmpty(_firma.Mesto))
-                        column.Item().AlignRight().Text($"{_firma.Adresa}, {_firma.Mesto}".Trim(',', ' ')).FontSize(10).FontColor(Colors.Grey.Darken2);
+                    if (!string.IsNullOrEmpty(_firma.Mesto))
+                        column.Item().AlignRight().Text(_firma.Mesto).FontSize(10).FontColor(Colors.Grey.Darken2);
                     if (!string.IsNullOrEmpty(_firma.PIB))
                         column.Item().AlignRight().Text($"PIB: {_firma.PIB}").FontSize(10).FontColor(Colors.Grey.Darken2);
                 }
@@ -191,11 +191,11 @@ public class AmortizacijaDocument : IDocument
             }
 
             // Ukupni zbir (kao "UKUPNI ZBIR" u Clipper-u)
-            var ukNabavna = _stavke.Sum(r => r.NabavnaVrednost);
-            var ukPrethodna = _stavke.Sum(r => r.PrethodnaIspravka);
-            var ukNova = _stavke.Sum(r => r.NovaAmortizacija);
-            var ukUkupno = _stavke.Sum(r => r.NovaIspravkaUkupno);
-            var ukSadasnja = _stavke.Sum(r => r.SadasnjaVrednost);
+            var ukNabavna = _rezultati.Sum(r => r.NabavnaVrednost);
+            var ukPrethodna = _rezultati.Sum(r => r.PrethodnaIspravka);
+            var ukNova = _rezultati.Sum(r => r.NovaAmortizacija);
+            var ukUkupno = _rezultati.Sum(r => r.NovaIspravkaUkupno);
+            var ukSadasnja = _rezultati.Sum(r => r.SadasnjaVrednost);
 
             col.Item().PaddingTop(15).Table(sumTable =>
             {

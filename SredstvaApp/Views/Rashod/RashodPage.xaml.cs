@@ -162,8 +162,8 @@ public partial class RashodPage : Page
                         DokumentBroj = r.DokumentBroj
                     }).ToList()
                 }).ToList();
-            var firma = _db.Firme.FirstOrDefault();
-            var doc = new RashodDocument(nalozi, firma);
+            var firmaInfo = _db.Firme.FirstOrDefault();
+            var doc = new RashodDocument(nalozi, firmaInfo);
             var tempFile = Path.Combine(Path.GetTempPath(), $"Rashod_{DateTime.Now:yyyyMMddHHmmss}.pdf");
             doc.GeneratePdf(tempFile);
             Process.Start(new ProcessStartInfo(tempFile) { UseShellExecute = true });

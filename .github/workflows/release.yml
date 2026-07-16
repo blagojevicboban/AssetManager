@@ -57,7 +57,8 @@ jobs:
               "--packDir", "publish_output",
               "--mainExe", "SredstvaApp.exe",
               "--outputDir", "ReleasePackage",
-              "--packTitle", "SredstvaSystem"
+              "--packTitle", "SredstvaSystem",
+              "--icon", "SredstvaApp\app.ico"
           )
           
           & vpk $vpkArgs
