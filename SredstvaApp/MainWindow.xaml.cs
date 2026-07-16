@@ -34,6 +34,10 @@ public partial class MainWindow : Window
         };
         ImeFirmeText.Text = AppSession.TrenutnaFirma?.Naziv ?? "—";
         
+        var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+        var versionStr = version != null ? $"{version.Major}.{version.Minor}.{version.Build}" : "1.0.0";
+        VersionText.Text = $"v{versionStr}  •  {System.DateTime.Now.Year}";
+        
         // Prikazujemo prvu stranicu (Sredstva)
         NavigateTo(BtnSredstva, () => new Views.Sredstva.SredstvaPage(_db));
 
