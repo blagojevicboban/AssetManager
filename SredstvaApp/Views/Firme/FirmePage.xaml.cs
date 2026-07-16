@@ -85,7 +85,7 @@ public partial class FirmePage : Page
                     {
                         f = new Firma
                         {
-                            Naziv = "Zavod za poljoprivredu",
+                            Naziv = "Nova firma",
                             Mesto = "Pirot",
                             PIB = "123456789",
                             MaticniBroj = "98765432"
@@ -195,6 +195,7 @@ public partial class FirmePage : Page
             if (f != null)
             {
                 TxtNaziv.Text = f.Naziv;
+                TxtDbPath.Text = fItem.DbPath;
                 TxtPib.Text = f.PIB;
                 TxtMb.Text = f.MaticniBroj;
                 TxtAdresa.Text = "";

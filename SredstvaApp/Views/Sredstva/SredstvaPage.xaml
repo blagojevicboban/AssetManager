@@ -53,14 +53,27 @@
                       AutoGenerateColumns="False"
                       IsReadOnly="True"
                       SelectionChanged="SredstvaGrid_SelectionChanged"
-                      CanUserSortColumns="True">
+                      CanUserSortColumns="True" VerticalAlignment="Center">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Inv. Br." Binding="{Binding InventarskiBroj}" Width="90"/>
-                    <DataGridTextColumn Header="Naziv Sredstva" Binding="{Binding Naziv}" Width="*" MinWidth="200"/>
+                    <DataGridTextColumn Header="Inv. Br." Binding="{Binding InventarskiBroj}" Width="90">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Naziv Sredstva" Binding="{Binding Naziv}" Width="*" MinWidth="200">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                     <DataGridTextColumn Header="Am. Grupa" Binding="{Binding AmortizacionaGrupa}" Width="90">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -68,6 +81,7 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Right"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
                                 <Setter Property="Padding" Value="0,0,8,0"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
@@ -76,6 +90,7 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Right"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
                                 <Setter Property="Padding" Value="0,0,12,0"/>
                                 <Setter Property="FontFamily" Value="Consolas"/>
                             </Style>
@@ -85,6 +100,7 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Right"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
                                 <Setter Property="Padding" Value="0,0,12,0"/>
                                 <Setter Property="FontFamily" Value="Consolas"/>
                             </Style>
@@ -94,6 +110,7 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Right"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
                                 <Setter Property="Padding" Value="0,0,12,0"/>
                                 <Setter Property="FontFamily" Value="Consolas"/>
                                 <Setter Property="Foreground" Value="#2D6A4F"/>
@@ -104,6 +121,7 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>

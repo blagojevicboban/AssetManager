@@ -6,10 +6,14 @@
 
     <Grid Margin="24,20,24,16">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>  <!-- Header -->
-            <RowDefinition Height="Auto"/>  <!-- Toolbar -->
-            <RowDefinition Height="*"/>     <!-- Content: lista + forma -->
-            <RowDefinition Height="Auto"/>  <!-- Status bar -->
+            <RowDefinition Height="Auto"/>
+            <!-- Header -->
+            <RowDefinition Height="Auto"/>
+            <!-- Toolbar -->
+            <RowDefinition Height="*"/>
+            <!-- Content: lista + forma -->
+            <RowDefinition Height="Auto"/>
+            <!-- Status bar -->
         </Grid.RowDefinitions>
 
         <!-- ── HEADER ──────────────────────────────────────────────── -->
@@ -88,14 +92,51 @@
                           SelectionUnit="FullRow"
                           BorderThickness="0"
                           Margin="0"
-                          SelectionChanged="FirmeGrid_SelectionChanged">
+                          SelectionChanged="FirmeGrid_SelectionChanged" VerticalContentAlignment="Center">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Naziv firme" Binding="{Binding Naziv}" Width="*"/>
-                        <DataGridTextColumn Header="PIB" Binding="{Binding Pib}" Width="80"/>
-                        <DataGridTextColumn Header="Matični broj" Binding="{Binding Mb}" Width="80"/>
-                        <DataGridTextColumn Header="Grad" Binding="{Binding Grad}" Width="100"/>
-                        <DataGridTextColumn Header="Telefon" Binding="{Binding Telefon}" Width="100"/>
-                        <DataGridTextColumn Header="Fajl baze" Binding="{Binding DbPath}" Width="150"/>
+                        <DataGridTextColumn Header="Naziv firme" Binding="{Binding Naziv}" Width="*" IsReadOnly="False">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="MinWidth" Value="100"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="PIB" Binding="{Binding Pib}" Width="80">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Matični broj" Binding="{Binding Mb}" Width="80">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Grad" Binding="{Binding Grad}" Width="100">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Telefon" Binding="{Binding Telefon}" Width="100">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Fajl baze" Binding="{Binding DbPath}" Width="150">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
                         <DataGridTemplateColumn Header="Aktivna" Width="80">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -112,7 +153,6 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
-
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow">
                             <Setter Property="Cursor" Value="Hand"/>
