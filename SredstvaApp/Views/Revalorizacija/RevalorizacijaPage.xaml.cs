@@ -27,6 +27,7 @@ public class RevalorizacijaResultViewModel
     public decimal EfekatNabavna => NovaNabavna - StaraNabavna;
     public decimal EfekatIspravka => NovaIspravka - StaraIspravka;
     public decimal NovaSadasnja => NovaNabavna - NovaIspravka;
+    public string InventarskiBrojSort => System.Text.RegularExpressions.Regex.Replace(InventarskiBroj ?? "", @"\d+", m => m.Value.PadLeft(20, '0'));
 }
 
 public partial class RevalorizacijaPage : Page

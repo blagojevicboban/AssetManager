@@ -16,6 +16,9 @@ public class AmortizacijaResultViewModel
     public int SredstvoId { get; init; }
     public string InventarskiBroj { get; init; } = string.Empty;
     public string Naziv { get; init; } = string.Empty;
+    public int ObracunskaJedinica { get; init; }
+    public string Konto { get; init; } = string.Empty;
+    public string AmortizacionaGrupa { get; init; } = string.Empty;
     public decimal StopaAmortizacije { get; init; }
     public decimal NabavnaVrednost { get; init; }
     public decimal PrethodnaIspravka { get; init; }
@@ -23,6 +26,7 @@ public class AmortizacijaResultViewModel
     
     public decimal NovaIspravkaUkupno => PrethodnaIspravka + NovaAmortizacija;
     public decimal SadasnjaVrednost => NabavnaVrednost - NovaIspravkaUkupno;
+    public string InventarskiBrojSort => System.Text.RegularExpressions.Regex.Replace(InventarskiBroj ?? "", @"\d+", m => m.Value.PadLeft(20, '0'));
 }
 
 public partial class AmortizacijaPage : Page
@@ -126,6 +130,9 @@ public partial class AmortizacijaPage : Page
                 SredstvoId = s.Id,
                 InventarskiBroj = s.InventarskiBroj,
                 Naziv = s.Naziv,
+                ObracunskaJedinica = s.ObracunskaJedinica,
+                Konto = s.Konto,
+                AmortizacionaGrupa = s.AmortizacionaGrupa,
                 StopaAmortizacije = s.StopaAmortizacije,
                 NabavnaVrednost = tekucaNabavna,
                 PrethodnaIspravka = tekucaIspravka,
