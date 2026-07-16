@@ -32,7 +32,9 @@ public class SredstvaDbContext : DbContext
         var ctx = new SredstvaDbContext(optionsBuilder.Options);
         ctx.DbPath = dbPath;
         
-        ctx.Database.EnsureCreated();
+        // Migrate() kreira bazu ako ne postoji I primenjuje sve
+        // pending migracije na postojecu bazu (za razliku od EnsureCreated)
+        ctx.Database.Migrate();
         return ctx;
     }
 
