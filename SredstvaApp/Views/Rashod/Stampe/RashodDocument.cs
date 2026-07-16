@@ -40,10 +40,10 @@ public class RashodDocument : IDocument
     {
         container.Page(page =>
         {
-            page.Size(PageSizes.A4.Landscape());
+            page.Size(PageSizes.A4.Portrait());
             page.Margin(1, Unit.Centimetre);
             page.PageColor(Colors.White);
-            page.DefaultTextStyle(x => x.FontSize(10).FontFamily("Calibri"));
+            page.DefaultTextStyle(x => x.FontSize(9).FontFamily("Calibri"));
 
             page.Header().Element(ComposeHeader);
             page.Content().Element(ComposeContent);
@@ -86,13 +86,13 @@ public class RashodDocument : IDocument
                 {
                     table.ColumnsDefinition(columns =>
                     {
-                        columns.ConstantColumn(100); // Šifra
+                        columns.ConstantColumn(70);  // Šifra
                         columns.RelativeColumn();    // Naziv
-                        columns.ConstantColumn(130); // Opis promene
-                        columns.ConstantColumn(90);  // Podaci
-                        columns.ConstantColumn(40);  // OJ
-                        columns.ConstantColumn(80);  // Datum
-                        columns.ConstantColumn(80);  // Dokument
+                        columns.ConstantColumn(100); // Opis promene
+                        columns.ConstantColumn(70);  // Podaci
+                        columns.ConstantColumn(30);  // OJ
+                        columns.ConstantColumn(60);  // Datum
+                        columns.ConstantColumn(60);  // Dokument
                     });
 
                     // Header
@@ -109,7 +109,7 @@ public class RashodDocument : IDocument
                         static IContainer HeaderStyle(IContainer c)
                             => c.Background(Colors.Indigo.Darken4)
                                 .PaddingVertical(4).PaddingHorizontal(4)
-                                .DefaultTextStyle(x => x.SemiBold().FontColor(Colors.White).FontSize(8.5f));
+                                .DefaultTextStyle(x => x.SemiBold().FontColor(Colors.White).FontSize(8f));
                     });
 
                     // Redovi
@@ -126,7 +126,7 @@ public class RashodDocument : IDocument
                         static IContainer RowStyle(IContainer c)
                             => c.BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2)
                                 .PaddingVertical(4).PaddingHorizontal(4)
-                                .DefaultTextStyle(x => x.FontSize(8.5f));
+                                .DefaultTextStyle(x => x.FontSize(7.5f));
                     }
                 });
 

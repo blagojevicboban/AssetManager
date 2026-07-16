@@ -34,10 +34,10 @@ public class PrijavaDocument : IDocument
         container
             .Page(page =>
             {
-                page.Size(PageSizes.A4.Landscape());
+                page.Size(PageSizes.A4.Portrait());
                 page.Margin(1, Unit.Centimetre);
                 page.PageColor(Colors.White);
-                page.DefaultTextStyle(x => x.FontSize(10).FontFamily("Calibri"));
+                page.DefaultTextStyle(x => x.FontSize(9).FontFamily("Calibri"));
 
                 page.Header().Element(ComposeHeader);
                 page.Content().Element(ComposeContent);
@@ -72,17 +72,17 @@ public class PrijavaDocument : IDocument
             {
                 table.ColumnsDefinition(columns =>
                 {
-                    columns.ConstantColumn(30);  // Rbr
-                    columns.ConstantColumn(70);  // Inv. Broj
+                    columns.ConstantColumn(20);  // Rbr
+                    columns.ConstantColumn(55);  // Inv. Broj
                     columns.RelativeColumn();    // Naziv
-                    columns.ConstantColumn(30);  // Kol.
-                    columns.ConstantColumn(80);  // Faktura
-                    columns.ConstantColumn(50);  // Grupa
-                    columns.ConstantColumn(50);  // Stopa
-                    columns.ConstantColumn(50);  // Konto
-                    columns.ConstantColumn(30);  // OJ
-                    columns.ConstantColumn(80);  // Nabavna vrednost
-                    columns.ConstantColumn(80);  // Otpisana vrednost
+                    columns.ConstantColumn(25);  // Kol.
+                    columns.ConstantColumn(60);  // Faktura
+                    columns.ConstantColumn(35);  // Grupa
+                    columns.ConstantColumn(40);  // Stopa
+                    columns.ConstantColumn(40);  // Konto
+                    columns.ConstantColumn(25);  // OJ
+                    columns.ConstantColumn(60);  // Nabavna vrednost
+                    columns.ConstantColumn(60);  // Otpisana vrednost
                 });
 
                 table.Header(header =>
@@ -104,7 +104,7 @@ public class PrijavaDocument : IDocument
                         return container.Background(Colors.Indigo.Darken4)
                                         .PaddingVertical(4)
                                         .PaddingHorizontal(4)
-                                        .DefaultTextStyle(x => x.SemiBold().FontColor(Colors.White).FontSize(9f));
+                                        .DefaultTextStyle(x => x.SemiBold().FontColor(Colors.White).FontSize(8f));
                     }
                 });
 
@@ -128,7 +128,7 @@ public class PrijavaDocument : IDocument
                                         .BorderColor(Colors.Grey.Lighten2)
                                         .PaddingVertical(4)
                                         .PaddingHorizontal(4)
-                                        .DefaultTextStyle(x => x.FontSize(8.5f));
+                                        .DefaultTextStyle(x => x.FontSize(7.5f));
                     }
                 }
             });
