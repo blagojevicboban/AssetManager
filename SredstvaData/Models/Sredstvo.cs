@@ -12,6 +12,9 @@ public class Sredstvo
     [MaxLength(50)]
     public string InventarskiBroj { get; set; } = string.Empty;
     
+    [NotMapped]
+    public string InventarskiBrojSort => System.Text.RegularExpressions.Regex.Replace(InventarskiBroj ?? "", @"\d+", m => m.Value.PadLeft(20, '0'));
+    
     [Required]
     [MaxLength(200)]
     public string Naziv { get; set; } = string.Empty;

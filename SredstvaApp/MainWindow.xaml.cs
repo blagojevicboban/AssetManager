@@ -119,6 +119,11 @@ public partial class MainWindow : Window
     private void BtnKartice_Click(object sender, RoutedEventArgs e)
         => NavigateTo(BtnKartice, () => new Views.Kartice.KarticePage(_db));
 
+    public void OpenAnalitickaKartica(int sredstvoId)
+    {
+        NavigateTo(BtnKartice, () => new Views.Kartice.KarticePage(_db, sredstvoId));
+    }
+
     private void BtnPrijava_Click(object sender, RoutedEventArgs e)
         => NavigateTo(BtnPrijava, () => new Views.Rashod.PrijavaPage(_db));
 

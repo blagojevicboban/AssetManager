@@ -54,7 +54,10 @@ public partial class SredstvaPage : Page
     {
         if (SredstvaGrid.SelectedItem is Sredstvo s)
         {
-            NavigationService?.Navigate(new Views.Kartice.KarticePage(_db, s.Id));
+            if (Application.Current.MainWindow is MainWindow mainWindow)
+            {
+                mainWindow.OpenAnalitickaKartica(s.Id);
+            }
         }
     }
 
@@ -62,7 +65,10 @@ public partial class SredstvaPage : Page
     {
         if (SredstvaGrid.SelectedItem is Sredstvo s)
         {
-            NavigationService?.Navigate(new Views.Kartice.KarticePage(_db, s.Id));
+            if (Application.Current.MainWindow is MainWindow mainWindow)
+            {
+                mainWindow.OpenAnalitickaKartica(s.Id);
+            }
         }
         else
         {
@@ -72,7 +78,10 @@ public partial class SredstvaPage : Page
 
     private void BtnNovo_Click(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("Forma za unos novog sredstva — u razvoju.", "Novo sredstvo",
-            MessageBoxButton.OK, MessageBoxImage.Information);
+        var win = new Views.Rashod.PrijavaWindow(_db);
+        win.ShowDialog();
+        
+        // Osvježi podatke
+        SredstvaPage_Loaded(this, new RoutedEventArgs());
     }
 }

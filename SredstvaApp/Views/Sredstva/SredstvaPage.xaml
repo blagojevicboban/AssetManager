@@ -53,9 +53,10 @@
                       AutoGenerateColumns="False"
                       IsReadOnly="True"
                       SelectionChanged="SredstvaGrid_SelectionChanged"
+                      MouseDoubleClick="SredstvaGrid_DoubleClick"
                       CanUserSortColumns="True" VerticalAlignment="Center">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Inv. Br." Binding="{Binding InventarskiBroj}" Width="90">
+                    <DataGridTextColumn Header="Inv. Br." Binding="{Binding InventarskiBroj}" SortMemberPath="InventarskiBrojSort" Width="90">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="VerticalAlignment" Value="Center"/>
