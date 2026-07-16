@@ -54,7 +54,7 @@ public partial class SredstvaPage : Page
     {
         if (SredstvaGrid.SelectedItem is Sredstvo s)
         {
-            if (Application.Current.MainWindow is MainWindow mainWindow)
+            if (Window.GetWindow(this) is MainWindow mainWindow)
             {
                 mainWindow.OpenAnalitickaKartica(s.Id);
             }
@@ -65,7 +65,7 @@ public partial class SredstvaPage : Page
     {
         if (SredstvaGrid.SelectedItem is Sredstvo s)
         {
-            if (Application.Current.MainWindow is MainWindow mainWindow)
+            if (Window.GetWindow(this) is MainWindow mainWindow)
             {
                 mainWindow.OpenAnalitickaKartica(s.Id);
             }
