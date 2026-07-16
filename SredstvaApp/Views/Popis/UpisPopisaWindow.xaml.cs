@@ -89,6 +89,7 @@ public partial class UpisPopisaWindow : Window
         {
             try
             {
+                if (_popis == null) return;
                 _popis.Status = StatusPopisa.Zavrsen;
                 _db.SaveChanges();
                 

@@ -366,7 +366,7 @@ public partial class FirmePage : Page
                 AppConfig.DbPath = dbPathToSave;
                 var mainWin = Application.Current.MainWindow as MainWindow;
                 mainWin?.GetType().GetMethod("MainWindow_Loaded", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                       ?.Invoke(mainWin, new object[] { null, null });
+                       ?.Invoke(mainWin, new object?[] { null, EventArgs.Empty });
             }
 
             TxtStatus.Text = "Firma je uspešno sačuvana!";

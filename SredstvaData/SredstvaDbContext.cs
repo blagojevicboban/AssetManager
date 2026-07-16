@@ -32,8 +32,36 @@ public class SredstvaDbContext : DbContext
         var ctx = new SredstvaDbContext(optionsBuilder.Options);
         ctx.DbPath = dbPath;
         
-        // Migrate() kreira bazu ako ne postoji I primenjuje sve
-        // pending migracije na postojecu bazu (za razliku od EnsureCreated)
+        ctx.Database.EnsureCreated(); // Kreira bazu ako ne postoji (sa svim tabelama + seed)
+        
+        // Sada proveravamo da li postoji migrations history tabela.
+        // Ako ne postoji (baza je kreirana starim EnsureCreated kodom), 
+        // dodajemo je i markiramo sve vec-primenjene migracije kao "Done".
+        // Na taj nacin Migrate() ce primeniti SAMO nove migracije, bez pokusaja
+        // kreiranja tabela koje vec postoje.
+        var conn = ctx.Database.GetDbConnection();
+        conn.Open();
+        using (var cmd = conn.CreateCommand())
+        {
+            cmd.CommandText = "SELECT name FROM sqlite_master WHERE type='table' AND name='__EFMigrationsHistory'";
+            var historyExists = cmd.ExecuteScalar() != null;
+            
+            if (!historyExists)
+            {
+                // Kreiraj migrations history tabelu
+                cmd.CommandText = @"CREATE TABLE __EFMigrationsHistory (
+                    MigrationId TEXT NOT NULL CONSTRAINT PK___EFMigrationsHistory PRIMARY KEY,
+                    ProductVersion TEXT NOT NULL)";
+                cmd.ExecuteNonQuery();
+                
+                // Markiraj pocetnu migraciju kao vec primenjenu (tabele su vec tu)
+                cmd.CommandText = "INSERT INTO __EFMigrationsHistory VALUES ('20260715165530_AddKorisnici', '8.0.0')";
+                cmd.ExecuteNonQuery();
+            }
+        }
+        conn.Close();
+        
+        // Sada Migrate() ce primeniti samo NOVE migracije (npr. DodatiKontoObracunskaJedinica)
         ctx.Database.Migrate();
         return ctx;
     }
