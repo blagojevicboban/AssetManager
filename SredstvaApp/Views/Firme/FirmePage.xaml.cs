@@ -434,7 +434,11 @@ public partial class FirmePage : Page
             // Ako je obrisana aktivna firma, uradi kompletan reload
             if (isDeletedActive)
             {
-                System.Diagnostics.Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location.Replace(".dll", ".exe"));
+                var exePath = Environment.ProcessPath;
+                if (!string.IsNullOrEmpty(exePath))
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(exePath) { UseShellExecute = true });
+                }
                 Application.Current.Shutdown();
             }
         }
@@ -460,7 +464,11 @@ public partial class FirmePage : Page
 
             MessageBox.Show($"Firma '{_selectedItem.Naziv}' je uspešno postavljena kao aktivna za rad u sistemu!\nAplikacija će se sada ponovo pokrenuti radi primene promena.", "Aktivna firma promenjena", MessageBoxButton.OK, MessageBoxImage.Information);
 
-            System.Diagnostics.Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location.Replace(".dll", ".exe"));
+            var exePath = Environment.ProcessPath;
+            if (!string.IsNullOrEmpty(exePath))
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(exePath) { UseShellExecute = true });
+            }
             Application.Current.Shutdown();
         }
         catch (Exception ex)
