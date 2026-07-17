@@ -14,6 +14,10 @@ public class UserSettings
     public string? ActiveDbPath { get; set; }
     public bool StartMaximized { get; set; } = true;
 
+    // 0 = Nikad, 1 = Pri svakom izlasku, 2 = Jednom dnevno
+    public int AutoBackupFrequency { get; set; } = 1; 
+    public DateTime? LastAutoBackupDate { get; set; }
+
     private static UserSettings? _instance;
     public static UserSettings Instance
     {

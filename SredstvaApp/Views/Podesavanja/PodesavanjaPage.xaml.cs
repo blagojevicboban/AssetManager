@@ -24,6 +24,10 @@ public partial class PodesavanjaPage : Page
 
         ChkStartMaximized.IsChecked = UserSettings.Instance.StartMaximized;
 
+        CmbAutoBackup.SelectedIndex = UserSettings.Instance.AutoBackupFrequency >= 0 && UserSettings.Instance.AutoBackupFrequency <= 2 
+            ? UserSettings.Instance.AutoBackupFrequency 
+            : 1;
+
         OsveziIstorijuKopija();
     }
 
@@ -32,6 +36,15 @@ public partial class PodesavanjaPage : Page
         if (ChkStartMaximized.IsChecked.HasValue)
         {
             UserSettings.Instance.StartMaximized = ChkStartMaximized.IsChecked.Value;
+            UserSettings.Instance.Save();
+        }
+    }
+
+    private void CmbAutoBackup_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (CmbAutoBackup.SelectedIndex >= 0)
+        {
+            UserSettings.Instance.AutoBackupFrequency = CmbAutoBackup.SelectedIndex;
             UserSettings.Instance.Save();
         }
     }
