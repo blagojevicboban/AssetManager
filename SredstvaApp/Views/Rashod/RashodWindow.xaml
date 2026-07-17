@@ -106,6 +106,8 @@
                     <DataGridTextColumn Header="Inv. Br." Binding="{Binding InventarskiBroj}" Width="100"/>
                     <DataGridTextColumn Header="Naziv sredstva" Binding="{Binding NazivSredstva}" Width="*" MinWidth="180"/>
                     <DataGridTextColumn Header="Tip promene" Binding="{Binding TipTekst}" Width="160"/>
+                    <DataGridTextColumn Header="Datum" Binding="{Binding Datum, StringFormat=dd.MM.yyyy}" Width="90"/>
+                    <DataGridTextColumn Header="Dokument" Binding="{Binding DokumentBroj}" Width="90"/>
                     <DataGridTextColumn Header="Podaci" Binding="{Binding Podaci, StringFormat=N2}" Width="110">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">

@@ -23,6 +23,8 @@ public class RashodStavkaViewModel
     public string TipTekst { get; set; } = string.Empty;
     public decimal Podaci { get; set; }
     public int ObracunskaJedinica { get; set; }
+    public DateTime Datum { get; set; }
+    public string DokumentBroj { get; set; } = string.Empty;
     // Za knjiženje
     public decimal NabavnaVrednostSredstva { get; set; }
     public decimal IspravkaVrednostiSredstva { get; set; }
@@ -117,7 +119,9 @@ public partial class RashodWindow : Window
                 Tip = r.Kod,
                 TipTekst = r.KodTekst,
                 Podaci = r.Podaci,
-                ObracunskaJedinica = r.ObracunskaJedinica
+                ObracunskaJedinica = r.ObracunskaJedinica,
+                Datum = r.Datum,
+                DokumentBroj = r.DokumentBroj
             });
         }
 
@@ -188,6 +192,8 @@ public partial class RashodWindow : Window
             TipTekst = GetTipNaziv(tip),
             Podaci = podaci,
             ObracunskaJedinica = 0,
+            Datum = DpDatum.SelectedDate ?? DateTime.Today,
+            DokumentBroj = TxtDokumentBroj.Text.Trim(),
             NabavnaVrednostSredstva = (decimal)sel.NabavnaVrednost,
             IspravkaVrednostiSredstva = (decimal)sel.IspravkaVrednosti,
             KolicinaSredstva = (decimal)sel.Kolicina
@@ -350,8 +356,8 @@ public partial class RashodWindow : Window
                     OpisPromene = s.TipTekst,
                     Podaci = s.Podaci,
                     ObracunskaJedinica = s.ObracunskaJedinica,
-                    Datum = DpDatum.SelectedDate ?? DateTime.Today,
-                    DokumentBroj = TxtDokumentBroj.Text.Trim()
+                    Datum = s.Datum,
+                    DokumentBroj = s.DokumentBroj
                 }).ToList()
             };
             var firma = _db.Firme.FirstOrDefault();
