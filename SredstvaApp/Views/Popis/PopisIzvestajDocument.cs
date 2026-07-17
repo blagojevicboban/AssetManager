@@ -28,10 +28,10 @@ public class PopisIzvestajDocument : IDocument
         container
             .Page(page =>
             {
-                page.Size(PageSizes.A4.Landscape());
-                page.Margin(1, Unit.Centimetre);
+                page.Size(PageSizes.A4.Portrait());
+                page.Margin(0.5f, Unit.Centimetre);
                 page.PageColor(Colors.White);
-                page.DefaultTextStyle(x => x.FontSize(9).FontFamily(Fonts.Arial));
+                page.DefaultTextStyle(x => x.FontSize(8).FontFamily(Fonts.Arial));
 
                 page.Header().Element(ComposeHeader);
                 page.Content().Element(ComposeContent);
@@ -45,22 +45,22 @@ public class PopisIzvestajDocument : IDocument
         {
             row.RelativeItem().Column(column =>
             {
-                column.Item().Text($"IZVEŠTAJ O POPISU OSNOVNIH SREDSTAVA").FontSize(13).SemiBold().FontColor(Colors.Indigo.Darken4);
-                column.Item().Text($"Za godinu: {_popis.Godina}").FontSize(12).FontColor(Colors.Grey.Darken2);
-                column.Item().Text($"Datum popisa: {_popis.DatumPopisa:dd.MM.yyyy}").FontSize(10).FontColor(Colors.Grey.Medium);
+                column.Item().Text($"IZVEŠTAJ O POPISU OSNOVNIH SREDSTAVA").FontSize(14).SemiBold().FontColor(Colors.Indigo.Darken4);
+                column.Item().Text($"Za godinu: {_popis.Godina}").FontSize(11).FontColor(Colors.Grey.Darken2);
+                column.Item().Text($"Datum popisa: {_popis.DatumPopisa:dd.MM.yyyy}").FontSize(9).FontColor(Colors.Grey.Medium);
             });
 
-            row.ConstantItem(250).AlignRight().Column(column =>
+            row.ConstantItem(200).AlignRight().Column(column =>
             {
                 if (_firma != null)
                 {
                     column.Item().AlignRight().Text(_firma.Naziv).FontSize(11).SemiBold().FontColor(Colors.Black);
                     if (!string.IsNullOrEmpty(_firma.Mesto))
-                        column.Item().AlignRight().Text(_firma.Mesto).FontSize(10).FontColor(Colors.Grey.Darken2);
+                        column.Item().AlignRight().Text(_firma.Mesto).FontSize(9).FontColor(Colors.Grey.Darken2);
                     if (!string.IsNullOrEmpty(_firma.PIB))
-                        column.Item().AlignRight().Text($"PIB: {_firma.PIB}").FontSize(10).FontColor(Colors.Grey.Darken2);
+                        column.Item().AlignRight().Text($"PIB: {_firma.PIB}").FontSize(9).FontColor(Colors.Grey.Darken2);
                 }
-                column.Item().PaddingTop(5).AlignRight().Text($"Popis ID: {_popis.Id}").FontSize(10).SemiBold().FontColor(Colors.Grey.Lighten1);
+                column.Item().PaddingTop(5).AlignRight().Text($"Popis ID: {_popis.Id}").FontSize(9).SemiBold().FontColor(Colors.Grey.Lighten1);
             });
         });
     }
@@ -79,7 +79,7 @@ public class PopisIzvestajDocument : IDocument
                 decimal rjKnjVred = 0;
                 decimal rjProcVred = 0;
 
-                column.Item().PaddingTop(10).Text($"Obračunska jedinica: {rjGroup.Key}").FontSize(12).Bold().FontColor(Colors.Indigo.Darken3);
+                column.Item().PaddingTop(10).Text($"Obračunska jedinica: {rjGroup.Key}").FontSize(11).Bold().FontColor(Colors.Indigo.Darken3);
 
                 var poKontu = rjGroup.GroupBy(s => s.Sredstvo.Konto).OrderBy(g => g.Key).ToList();
 
@@ -88,20 +88,20 @@ public class PopisIzvestajDocument : IDocument
                     decimal kontoKnjVred = 0;
                     decimal kontoProcVred = 0;
 
-                    column.Item().PaddingTop(5).Text($"Konto: {kontoGroup.Key}").FontSize(11).Bold().FontColor(Colors.Indigo.Darken2);
+                    column.Item().PaddingTop(5).Text($"Konto: {kontoGroup.Key}").FontSize(10).Bold().FontColor(Colors.Indigo.Darken2);
 
                     column.Item().Table(table =>
                     {
                         table.ColumnsDefinition(columns =>
                         {
-                            columns.ConstantColumn(60);  // Inv. Broj
+                            columns.ConstantColumn(50);  // Inv. Broj
                             columns.RelativeColumn();    // Naziv
-                            columns.ConstantColumn(40);  // Knj. Kol
-                            columns.ConstantColumn(40);  // Stv. Kol
-                            columns.ConstantColumn(40);  // Razl. Kol
-                            columns.ConstantColumn(80);  // Knj. Vred
-                            columns.ConstantColumn(80);  // Proc. Vred
-                            columns.ConstantColumn(80);  // Razl. Vred
+                            columns.ConstantColumn(35);  // Knj. Kol
+                            columns.ConstantColumn(35);  // Stv. Kol
+                            columns.ConstantColumn(35);  // Razl. Kol
+                            columns.ConstantColumn(65);  // Knj. Vred
+                            columns.ConstantColumn(65);  // Proc. Vred
+                            columns.ConstantColumn(65);  // Razl. Vred
                         });
 
                         table.Header(header =>
@@ -117,8 +117,8 @@ public class PopisIzvestajDocument : IDocument
 
                             static IContainer HeaderStyle(IContainer c)
                                 => c.Background(Colors.Indigo.Darken4)
-                                    .PaddingVertical(4).PaddingHorizontal(4)
-                                    .DefaultTextStyle(x => x.SemiBold().FontColor(Colors.White).FontSize(8.5f));
+                                    .PaddingVertical(4).PaddingHorizontal(2)
+                                    .DefaultTextStyle(x => x.SemiBold().FontColor(Colors.White).FontSize(7.5f));
                         });
 
                         foreach (var stavka in kontoGroup.OrderBy(x => x.Sredstvo.InventarskiBrojSort))
@@ -141,8 +141,8 @@ public class PopisIzvestajDocument : IDocument
 
                         static IContainer RowStyle(IContainer c)
                             => c.BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2)
-                                .PaddingVertical(3).PaddingHorizontal(4)
-                                .DefaultTextStyle(x => x.FontSize(8.5f));
+                                .PaddingVertical(3).PaddingHorizontal(2)
+                                .DefaultTextStyle(x => x.FontSize(7.5f));
 
                         rjKnjVred += kontoKnjVred;
                         rjProcVred += kontoProcVred;
@@ -170,14 +170,14 @@ public class PopisIzvestajDocument : IDocument
                 {
                     ojSumTable.ColumnsDefinition(c =>
                     {
-                        c.ConstantColumn(60);
+                        c.ConstantColumn(50);
                         c.RelativeColumn();
-                        c.ConstantColumn(40);
-                        c.ConstantColumn(40);
-                        c.ConstantColumn(40);
-                        c.ConstantColumn(80);
-                        c.ConstantColumn(80);
-                        c.ConstantColumn(80);
+                        c.ConstantColumn(35);
+                        c.ConstantColumn(35);
+                        c.ConstantColumn(35);
+                        c.ConstantColumn(65);
+                        c.ConstantColumn(65);
+                        c.ConstantColumn(65);
                     });
                     
                     ojSumTable.Cell().ColumnSpan(5).Element(OjSumStyle).Text($"Zbir za obračunsku jedinicu {rjGroup.Key}").Bold();
@@ -200,9 +200,9 @@ public class PopisIzvestajDocument : IDocument
                 table.ColumnsDefinition(c =>
                 {
                     c.RelativeColumn();
-                    c.ConstantColumn(80);
-                    c.ConstantColumn(80);
-                    c.ConstantColumn(80);
+                    c.ConstantColumn(65);
+                    c.ConstantColumn(65);
+                    c.ConstantColumn(65);
                 });
                 
                 table.Cell().Element(GrandSumStyle).AlignRight().PaddingRight(5).Text("UKUPAN POPIS:").Bold();

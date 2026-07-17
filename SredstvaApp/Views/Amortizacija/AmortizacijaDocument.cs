@@ -27,10 +27,10 @@ public class AmortizacijaDocument : IDocument
     {
         container.Page(page =>
         {
-            page.Size(PageSizes.A4.Landscape());
-            page.Margin(1, Unit.Centimetre);
+            page.Size(PageSizes.A4.Portrait());
+            page.Margin(0.5f, Unit.Centimetre);
             page.PageColor(Colors.White);
-            page.DefaultTextStyle(x => x.FontSize(9).FontFamily("Calibri"));
+            page.DefaultTextStyle(x => x.FontSize(8).FontFamily("Calibri"));
 
             page.Header().Element(ComposeHeader);
             page.Content().Element(ComposeContent);
@@ -44,19 +44,19 @@ public class AmortizacijaDocument : IDocument
         {
             row.RelativeItem().Column(column =>
             {
-                column.Item().Text($"OBRAČUN AMORTIZACIJE OSNOVNIH SREDSTAVA").FontSize(16).SemiBold().FontColor(_primaryColor);
-                column.Item().Text($"Za period: {_odDatuma:dd.MM.yyyy} - {_doDatuma:dd.MM.yyyy}").FontSize(12).FontColor(Colors.Grey.Darken2);
+                column.Item().Text($"OBRAČUN AMORTIZACIJE OSNOVNIH SREDSTAVA").FontSize(14).SemiBold().FontColor(_primaryColor);
+                column.Item().Text($"Za period: {_odDatuma:dd.MM.yyyy} - {_doDatuma:dd.MM.yyyy}").FontSize(11).FontColor(Colors.Grey.Darken2);
             });
 
-            row.ConstantItem(250).AlignRight().Column(column =>
+            row.ConstantItem(200).AlignRight().Column(column =>
             {
                 if (_firma != null)
                 {
-                    column.Item().AlignRight().Text(_firma.Naziv).FontSize(12).SemiBold().FontColor(Colors.Black);
+                    column.Item().AlignRight().Text(_firma.Naziv).FontSize(11).SemiBold().FontColor(Colors.Black);
                     if (!string.IsNullOrEmpty(_firma.Mesto))
-                        column.Item().AlignRight().Text(_firma.Mesto).FontSize(10).FontColor(Colors.Grey.Darken2);
+                        column.Item().AlignRight().Text(_firma.Mesto).FontSize(9).FontColor(Colors.Grey.Darken2);
                     if (!string.IsNullOrEmpty(_firma.PIB))
-                        column.Item().AlignRight().Text($"PIB: {_firma.PIB}").FontSize(10).FontColor(Colors.Grey.Darken2);
+                        column.Item().AlignRight().Text($"PIB: {_firma.PIB}").FontSize(9).FontColor(Colors.Grey.Darken2);
                 }
             });
         });
@@ -70,26 +70,26 @@ public class AmortizacijaDocument : IDocument
 
             foreach (var ojGroup in ojGroups)
             {
-                col.Item().PaddingTop(10).Text($"Obračunska jedinica: {ojGroup.Key}").FontSize(12).Bold().FontColor(Colors.Indigo.Darken3);
+                col.Item().PaddingTop(10).Text($"Obračunska jedinica: {ojGroup.Key}").FontSize(11).Bold().FontColor(Colors.Indigo.Darken3);
 
                 var kontoGroups = ojGroup.GroupBy(x => x.Konto).OrderBy(g => g.Key).ToList();
 
                 foreach (var kontoGroup in kontoGroups)
                 {
-                    col.Item().PaddingTop(5).Text($"Konto: {kontoGroup.Key}").FontSize(11).Bold().FontColor(Colors.Indigo.Darken2);
+                    col.Item().PaddingTop(5).Text($"Konto: {kontoGroup.Key}").FontSize(10).Bold().FontColor(Colors.Indigo.Darken2);
 
                     col.Item().Table(table =>
                     {
                         table.ColumnsDefinition(columns =>
                         {
-                            columns.ConstantColumn(70);  // Inv. Br.
+                            columns.ConstantColumn(50);  // Inv. Br.
                             columns.RelativeColumn();    // Naziv
-                            columns.ConstantColumn(45);  // Stopa %
-                            columns.ConstantColumn(90);  // Nabavna Vr.
-                            columns.ConstantColumn(90);  // Prethodna isp.
-                            columns.ConstantColumn(90);  // Nova Amortizacija
-                            columns.ConstantColumn(90);  // Nova Ispravka ukupno
-                            columns.ConstantColumn(90);  // Sadašnja vrednost
+                            columns.ConstantColumn(35);  // Stopa %
+                            columns.ConstantColumn(65);  // Nabavna Vr.
+                            columns.ConstantColumn(65);  // Prethodna isp.
+                            columns.ConstantColumn(65);  // Nova Amortizacija
+                            columns.ConstantColumn(65);  // Nova Ispravka ukupno
+                            columns.ConstantColumn(65);  // Sadašnja vrednost
                         });
 
                         // Header tabele
@@ -106,8 +106,8 @@ public class AmortizacijaDocument : IDocument
 
                             static IContainer HdrStyle(IContainer c)
                                 => c.Background(Colors.Indigo.Darken4)
-                                    .PaddingVertical(4).PaddingHorizontal(4)
-                                    .DefaultTextStyle(x => x.SemiBold().FontColor(Colors.White).FontSize(8.5f));
+                                    .PaddingVertical(4).PaddingHorizontal(2)
+                                    .DefaultTextStyle(x => x.SemiBold().FontColor(Colors.White).FontSize(7.5f));
                         });
 
                         var amGroups = kontoGroup.GroupBy(x => x.AmortizacionaGrupa).OrderBy(g => g.Key).ToList();
@@ -143,8 +143,8 @@ public class AmortizacijaDocument : IDocument
 
                                 static IContainer RowStyle(IContainer c)
                                     => c.BorderBottom(0.5f).BorderColor(Colors.Grey.Lighten2)
-                                        .PaddingVertical(3).PaddingHorizontal(4)
-                                        .DefaultTextStyle(x => x.FontSize(8.5f));
+                                        .PaddingVertical(3).PaddingHorizontal(2)
+                                        .DefaultTextStyle(x => x.FontSize(7.5f));
                             }
 
                             // Zbir za Amortizacionu Grupu
@@ -171,14 +171,14 @@ public class AmortizacijaDocument : IDocument
                 {
                     ojSumTable.ColumnsDefinition(c =>
                     {
-                        c.ConstantColumn(70);
+                        c.ConstantColumn(50);
                         c.RelativeColumn();
-                        c.ConstantColumn(45);
-                        c.ConstantColumn(90);
-                        c.ConstantColumn(90);
-                        c.ConstantColumn(90);
-                        c.ConstantColumn(90);
-                        c.ConstantColumn(90);
+                        c.ConstantColumn(35);
+                        c.ConstantColumn(65);
+                        c.ConstantColumn(65);
+                        c.ConstantColumn(65);
+                        c.ConstantColumn(65);
+                        c.ConstantColumn(65);
                     });
 
                     ojSumTable.Cell().ColumnSpan(3).Element(OjSumStyle).Text($"Zbir za obracunsku jedinicu {ojGroup.Key}").Bold();
@@ -201,14 +201,14 @@ public class AmortizacijaDocument : IDocument
             {
                 sumTable.ColumnsDefinition(c =>
                 {
-                    c.ConstantColumn(70);
+                    c.ConstantColumn(50);
                     c.RelativeColumn();
-                    c.ConstantColumn(45);
-                    c.ConstantColumn(90);
-                    c.ConstantColumn(90);
-                    c.ConstantColumn(90);
-                    c.ConstantColumn(90);
-                    c.ConstantColumn(90);
+                    c.ConstantColumn(35);
+                    c.ConstantColumn(65);
+                    c.ConstantColumn(65);
+                    c.ConstantColumn(65);
+                    c.ConstantColumn(65);
+                    c.ConstantColumn(65);
                 });
 
                 sumTable.Cell().ColumnSpan(3).Element(SumStyle).Text("UKUPNI ZBIR SVIH SREDSTAVA").Bold();
