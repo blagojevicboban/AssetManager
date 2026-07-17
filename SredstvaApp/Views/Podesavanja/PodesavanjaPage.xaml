@@ -194,6 +194,45 @@
                     </StackPanel>
                 </Grid>
             </TabItem>
+            <!-- TAB: Uvoz iz starog programa -->
+            <TabItem Header="📥 Uvoz iz starog programa">
+                <Grid Margin="0,12,0,0">
+                    <StackPanel>
+                        <Border Style="{StaticResource Card}" Padding="20">
+                            <StackPanel>
+                                <TextBlock Text="Uvoz podataka iz starog (DOS/FoxPro) programa" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,4"/>
+                                <TextBlock Text="Izaberite folder u kojem se nalaze podaci iz starog programa (npr. C:\arhibEL\SREDSTVA). Sistem će očitati listu firmi (KORISNIC.DBF) i ponuditi Vam uvoz izabranih firmi." TextWrapping="Wrap" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,16"/>
+                                
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="TxtStarProgramFolder" Grid.Column="0" IsReadOnly="True" Background="#F3F4F6" Height="32" VerticalContentAlignment="Center" Margin="0,0,8,0" Padding="8,0"/>
+                                    <Button x:Name="BtnIzaberiStariFolder" Grid.Column="1" Content="📂 Izaberi folder" Style="{StaticResource SecondaryButton}" Height="32" Click="BtnIzaberiStariFolder_Click"/>
+                                </Grid>
+
+                                <DataGrid x:Name="LstFirmeIzStarogPrograma" AutoGenerateColumns="False" IsReadOnly="True" 
+                                          HeadersVisibility="Column" SelectionMode="Single" Margin="0,16,0,16" Height="200" Visibility="Collapsed">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Šifra" Binding="{Binding Sifra}" Width="60"/>
+                                        <DataGridTextColumn Header="Naziv" Binding="{Binding Naziv}" Width="*"/>
+                                        <DataGridTextColumn Header="PIB" Binding="{Binding Pib}" Width="100"/>
+                                        <DataGridTextColumn Header="MB" Binding="{Binding MaticniBroj}" Width="100"/>
+                                        <DataGridTemplateColumn Header="Akcija" Width="120">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="📥 Uvezi" Click="BtnUveziFirmu_Click" Tag="{Binding}" Style="{StaticResource PrimaryButton}" Height="28" Padding="12,0" Margin="4"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
         </TabControl>
 
         <!-- STATUS BAR -->

@@ -24,6 +24,7 @@ public class PrijavaStavkaViewModel
     public int ObracunskaJedinica { get; set; }
     public decimal Kolicina { get; set; } = 1m;
     public decimal OtpisanaVrednost { get; set; }
+    public int Sifra { get; set; }
     public string BrojFakture { get; set; } = string.Empty;
 }
 
@@ -91,7 +92,8 @@ public partial class PrijavaWindow : Window
                 ObracunskaJedinica = p.ObracunskaJedinica,
                 Kolicina = p.Kolicina,
                 OtpisanaVrednost = p.OtpisanaVrednost,
-                BrojFakture = p.BrojFakture
+                BrojFakture = p.BrojFakture,
+                Sifra = p.Sredstvo?.LegacySifra ?? 0
             });
         }
 

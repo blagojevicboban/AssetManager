@@ -176,4 +176,54 @@ public partial class PodesavanjaPage : Page
             MessageBox.Show($"Nije moguće otvoriti folder: {ex.Message}", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
+
+    private void BtnIzaberiStariFolder_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new Microsoft.Win32.OpenFolderDialog
+        {
+            Title = "Izaberite folder starog programa (npr. C:\\arhibEL\\SREDSTVA)"
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            TxtStarProgramFolder.Text = dialog.FolderName;
+            try
+            {
+                var firme = DbfImportService.Instance.UcitajFirme(dialog.FolderName);
+                LstFirmeIzStarogPrograma.ItemsSource = firme;
+                LstFirmeIzStarogPrograma.Visibility = Visibility.Visible;
+                StatusMessage.Text = $"Pronađeno firmi: {firme.Count}";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Greška pri čitanju KORISNIC.DBF:\n{ex.Message}", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+                LstFirmeIzStarogPrograma.Visibility = Visibility.Collapsed;
+            }
+        }
+    }
+
+    private void BtnUveziFirmu_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.Tag is DbfFirmaDto firma)
+        {
+            var msg = MessageBox.Show($"Da li ste sigurni da želite da uvezete firmu '{firma.Naziv}'?\nProces može potrajati.", "Potvrda uvoza", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (msg == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    StatusMessage.Text = "Uvoz u toku... Molimo sačekajte.";
+                    // Može se uraditi asinhrono da ne blokira UI
+                    var novaBazaPath = DbfImportService.Instance.ImportFirma(firma);
+                    
+                    MessageBox.Show($"Firma '{firma.Naziv}' je uspešno uvezena u bazu:\n{novaBazaPath}", "Uvoz završen", MessageBoxButton.OK, MessageBoxImage.Information);
+                    StatusMessage.Text = "Uvoz uspešno završen.";
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Greška pri uvozu firme:\n{ex.Message}", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+                    StatusMessage.Text = "Greška pri uvozu.";
+                }
+            }
+        }
+    }
 }

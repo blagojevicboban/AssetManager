@@ -58,6 +58,7 @@
                       IsReadOnly="True" BorderThickness="0" Background="Transparent">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="#" Binding="{Binding RedBroj}" Width="40"/>
+                    <DataGridTextColumn Header="Šifra" Binding="{Binding Sifra}" Width="60"/>
                     <DataGridTextColumn Header="Inv. Br." Binding="{Binding InventarskiBroj}" Width="100"/>
                     <DataGridTextColumn Header="Naziv sredstva" Binding="{Binding Naziv}" Width="*" MinWidth="200"/>
                     <DataGridTextColumn Header="Količina" Binding="{Binding Kolicina, StringFormat=N0}" Width="60"/>
