@@ -58,7 +58,7 @@ public class RashodDocument : IDocument
         {
             row.RelativeItem().Column(column =>
             {
-                column.Item().Text($"REKAPITULACIJA RASHODA (NALOZI)").FontSize(16).SemiBold().FontColor(_primaryColor);
+                column.Item().Text($"PROMENE OSNOVNIH SREDSTAVA").FontSize(16).SemiBold().FontColor(_primaryColor);
                 column.Item().Text($"Datum štampe: {DateTime.Now:dd.MM.yyyy}").FontSize(10).FontColor(Colors.Grey.Medium);
             });
 

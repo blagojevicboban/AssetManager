@@ -52,13 +52,19 @@ namespace TestDb
             
             // Koliko sredstava NEMA Rashod ali ima storniranje u kartici?
             var stornoIds = db.Kartice
-                .Where(k => k.OpisPromene.StartsWith("Storniranje") || k.OpisPromene.Contains("rashod") || k.OpisPromene.Contains("Rashod"))
+                .Where(k => k.OpisPromene.StartsWith("Storniranje") || k.OpisPromene.ToLower().Contains("rashod") || k.OpisPromene.ToLower().Contains("prodaj") || k.OpisPromene.ToLower().Contains("otudj") || k.OpisPromene.ToLower().Contains("otuđ") || k.OpisPromene.ToLower().Contains("bris"))
                 .Select(k => k.SredstvoId)
                 .Distinct()
                 .ToList();
             
             var stornoAktivna = db.Sredstva.Where(s => stornoIds.Contains(s.Id) && s.JeAktivno).ToList();
-            Console.WriteLine($"Broj sredstava koja imaju storniranje u kartici a JeAktivno=true: {stornoAktivna.Count}");
+            var samoUKartici = stornoAktivna.Where(s => !rashodovanaIds.Contains(s.Id)).ToList();
+            Console.WriteLine($"Sredstva sa 'prodaj/otudj/bris/rashod' u KARTICI ali bez RASHOD zapisa: {samoUKartici.Count}");
+            foreach (var s in samoUKartici.Take(20))
+            {
+                var k = db.Kartice.Where(x => x.SredstvoId == s.Id && (x.OpisPromene.StartsWith("Storniranje") || x.OpisPromene.ToLower().Contains("rashod") || x.OpisPromene.ToLower().Contains("prodaj") || x.OpisPromene.ToLower().Contains("otudj") || x.OpisPromene.ToLower().Contains("otuđ") || x.OpisPromene.ToLower().Contains("bris"))).FirstOrDefault();
+                Console.WriteLine($"  Id={s.Id}, Sifra={s.LegacySifra}, Kolicina={s.Kartice.OrderByDescending(x=>x.RedBroj).FirstOrDefault()?.Kolicina}, Opis={k?.OpisPromene}");
+            }
         }
     }
 }
