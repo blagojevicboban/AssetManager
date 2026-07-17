@@ -95,7 +95,7 @@ public class AmortizacijaDocument : IDocument
                         // Header tabele
                         table.Header(header =>
                         {
-                            header.Cell().Element(HdrStyle).Text("Inv. Br.").Bold();
+                            header.Cell().Element(HdrStyle).Text("Šifra").Bold();
                             header.Cell().Element(HdrStyle).Text("Naziv sredstva").Bold();
                             header.Cell().Element(HdrStyle).AlignRight().Text("Stopa %").Bold();
                             header.Cell().Element(HdrStyle).AlignRight().Text("Nabavna Vr.").Bold();
@@ -114,11 +114,11 @@ public class AmortizacijaDocument : IDocument
 
                         foreach (var amGroup in amGroups)
                         {
-                            foreach (var r in amGroup.OrderBy(x => x.InventarskiBrojSort))
+                            foreach (var r in amGroup.OrderBy(x => x.LegacySifra))
                             {
                                 bool imaAmort = r.NovaAmortizacija > 0;
 
-                                table.Cell().Element(RowStyle).Text(r.InventarskiBroj);
+                                table.Cell().Element(RowStyle).Text(r.LegacySifra.ToString());
                                 table.Cell().Element(RowStyle).Text(r.Naziv);
                                 table.Cell().Element(RowStyle).AlignRight().Text(r.StopaAmortizacije.ToString("N2"));
                                 table.Cell().Element(RowStyle).AlignRight().Text(r.NabavnaVrednost.ToString("N2"));

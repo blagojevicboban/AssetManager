@@ -121,7 +121,7 @@ public class PopisIzvestajDocument : IDocument
                                     .DefaultTextStyle(x => x.SemiBold().FontColor(Colors.White).FontSize(7.5f));
                         });
 
-                        foreach (var stavka in kontoGroup.OrderBy(x => x.Sredstvo.InventarskiBrojSort))
+                        foreach (var stavka in kontoGroup.OrderBy(x => x.Sredstvo.LegacySifra))
                         {
                             kontoKnjVred += stavka.KnjiznaVrednost;
                             kontoProcVred += stavka.ProcenjenaVrednost;

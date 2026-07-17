@@ -125,7 +125,7 @@ public class PraznaPopisnaListaDocument : IDocument
                         });
 
                         int rbr = 1;
-                        foreach (var stavka in kontoGroup.OrderBy(x => x.Sredstvo.InventarskiBrojSort))
+                        foreach (var stavka in kontoGroup.OrderBy(x => x.Sredstvo.LegacySifra))
                         {
                             var nabavna = stavka.Sredstvo.NabavnaVrednost;
                             var otpisana = stavka.Sredstvo.IspravkaVrednosti;

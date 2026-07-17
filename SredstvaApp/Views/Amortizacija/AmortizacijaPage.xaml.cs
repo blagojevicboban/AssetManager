@@ -15,6 +15,7 @@ public class AmortizacijaResultViewModel
 {
     public int SredstvoId { get; init; }
     public string InventarskiBroj { get; init; } = string.Empty;
+    public int LegacySifra { get; init; }
     public string Naziv { get; init; } = string.Empty;
     public int ObracunskaJedinica { get; init; }
     public string Konto { get; init; } = string.Empty;
@@ -26,7 +27,6 @@ public class AmortizacijaResultViewModel
     
     public decimal NovaIspravkaUkupno => PrethodnaIspravka + NovaAmortizacija;
     public decimal SadasnjaVrednost => NabavnaVrednost - NovaIspravkaUkupno;
-    public string InventarskiBrojSort => System.Text.RegularExpressions.Regex.Replace(InventarskiBroj ?? "", @"\d+", m => m.Value.PadLeft(20, '0'));
 }
 
 public partial class AmortizacijaPage : Page
@@ -129,6 +129,7 @@ public partial class AmortizacijaPage : Page
             {
                 SredstvoId = s.Id,
                 InventarskiBroj = s.InventarskiBroj,
+                LegacySifra = s.LegacySifra,
                 Naziv = s.Naziv,
                 ObracunskaJedinica = s.ObracunskaJedinica,
                 Konto = s.Konto,
@@ -140,8 +141,8 @@ public partial class AmortizacijaPage : Page
             });
         }
 
-        // Sortiramo po inventarskom broju (ili amortizacionoj grupi)
-        _results = _results.OrderBy(r => r.InventarskiBroj).ToList();
+        // Sortiramo po šifri
+        _results = _results.OrderBy(r => r.LegacySifra).ToList();
 
         // Prikaz rezultata
         AmortizacijaGrid.ItemsSource = _results;

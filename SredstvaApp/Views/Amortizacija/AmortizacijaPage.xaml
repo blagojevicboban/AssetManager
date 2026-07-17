@@ -56,7 +56,8 @@
                           BorderThickness="0"
                           CanUserSortColumns="True">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Inv. Broj" Binding="{Binding InventarskiBroj}" SortMemberPath="InventarskiBrojSort" Width="90">
+                        <DataGridTextColumn Header="Šifra" Binding="{Binding LegacySifra}" SortMemberPath="LegacySifra" Width="70"/>
+                        <DataGridTextColumn Header="Inv. Broj" Binding="{Binding InventarskiBroj}" SortMemberPath="InventarskiBroj" Width="90">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Center"/>

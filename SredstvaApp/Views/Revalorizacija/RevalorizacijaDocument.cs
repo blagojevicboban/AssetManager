@@ -86,7 +86,7 @@ public class RevalorizacijaDocument : IDocument
                 // Header
                 table.Header(header =>
                 {
-                    header.Cell().Element(HdrStyle).Text("Inv. Br.").Bold();
+                    header.Cell().Element(HdrStyle).Text("Šifra").Bold();
                     header.Cell().Element(HdrStyle).Text("Naziv sredstva").Bold();
                     header.Cell().Element(HdrStyle).AlignRight().Text("Nabavna Vr.").Bold();
                     header.Cell().Element(HdrStyle).AlignRight().Text("Otpisana Vr.").Bold();
@@ -102,11 +102,11 @@ public class RevalorizacijaDocument : IDocument
                 });
 
                 // Redovi
-                foreach (var r in _rezultati.OrderBy(x => x.InventarskiBrojSort))
+                foreach (var r in _rezultati.OrderBy(x => x.LegacySifra))
                 {
                     bool imaEfekat = r.EfekatNabavna != 0;
 
-                    table.Cell().Element(RowStyle).Text(r.InventarskiBroj);
+                    table.Cell().Element(RowStyle).Text(r.LegacySifra.ToString());
                     table.Cell().Element(RowStyle).Text(r.Naziv);
                     table.Cell().Element(RowStyle).AlignRight().Text(r.StaraNabavna.ToString("N2"));
                     table.Cell().Element(RowStyle).AlignRight().Text(r.StaraIspravka.ToString("N2"));

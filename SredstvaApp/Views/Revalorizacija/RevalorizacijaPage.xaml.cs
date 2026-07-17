@@ -15,6 +15,7 @@ public class RevalorizacijaResultViewModel
 {
     public int SredstvoId { get; init; }
     public string InventarskiBroj { get; init; } = string.Empty;
+    public int LegacySifra { get; init; }
     public string Naziv { get; init; } = string.Empty;
     public decimal PrimenjeniGodisnjiKoef { get; init; }
     
@@ -27,7 +28,6 @@ public class RevalorizacijaResultViewModel
     public decimal EfekatNabavna => NovaNabavna - StaraNabavna;
     public decimal EfekatIspravka => NovaIspravka - StaraIspravka;
     public decimal NovaSadasnja => NovaNabavna - NovaIspravka;
-    public string InventarskiBrojSort => System.Text.RegularExpressions.Regex.Replace(InventarskiBroj ?? "", @"\d+", m => m.Value.PadLeft(20, '0'));
 }
 
 public partial class RevalorizacijaPage : Page
@@ -145,6 +145,7 @@ public partial class RevalorizacijaPage : Page
             {
                 SredstvoId = s.Id,
                 InventarskiBroj = s.InventarskiBroj,
+                LegacySifra = s.LegacySifra,
                 Naziv = s.Naziv,
                 PrimenjeniGodisnjiKoef = godKoef,
                 StaraNabavna = staraNabavna,
@@ -154,7 +155,7 @@ public partial class RevalorizacijaPage : Page
             });
         }
 
-        _results = _results.OrderBy(r => r.InventarskiBroj).ToList();
+        _results = _results.OrderBy(r => r.LegacySifra).ToList();
 
         RevalorizacijaGrid.ItemsSource = _results;
         
