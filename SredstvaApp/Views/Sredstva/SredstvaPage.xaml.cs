@@ -23,7 +23,7 @@ public partial class SredstvaPage : Page
     private void SredstvaPage_Loaded(object sender, RoutedEventArgs e)
     {
         _all = _db.Sredstva
-            .OrderBy(s => s.Naziv)
+            .OrderBy(s => s.LegacySifra)
             .ToList();
 
         SredstvaGrid.ItemsSource = _all;
@@ -41,7 +41,7 @@ public partial class SredstvaPage : Page
         {
             SredstvaGrid.ItemsSource = _all.Where(s =>
                 s.Naziv.Contains(q, StringComparison.OrdinalIgnoreCase) ||
-                s.InventarskiBroj.Contains(q, StringComparison.OrdinalIgnoreCase)).ToList();
+                s.LegacySifra.ToString().Contains(q)).ToList();
         }
     }
 

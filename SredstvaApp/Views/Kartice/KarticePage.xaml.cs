@@ -27,7 +27,7 @@ public partial class KarticePage : Page
     {
         _allSredstva = _db.Sredstva
             .Include(s => s.Kartice)
-            .OrderBy(s => s.InventarskiBroj)
+            .OrderBy(s => s.LegacySifra)
             .ToList();
 
         SredstvaList.ItemsSource = _allSredstva;
@@ -53,7 +53,7 @@ public partial class KarticePage : Page
         else
         {
             SredstvaList.ItemsSource = _allSredstva.Where(s =>
-                s.InventarskiBroj.Contains(q, StringComparison.OrdinalIgnoreCase) ||
+                s.LegacySifra.ToString().Contains(q) ||
                 s.Naziv.Contains(q, StringComparison.OrdinalIgnoreCase)).ToList();
         }
     }
