@@ -4,8 +4,9 @@ using System.Linq;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using SredstvaApp.Views.Rashod;
 
-namespace SredstvaApp.Views.Rashod.Stampe;
+namespace SredstvaApp.Views.Prijave.Stampe;
 
 public class PrijavaDocument : IDocument
 {
@@ -52,7 +53,7 @@ public class PrijavaDocument : IDocument
         {
             row.RelativeItem().Column(col =>
             {
-                col.Item().PaddingTop(10).Text($"PRIJAVA (NALOG ZA KNJIŽENJE) BR: {_brojNaloga}").SemiBold().FontSize(16).FontColor(_primaryColor);
+                col.Item().PaddingTop(10).Text($"PRIJAVA OSNOVNIH SREDSTAVA BR: {_brojNaloga}").SemiBold().FontSize(16).FontColor(_primaryColor);
                 col.Item().Text($"Datum prijave: {_datumAktiviranja:dd.MM.yyyy.}").FontSize(10).FontColor(Colors.Grey.Medium);
                 col.Item().Text($"Dobavljač/Partner: {_dobavljac}").FontSize(10).FontColor(Colors.Grey.Medium);
             });

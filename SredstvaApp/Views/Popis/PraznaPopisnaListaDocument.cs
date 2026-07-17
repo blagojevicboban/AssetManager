@@ -45,9 +45,10 @@ public class PraznaPopisnaListaDocument : IDocument
         {
             row.RelativeItem().Column(column =>
             {
-                column.Item().Text($"POPISNA LISTA OSNOVNIH SREDSTAVA").FontSize(14).SemiBold().FontColor(Colors.Indigo.Darken4);
-                column.Item().Text($"Za godinu: {_popis.Godina}").FontSize(11).FontColor(Colors.Grey.Darken2);
+                column.Item().Text($"POPISNA LISTA OSNOVNIH SREDSTAVA").FontSize(12).SemiBold().FontColor(Colors.Indigo.Darken4);
+                column.Item().Text($"Za godinu: {_popis.Godina}").FontSize(10).FontColor(Colors.Grey.Darken2);
                 column.Item().Text($"Datum popisa: {_popis.DatumPopisa:dd.MM.yyyy}").FontSize(9).FontColor(Colors.Grey.Medium);
+                column.Item().Text($"Popis ID: {_popis.Id}").FontSize(9).SemiBold().FontColor(Colors.Grey.Lighten1);
             });
 
             row.ConstantItem(200).AlignRight().Column(column =>
@@ -60,7 +61,6 @@ public class PraznaPopisnaListaDocument : IDocument
                     if (!string.IsNullOrEmpty(_firma.PIB))
                         column.Item().AlignRight().Text($"PIB: {_firma.PIB}").FontSize(9).FontColor(Colors.Grey.Darken2);
                 }
-                column.Item().PaddingTop(5).AlignRight().Text($"Popis ID: {_popis.Id}").FontSize(9).SemiBold().FontColor(Colors.Grey.Lighten1);
             });
         });
     }
@@ -166,7 +166,7 @@ public class PraznaPopisnaListaDocument : IDocument
                             => c.BorderTop(1).BorderBottom(1).BorderColor(Colors.Grey.Darken1)
                                 .Background(Colors.Grey.Lighten3)
                                 .PaddingVertical(4).PaddingHorizontal(4)
-                                .DefaultTextStyle(x => x.SemiBold().FontSize(9f));
+                                .DefaultTextStyle(x => x.SemiBold().FontSize(8f));
                     });
                 }
                 
@@ -197,7 +197,7 @@ public class PraznaPopisnaListaDocument : IDocument
                         => c.Background(Colors.Indigo.Lighten4)
                             .BorderTop(1).BorderColor(Colors.Indigo.Darken3)
                             .PaddingVertical(5).PaddingHorizontal(4)
-                            .DefaultTextStyle(x => x.FontSize(9.5f));
+                            .DefaultTextStyle(x => x.FontSize(8.5f));
                 });
             }
 
@@ -220,7 +220,7 @@ public class PraznaPopisnaListaDocument : IDocument
                     => c.Background(Colors.Grey.Lighten3)
                         .BorderTop(2).BorderBottom(2).BorderColor(Colors.Black)
                         .PaddingVertical(6).PaddingHorizontal(4)
-                        .DefaultTextStyle(x => x.FontSize(10f));
+                        .DefaultTextStyle(x => x.FontSize(8.5f));
             });
             
             column.Item().PaddingTop(30).PaddingBottom(20).Row(row =>

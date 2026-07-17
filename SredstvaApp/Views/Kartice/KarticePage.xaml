@@ -59,11 +59,26 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
+
                 <!-- Naslov -->
-                <StackPanel Grid.Row="0">
-                    <TextBlock x:Name="NaslovText" Text="Naziv" FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" TextWrapping="Wrap"/>
-                    <TextBlock x:Name="SubtitleText" Text="Inv Br" FontSize="14" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0"/>
-                </StackPanel>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock x:Name="NaslovText" Text="Naziv" FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" TextWrapping="Wrap"/>
+                        <TextBlock x:Name="SubtitleText" Text="Inv Br" FontSize="14" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="1" Click="PrintButton_Click" Background="{StaticResource PrimaryBrush}" Foreground="White" Padding="16,8" VerticalAlignment="Top" Cursor="Hand">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🖨️" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Text="ŠTAMPA" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
 
                 <!-- Info kartice (stat boxes) -->
                 <UniformGrid Grid.Row="2" Columns="4" HorizontalAlignment="Stretch">

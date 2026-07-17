@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
 using SredstvaData;
 using SredstvaData.Models;
-using SredstvaApp.Views.Rashod.Stampe;
+using SredstvaApp.Views.Prijave.Stampe;
 
 namespace SredstvaApp.Views.Rashod;
 

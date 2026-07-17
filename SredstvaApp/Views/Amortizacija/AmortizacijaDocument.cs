@@ -64,13 +64,13 @@ public class AmortizacijaDocument : IDocument
 
     private void ComposeContent(IContainer container)
     {
-        container.PaddingVertical(6).Column(col =>
+        container.PaddingVertical(2).Column(col =>
         {
             var ojGroups = _rezultati.GroupBy(x => x.ObracunskaJedinica).OrderBy(g => g.Key).ToList();
 
             foreach (var ojGroup in ojGroups)
             {
-                col.Item().PaddingTop(10).Text($"Obračunska jedinica: {ojGroup.Key}").FontSize(11).Bold().FontColor(Colors.Indigo.Darken3);
+                col.Item().PaddingTop(5).Text($"Obračunska jedinica: {ojGroup.Key}").FontSize(11).Bold().FontColor(Colors.Indigo.Darken3);
 
                 var kontoGroups = ojGroup.GroupBy(x => x.Konto).OrderBy(g => g.Key).ToList();
 

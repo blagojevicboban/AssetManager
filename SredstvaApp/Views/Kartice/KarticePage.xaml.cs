@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Fluent;
 using SredstvaData;
 using SredstvaData.Models;
 
@@ -108,6 +111,32 @@ public partial class KarticePage : Page
         if (redovi.Count > 0)
         {
             KarticaGrid.ScrollIntoView(redovi.Last());
+        }
+    }
+
+    private void PrintButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (SredstvaList.SelectedItem is not Sredstvo sredstvo)
+        {
+            MessageBox.Show("Molimo izaberite sredstvo za štampu.", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        try
+        {
+            var firma = _db.Firme.FirstOrDefault();
+            var kartice = sredstvo.Kartice.OrderBy(k => k.Datum).ThenBy(k => k.RedBroj).ToList();
+
+            var doc = new Stampe.AnalitickaKarticaDocument(sredstvo, kartice, firma);
+
+            var tempFile = Path.Combine(Path.GetTempPath(), $"AnalitickaKartica_{sredstvo.InventarskiBroj}_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+            doc.GeneratePdf(tempFile);
+
+            Process.Start(new ProcessStartInfo(tempFile) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Greška prilikom generisanja PDF-a: {ex.Message}", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }
