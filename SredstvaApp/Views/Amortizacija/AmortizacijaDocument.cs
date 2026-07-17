@@ -82,14 +82,14 @@ public class AmortizacijaDocument : IDocument
                     {
                         table.ColumnsDefinition(columns =>
                         {
-                            columns.ConstantColumn(50);  // Inv. Br.
+                            columns.ConstantColumn(40);  // Inv. Br.
                             columns.RelativeColumn();    // Naziv
-                            columns.ConstantColumn(35);  // Stopa %
-                            columns.ConstantColumn(65);  // Nabavna Vr.
-                            columns.ConstantColumn(65);  // Prethodna isp.
-                            columns.ConstantColumn(65);  // Nova Amortizacija
-                            columns.ConstantColumn(65);  // Nova Ispravka ukupno
-                            columns.ConstantColumn(65);  // Sadašnja vrednost
+                            columns.ConstantColumn(30);  // Stopa %
+                            columns.ConstantColumn(74);  // Nabavna Vr.
+                            columns.ConstantColumn(74);  // Prethodna isp.
+                            columns.ConstantColumn(74);  // Nova Amortizacija
+                            columns.ConstantColumn(74);  // Nova Ispravka ukupno
+                            columns.ConstantColumn(74);  // Sadašnja vrednost
                         });
 
                         // Header tabele
@@ -171,14 +171,14 @@ public class AmortizacijaDocument : IDocument
                 {
                     ojSumTable.ColumnsDefinition(c =>
                     {
-                        c.ConstantColumn(50);
+                        c.ConstantColumn(40);
                         c.RelativeColumn();
-                        c.ConstantColumn(35);
-                        c.ConstantColumn(65);
-                        c.ConstantColumn(65);
-                        c.ConstantColumn(65);
-                        c.ConstantColumn(65);
-                        c.ConstantColumn(65);
+                        c.ConstantColumn(30);
+                        c.ConstantColumn(74);
+                        c.ConstantColumn(74);
+                        c.ConstantColumn(74);
+                        c.ConstantColumn(74);
+                        c.ConstantColumn(74);
                     });
 
                     ojSumTable.Cell().ColumnSpan(3).Element(OjSumStyle).Text($"Zbir za obracunsku jedinicu {ojGroup.Key}").Bold();
@@ -201,14 +201,14 @@ public class AmortizacijaDocument : IDocument
             {
                 sumTable.ColumnsDefinition(c =>
                 {
-                    c.ConstantColumn(50);
+                    c.ConstantColumn(40);
                     c.RelativeColumn();
-                    c.ConstantColumn(35);
-                    c.ConstantColumn(65);
-                    c.ConstantColumn(65);
-                    c.ConstantColumn(65);
-                    c.ConstantColumn(65);
-                    c.ConstantColumn(65);
+                    c.ConstantColumn(30);
+                    c.ConstantColumn(74);
+                    c.ConstantColumn(74);
+                    c.ConstantColumn(74);
+                    c.ConstantColumn(74);
+                    c.ConstantColumn(74);
                 });
 
                 sumTable.Cell().ColumnSpan(3).Element(SumStyle).Text("UKUPNI ZBIR SVIH SREDSTAVA").Bold();
@@ -224,26 +224,26 @@ public class AmortizacijaDocument : IDocument
                     => c.Background(Colors.Indigo.Lighten5)
                         .BorderTop(2).BorderColor(Colors.Indigo.Darken4)
                         .BorderBottom(2).BorderColor(Colors.Indigo.Darken4)
-                        .PaddingVertical(6).PaddingHorizontal(4)
-                        .DefaultTextStyle(x => x.FontSize(10f));
+                        .PaddingVertical(6).PaddingHorizontal(2)
+                        .DefaultTextStyle(x => x.FontSize(9.5f));
             });
 
             static IContainer SumStyle(IContainer c)
                 => c.Background(Colors.Grey.Lighten4)
                     .BorderTop(1).BorderColor(Colors.Grey.Darken1)
-                    .PaddingVertical(4).PaddingHorizontal(4)
+                    .PaddingVertical(4).PaddingHorizontal(2)
                     .DefaultTextStyle(x => x.FontSize(8.5f));
 
             static IContainer KontoSumStyle(IContainer c)
                 => c.Background(Colors.Indigo.Lighten5)
                     .BorderTop(1).BorderColor(Colors.Indigo.Darken2)
-                    .PaddingVertical(4).PaddingHorizontal(4)
+                    .PaddingVertical(4).PaddingHorizontal(2)
                     .DefaultTextStyle(x => x.FontSize(9f));
 
             static IContainer OjSumStyle(IContainer c)
                 => c.Background(Colors.Indigo.Lighten4)
                     .BorderTop(1).BorderColor(Colors.Indigo.Darken3)
-                    .PaddingVertical(5).PaddingHorizontal(4)
+                    .PaddingVertical(5).PaddingHorizontal(2)
                     .DefaultTextStyle(x => x.FontSize(9.5f));
         });
     }
