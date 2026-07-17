@@ -1,10 +1,12 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SredstvaApp.ViewModels;
 using SredstvaData;
+using SredstvaData.Models;
 using Velopack;
 
 namespace SredstvaApp;
@@ -72,6 +74,23 @@ public partial class App : Application
 
         var dbContext = AppHost.Services.GetRequiredService<SredstvaDbContext>();
         // Migracije se pokrecu unutar SredstvaDbContext.Create()
+
+        // PATCH: Ispravka za sredstva koja su ranije rashodovana a ostala su JeAktivno=true
+        try
+        {
+            var rashodovanaIds = dbContext.Rashodi
+                .Where(r => r.Kod == TipoviPromena.Rashodovanje || r.Kod == TipoviPromena.Prodaja || r.Kod == TipoviPromena.Otudjenje || r.Kod == TipoviPromena.Brisanje)
+                .Select(r => r.SredstvoId)
+                .Distinct()
+                .ToList();
+            var zaUpdate = dbContext.Sredstva.Where(s => rashodovanaIds.Contains(s.Id) && s.JeAktivno).ToList();
+            if (zaUpdate.Any())
+            {
+                foreach (var s in zaUpdate) s.JeAktivno = false;
+                dbContext.SaveChanges();
+            }
+        }
+        catch { }
 
         var loginWindow = new Views.Korisnici.LoginWindow(dbContext);
         loginWindow.Show();
