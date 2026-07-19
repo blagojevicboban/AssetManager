@@ -91,72 +91,131 @@
             </Grid>
         </Border>
 
-        <!-- DataGrid -->
-        <Border Grid.Row="6" Style="{StaticResource Card}" Padding="0">
-            <DataGrid x:Name="PrijavaGrid" AutoGenerateColumns="False"
-                      IsReadOnly="True" BorderThickness="0" Background="Transparent"
-                      CanUserSortColumns="True"
-                      SelectionChanged="PrijavaGrid_SelectionChanged"
-                      MouseDoubleClick="PrijavaGrid_DoubleClick">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Br. Naloga" Binding="{Binding BrojNaloga}" Width="90">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Center"/>
-                                <Setter Property="FontWeight" Value="SemiBold"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Header="Dobavljač" Binding="{Binding DobavljacNaziv}" Width="*" MinWidth="150"/>
-                    <DataGridTextColumn Header="Datum aktiv." Binding="{Binding DatumAktiviranja, StringFormat=dd.MM.yyyy}" Width="110">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Center"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Header="Br. stavki" Binding="{Binding BrojStavki}" Width="90">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Center"/>
-                                <Setter Property="FontWeight" Value="SemiBold"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Header="Ukupna nabavna vr." Binding="{Binding UkupnaNabavnaVrednost, StringFormat=N2}" Width="160">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Right"/>
-                                <Setter Property="Padding" Value="0,0,10,0"/>
-                                <Setter Property="FontFamily" Value="Consolas"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-                    <DataGridTemplateColumn Header="Status" Width="100">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding KnjizenTekst}"
-                                           HorizontalAlignment="Center"
-                                           FontWeight="SemiBold">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Knjizen}" Value="True">
-                                                    <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Knjizen}" Value="False">
-                                                    <Setter Property="Foreground" Value="{StaticResource WarningBrush}"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
-        </Border>
+        <!-- DataGrid section -->
+        <Grid Grid.Row="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="6*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="4*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- PrijavaGrid -->
+            <Border Grid.Column="0" Style="{StaticResource Card}" Padding="0">
+                <DataGrid x:Name="PrijavaGrid" AutoGenerateColumns="False"
+                          IsReadOnly="True" BorderThickness="0" Background="Transparent"
+                          CanUserSortColumns="True"
+                          SelectionChanged="PrijavaGrid_SelectionChanged"
+                          MouseDoubleClick="PrijavaGrid_DoubleClick">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Br. Naloga" Binding="{Binding BrojNaloga}" Width="90">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Dobavljač" Binding="{Binding DobavljacNaziv}" Width="*" MinWidth="150"/>
+                        <DataGridTextColumn Header="Datum aktiv." Binding="{Binding DatumAktiviranja, StringFormat=dd.MM.yyyy}" Width="110">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Br. stavki" Binding="{Binding BrojStavki}" Width="90">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Ukupna nabavna vr." Binding="{Binding UkupnaNabavnaVrednost, StringFormat=N2}" Width="140">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="Padding" Value="0,0,10,0"/>
+                                    <Setter Property="FontFamily" Value="Consolas"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTemplateColumn Header="Status" Width="80">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding KnjizenTekst}"
+                                               HorizontalAlignment="Center"
+                                               FontWeight="SemiBold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Knjizen}" Value="True">
+                                                        <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Knjizen}" Value="False">
+                                                        <Setter Property="Foreground" Value="{StaticResource WarningBrush}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <!-- Detalji (Stavke) -->
+            <Border Grid.Column="2" Style="{StaticResource Card}" Padding="16,12">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="12"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="TxtDetaljiNaslov" Text="Izaberite nalog" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                        <Button Grid.Column="1" Content="✏️ Uredi Nalog" Style="{StaticResource SecondaryButton}" Height="30" Click="BtnEditNalog_Click"/>
+                    </Grid>
+                    
+                    <DataGrid x:Name="StavkeGrid" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True" 
+                              BorderThickness="1" BorderBrush="{StaticResource BorderBrush}" Background="White">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Red" Binding="{Binding RedBroj}" Width="40">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Naziv (Sredstvo)" Binding="{Binding SredstvoNaziv}" Width="*"/>
+                            <DataGridTextColumn Header="Kol." Binding="{Binding Kolicina}" Width="50">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Vrednost" Binding="{Binding NabavnaVrednost, StringFormat=N2}" Width="90">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                                        <Setter Property="Padding" Value="0,0,5,0"/>
+                                        <Setter Property="FontFamily" Value="Consolas"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+        </Grid>
 
         <!-- Status bar -->
         <Border Grid.Row="7" Padding="0,8,0,0">

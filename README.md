@@ -6,10 +6,12 @@
 
 ## ✨ Funkcionalnosti
 
+- 📊 **Radna tabla (Dashboard)** — vizuelni pregled statistike sredstava sa interaktivnim grafikonima.
 - 📁 **Kartice (Sredstva)** — evidencija, kreiranje i praćenje osnovnih sredstava (nabavna i otpisana vrednost).
 - 📉 **Amortizacija** — automatski godišnji obračun amortizacije, sa kreiranjem detaljnih PDF izveštaja (po kontu i obračunskim jedinicama).
 - 📈 **Revalorizacija** — obračun revalorizacije po definisanim koeficijentima i ažuriranje sadašnje vrednosti sredstava.
-- 📋 **Popisne liste** — kreiranje popisnih komisija, štampanje praznih listi za terenski rad i obrada knjigovodstvenih odstupanja i viškova/manjkova kroz integrisani UI.
+- 📋 **Popisne liste** — kreiranje popisnih komisija sa definisanjem članova i uloga (Predsednik/Član), štampanje praznih listi za terenski rad i obrada knjigovodstvenih odstupanja i viškova/manjkova kroz integrisani UI. PDF izveštaji generišu dinamička polja sa imenima članova za potpisivanje.
+- 🖨 **Nalepnice sa kodovima** — štampanje bar-kod (CODE-128) nalepnica za obeležavanje opreme, sa podrškom za vizuelnu selekciju više sredstava i automatskim generisanjem prilagođenog PDF rasporeda za A4 format nalepnica koristeći ZXing.Net.
 - 📄 **Štampa i izveštaji** — izveštaji se generišu u PDF formatu preko **QuestPDF** biblioteke i prilagođeni su za A3/A4 landscape format štampe.
 
 ---
@@ -20,6 +22,7 @@
 |---|---|
 | Jezik | C# 12 / .NET 8.0 |
 | UI | WPF (Windows Presentation Foundation) |
+| Grafikoni | LiveCharts2 (SkiaSharp) |
 | Arhitektura | Code-Behind (bez striktnog MVVM-a radi brzine razvoja) |
 | Baza podataka | SQLite |
 | ORM | Entity Framework Core 8 |
@@ -90,10 +93,11 @@ Aplikacija se instalira u profil korisnika bez administratorskih prava, a svako 
 
 ## ✨ Features
 
+- 📊 **Dashboard** — visual overview of asset statistics with interactive charts.
 - 📁 **Assets (Cards)** — registration, creation, and tracking of fixed assets (purchase and written-off value).
 - 📉 **Depreciation** — automatic annual calculation of depreciation, with the creation of detailed PDF reports (by account and accounting units).
 - 📈 **Revaluation** — revaluation calculation according to defined coefficients and updating the present value of assets.
-- 📋 **Inventory Lists** — creation of inventory commissions, printing of empty lists for field work, and processing accounting deviations and surpluses/shortages through an integrated UI.
+- 📋 **Inventory Lists** — creation of inventory commissions with defined members and roles (President/Member), printing of empty lists for field work, and processing accounting deviations and surpluses/shortages through an integrated UI. PDF reports feature dynamic signature fields with member names.
 - 📄 **Printing and Reports** — reports are generated in PDF format via the **QuestPDF** library and are adapted for A3/A4 landscape printing format.
 
 ---
@@ -104,6 +108,7 @@ Aplikacija se instalira u profil korisnika bez administratorskih prava, a svako 
 |---|---|
 | Language | C# 12 / .NET 8.0 |
 | UI | WPF (Windows Presentation Foundation) |
+| Charts | LiveCharts2 (SkiaSharp) |
 | Architecture | Code-Behind (without strict MVVM for development speed) |
 | Database | SQLite |
 | ORM | Entity Framework Core 8 |

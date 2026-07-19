@@ -38,8 +38,8 @@ public partial class MainWindow : Window
         var versionStr = version != null ? $"{version.Major}.{version.Minor}.{version.Build}" : "1.0.0";
         VersionText.Text = $"v{versionStr}  •  {System.DateTime.Now.Year}";
         
-        // Prikazujemo prvu stranicu (Sredstva)
-        NavigateTo(BtnSredstva, () => new Views.Sredstva.SredstvaPage(_db));
+        // Prikazujemo prvu stranicu (Radna tabla)
+        NavigateTo(BtnDashboard, () => new Views.Dashboard.DashboardPage(_db));
 
         // Provera ažuriranja u pozadini
         _ = CheckForUpdatesAsync();
@@ -117,6 +117,9 @@ public partial class MainWindow : Window
     }
 
     // ── Sidebar dugmad ────────────────────────────────────────────
+    private void BtnDashboard_Click(object sender, RoutedEventArgs e)
+        => NavigateTo(BtnDashboard, () => new Views.Dashboard.DashboardPage(_db));
+
     private void BtnSredstva_Click(object sender, RoutedEventArgs e)
         => NavigateTo(BtnSredstva, () => new Views.Sredstva.SredstvaPage(_db));
 

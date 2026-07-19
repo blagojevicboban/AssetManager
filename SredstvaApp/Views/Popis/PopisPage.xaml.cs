@@ -199,7 +199,13 @@ public partial class PopisPage : Page
                 try
                 {
                     var firma = _db.Firme.FirstOrDefault();
-                    var document = new PraznaPopisnaListaDocument(popis, stavke, firma);
+                    var clanovi = _db.ClanoviKomisije
+                        .Where(c => c.KomisijaId == popis.KomisijaId)
+                        .OrderByDescending(c => c.Uloga == "Predsednik")
+                        .ThenBy(c => c.ImePrezime)
+                        .ToList();
+                        
+                    var document = new PraznaPopisnaListaDocument(popis, stavke, firma, clanovi);
                     document.GeneratePdf(dialog.FileName);
                     
                     if (MessageBox.Show("PDF je uspešno generisan. Da li želite da ga otvorite?", "Uspeh", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
@@ -242,7 +248,13 @@ public partial class PopisPage : Page
                 try
                 {
                     var firma = _db.Firme.FirstOrDefault();
-                    var document = new PopisIzvestajDocument(popis, stavke, firma);
+                    var clanovi = _db.ClanoviKomisije
+                        .Where(c => c.KomisijaId == popis.KomisijaId)
+                        .OrderByDescending(c => c.Uloga == "Predsednik")
+                        .ThenBy(c => c.ImePrezime)
+                        .ToList();
+
+                    var document = new PopisIzvestajDocument(popis, stavke, firma, clanovi);
                     document.GeneratePdf(dialog.FileName);
 
                     if (MessageBox.Show("PDF je uspešno generisan. Da li želite da ga otvorite?", "Uspeh", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
@@ -358,6 +370,97 @@ public partial class PopisPage : Page
                 catch (Exception ex)
                 {
                     MessageBox.Show("Greška pri brisanju komisije: " + ex.Message, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+    }
+
+    private SredstvaData.Models.Komisija? _selectedKomisija;
+
+    private void KomisijeGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        _selectedKomisija = KomisijeGrid.SelectedItem as SredstvaData.Models.Komisija;
+        
+        if (_selectedKomisija != null)
+        {
+            PanelClanovi.IsEnabled = true;
+            LoadClanoviKomisije();
+        }
+        else
+        {
+            PanelClanovi.IsEnabled = false;
+            ClanoviGrid.ItemsSource = null;
+        }
+    }
+
+    private void LoadClanoviKomisije()
+    {
+        if (_selectedKomisija == null) return;
+        
+        var clanovi = _db.ClanoviKomisije
+            .Where(c => c.KomisijaId == _selectedKomisija.Id)
+            .OrderByDescending(c => c.Uloga == "Predsednik") // Predsednik prvi
+            .ThenBy(c => c.ImePrezime)
+            .ToList();
+            
+        ClanoviGrid.ItemsSource = clanovi;
+    }
+
+    private void BtnDodajClana_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedKomisija == null) return;
+        
+        string ime = TxtImeClana.Text.Trim();
+        string uloga = (CmbUlogaClana.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Član";
+        
+        if (string.IsNullOrEmpty(ime))
+        {
+            MessageBox.Show("Unesite ime i prezime člana.", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        try
+        {
+            var noviClan = new SredstvaData.Models.ClanKomisije
+            {
+                KomisijaId = _selectedKomisija.Id,
+                ImePrezime = ime,
+                Uloga = uloga
+            };
+            
+            _db.ClanoviKomisije.Add(noviClan);
+            _db.SaveChanges();
+            
+            TxtImeClana.Text = "";
+            LoadClanoviKomisije();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Greška pri dodavanju člana: " + ex.Message, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void BtnObrisiClana_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.Tag is SredstvaData.Models.ClanKomisije clan)
+        {
+            var result = MessageBox.Show(
+                $"Da li ste sigurni da želite obrisati člana '{clan.ImePrezime}'?",
+                "Potvrda brisanja",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    _db.ClanoviKomisije.Remove(clan);
+                    _db.SaveChanges();
+                    LoadClanoviKomisije();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Greška pri brisanju člana: " + ex.Message, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

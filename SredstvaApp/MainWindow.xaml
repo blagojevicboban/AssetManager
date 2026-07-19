@@ -138,8 +138,11 @@
 
                         <TextBlock Text="EVIDENCIJA" FontSize="10" FontWeight="SemiBold"
                                    Foreground="#52B788" Margin="24,6,0,3"/>
-                        <Button x:Name="BtnSredstva" Content="🏗️  Osnovna sredstva"
+                        <Button x:Name="BtnDashboard" Content="📊  Radna tabla (Početna)"
                                 Style="{StaticResource NavButtonActive}"
+                                Click="BtnDashboard_Click"/>
+                        <Button x:Name="BtnSredstva" Content="🏗️  Osnovna sredstva"
+                                Style="{StaticResource NavButton}"
                                 Click="BtnSredstva_Click"/>
                         <Button x:Name="BtnKartice" Content="📋  Analitičke kartice"
                                 Style="{StaticResource NavButton}"

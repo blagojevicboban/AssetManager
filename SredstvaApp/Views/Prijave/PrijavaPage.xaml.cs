@@ -88,7 +88,50 @@ public partial class PrijavaPage : Page
     private void PrijavaGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (PrijavaGrid.SelectedItem is PrijavaRedViewModel p)
+        {
             StatusText.Text = $"Nalog #{p.BrojNaloga}  •  Dupli klik za pregled naloga";
+            UcitajStavke(p.BrojNaloga);
+        }
+        else
+        {
+            StavkeGrid.ItemsSource = null;
+            TxtDetaljiNaslov.Text = "Izaberite nalog";
+        }
+    }
+
+    private void UcitajStavke(int brojNaloga)
+    {
+        TxtDetaljiNaslov.Text = $"Stavke (Nalog #{brojNaloga})";
+        var stavke = _db.Prijave
+            .Include(p => p.Sredstvo)
+            .Where(p => p.BrojNaloga == brojNaloga)
+            .OrderBy(p => p.RedBroj)
+            .Select(p => new
+            {
+                p.RedBroj,
+                SredstvoNaziv = p.Sredstvo != null ? p.Sredstvo.Naziv : "Nema naziva",
+                p.Kolicina,
+                p.NabavnaVrednost
+            })
+            .ToList();
+        
+        StavkeGrid.ItemsSource = stavke;
+    }
+
+    private void BtnEditNalog_Click(object sender, RoutedEventArgs e)
+    {
+        if (PrijavaGrid.SelectedItem is PrijavaRedViewModel p)
+        {
+            var w = new PrijavaWindow(_db, p.BrojNaloga);
+            if (w.ShowDialog() == true)
+            {
+                PrijavaPage_Loaded(null!, null!);
+            }
+        }
+        else
+        {
+            MessageBox.Show("Izaberite nalog iz tabele levo.", "Uredi Nalog", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
     }
 
     private void PrijavaGrid_DoubleClick(object sender, MouseButtonEventArgs e)

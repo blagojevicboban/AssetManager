@@ -11,6 +11,9 @@ public class Sredstvo
     [Required]
     [MaxLength(50)]
     public string InventarskiBroj { get; set; } = string.Empty;
+
+    [NotMapped]
+    public bool IsSelected { get; set; }
     
     [NotMapped]
     public string InventarskiBrojSort => System.Text.RegularExpressions.Regex.Replace(InventarskiBroj ?? "", @"\d+", m => m.Value.PadLeft(20, '0'));

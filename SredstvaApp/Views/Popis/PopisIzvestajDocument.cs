@@ -13,12 +13,14 @@ public class PopisIzvestajDocument : IDocument
     private readonly SredstvaData.Models.Popis _popis;
     private readonly List<PopisnaStavka> _stavke;
     private readonly Firma? _firma;
+    private readonly List<ClanKomisije> _clanovi;
 
-    public PopisIzvestajDocument(SredstvaData.Models.Popis popis, List<PopisnaStavka> stavke, Firma? firma)
+    public PopisIzvestajDocument(SredstvaData.Models.Popis popis, List<PopisnaStavka> stavke, Firma? firma, List<ClanKomisije> clanovi)
     {
         _popis = popis;
         _stavke = stavke;
         _firma = firma;
+        _clanovi = clanovi;
     }
 
     public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
@@ -190,7 +192,7 @@ public class PopisIzvestajDocument : IDocument
                         => c.Background(Colors.Indigo.Lighten4)
                             .BorderTop(1).BorderColor(Colors.Indigo.Darken3)
                             .PaddingVertical(5).PaddingHorizontal(4)
-                            .DefaultTextStyle(x => x.FontSize(9.5f));
+                            .DefaultTextStyle(x => x.FontSize(8.5f));
                 });
             }
 
@@ -222,7 +224,25 @@ public class PopisIzvestajDocument : IDocument
             {
                 row.RelativeItem().AlignCenter().Text("Služba osnovnih sredstava\n___________________________").FontSize(10);
                 row.RelativeItem().AlignCenter().Text("Računopolagač\n___________________________").FontSize(10);
-                row.RelativeItem().AlignCenter().Text("Članovi komisije\n1. _______________________\n2. _______________________").FontSize(10);
+                
+                row.RelativeItem().AlignCenter().Column(c => 
+                {
+                    c.Item().AlignCenter().Text("Članovi komisije").FontSize(10).SemiBold();
+                    if (_clanovi == null || _clanovi.Count == 0)
+                    {
+                        c.Item().AlignCenter().PaddingTop(10).Text("1. _______________________").FontSize(10);
+                        c.Item().AlignCenter().PaddingTop(10).Text("2. _______________________").FontSize(10);
+                    }
+                    else
+                    {
+                        for (int i = 0; i < _clanovi.Count; i++)
+                        {
+                            var clan = _clanovi[i];
+                            c.Item().AlignCenter().PaddingTop(15).Text($"{i + 1}. _______________________").FontSize(10);
+                            c.Item().AlignCenter().Text($"{clan.ImePrezime} ({clan.Uloga})").FontSize(9);
+                        }
+                    }
+                });
             });
         });
     }

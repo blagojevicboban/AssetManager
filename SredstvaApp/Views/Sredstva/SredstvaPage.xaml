@@ -11,6 +11,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="16"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Naslov -->
@@ -39,6 +41,8 @@
 
                 <!-- Dugmad -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="🖨  Nalepnice" Style="{StaticResource SecondaryButton}"
+                            Margin="0,0,8,0" Height="34" Click="BtnNalepnice_Click"/>
                     <Button Content="📋  Kartica" Style="{StaticResource SecondaryButton}"
                             Margin="0,0,8,0" Height="34" Click="BtnKartica_Click"/>
                     <Button Content="➕  Novo sredstvo" Style="{StaticResource PrimaryButton}"
@@ -51,33 +55,41 @@
         <Border Grid.Row="4" Style="{StaticResource Card}" Padding="0">
             <DataGrid x:Name="SredstvaGrid"
                       AutoGenerateColumns="False"
-                      IsReadOnly="True"
+                      IsReadOnly="False"
                       SelectionChanged="SredstvaGrid_SelectionChanged"
                       MouseDoubleClick="SredstvaGrid_DoubleClick"
                       CanUserSortColumns="True" VerticalAlignment="Center">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Šifra" Binding="{Binding LegacySifra}" SortMemberPath="LegacySifra" Width="70">
+                    <DataGridCheckBoxColumn Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Width="40">
+                        <DataGridCheckBoxColumn.ElementStyle>
+                            <Style TargetType="CheckBox">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridCheckBoxColumn.ElementStyle>
+                    </DataGridCheckBoxColumn>
+                    <DataGridTextColumn Header="Šifra" Binding="{Binding LegacySifra}" SortMemberPath="LegacySifra" Width="70" IsReadOnly="True">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="VerticalAlignment" Value="Center"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Inv. Br." Binding="{Binding InventarskiBroj}" SortMemberPath="InventarskiBroj" Width="90">
+                    <DataGridTextColumn Header="Inv. Br." Binding="{Binding InventarskiBroj}" SortMemberPath="InventarskiBroj" Width="90" IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="VerticalAlignment" Value="Center"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Naziv Sredstva" Binding="{Binding Naziv}" Width="*" MinWidth="200">
+                    <DataGridTextColumn Header="Naziv Sredstva" Binding="{Binding Naziv}" Width="*" MinWidth="200" IsReadOnly="True">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="VerticalAlignment" Value="Center"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Am. Grupa" Binding="{Binding AmortizacionaGrupa}" Width="90">
+                    <DataGridTextColumn Header="Am. Grupa" Binding="{Binding AmortizacionaGrupa}" Width="90" IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -85,7 +97,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Stopa %" Binding="{Binding StopaAmortizacije, StringFormat=N2}" Width="80">
+                    <DataGridTextColumn Header="Stopa %" Binding="{Binding StopaAmortizacije, StringFormat=N2}" Width="80" IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Right"/>
@@ -95,7 +107,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Nabavna Vrednost" Binding="{Binding NabavnaVrednost, StringFormat=N2}" Width="140">
+                    <DataGridTextColumn Header="Nabavna Vrednost" Binding="{Binding NabavnaVrednost, StringFormat=N2}" Width="140" IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Right"/>
@@ -105,7 +117,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Ispravka Vr." Binding="{Binding IspravkaVrednosti, StringFormat=N2}" Width="130">
+                    <DataGridTextColumn Header="Ispravka Vr." Binding="{Binding IspravkaVrednosti, StringFormat=N2}" Width="130" IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Right"/>
@@ -115,7 +127,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Sadašnja Vr." Binding="{Binding SadasnjaVrednost, StringFormat=N2}" Width="130">
+                    <DataGridTextColumn Header="Sadašnja Vr." Binding="{Binding SadasnjaVrednost, StringFormat=N2}" Width="130" IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Right"/>
@@ -126,7 +138,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Datum Aktiviranja" Binding="{Binding DatumAktiviranja, StringFormat=dd.MM.yyyy}" Width="130">
+                    <DataGridTextColumn Header="Datum Aktiviranja" Binding="{Binding DatumAktiviranja, StringFormat=dd.MM.yyyy}" Width="130" IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -136,6 +148,20 @@
                     </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
+        </Border>
+
+        <!-- Totals -->
+        <Border Grid.Row="6" Style="{StaticResource Card}" Padding="16,12" Background="#F8FAFC">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBlock Text="Ukupna Nabavna Vrednost:" Foreground="{StaticResource TextSecondaryBrush}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBlock x:Name="TxtTotalNabavna" Text="0.00" FontWeight="Bold" FontSize="16" Foreground="#4A6572" Margin="0,0,24,0"/>
+                
+                <TextBlock Text="Ukupna Ispravka Vrednosti:" Foreground="{StaticResource TextSecondaryBrush}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBlock x:Name="TxtTotalIspravka" Text="0.00" FontWeight="Bold" FontSize="16" Foreground="#B45309" Margin="0,0,24,0"/>
+                
+                <TextBlock Text="Ukupna Sadašnja Vrednost:" Foreground="{StaticResource TextSecondaryBrush}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBlock x:Name="TxtTotalSadasnja" Text="0.00" FontWeight="Bold" FontSize="16" Foreground="{StaticResource SuccessBrush}" Margin="0,0,8,0"/>
+            </StackPanel>
         </Border>
     </Grid>
 </Page>

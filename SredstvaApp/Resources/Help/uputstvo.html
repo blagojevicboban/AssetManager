@@ -47,7 +47,15 @@
             <strong>Napomena o starim podacima:</strong> Svi vaši podaci iz starih programa automatski su migrirani. Stara šifra sredstva iz DBF datoteke čuva se unutar kartice sredstva pod opcijom "Legacy Šifra".
         </div>
 
-        <h2>1. Osnovna Sredstva (Kartice)</h2>
+        <h2>1. Radna tabla (Dashboard)</h2>
+        <p>Po ulasku u preduzeće dočekaće vas Radna tabla sa grafičkim i numeričkim pregledom ključnih informacija.</p>
+        <ul>
+            <li><strong>Zbirni podaci:</strong> Brzi uvid u ukupan broj sredstava, kao i zbirnu nabavnu i sadašnju vrednost svih aktivnih sredstava u bazi.</li>
+            <li><strong>Grafikoni:</strong> Analizirajte strukturu vrednosti po kontima ili uvidite kojih 5 sredstava ima najveću sadašnju vrednost.</li>
+            <li><strong>Interaktivnost:</strong> Prelaskom kursora preko delova grafikona prikazaće se tačne numeričke vrednosti.</li>
+        </ul>
+
+        <h2>2. Osnovna Sredstva (Kartice)</h2>
         <p>Ovaj modul vam omogućava upravljanje katalogom svih osnovnih sredstava preduzeća.</p>
         <ul>
             <li><strong>Pregled:</strong> U tabeli možete videti stanje, nabavnu i otpisanu vrednost za svako sredstvo.</li>
@@ -55,7 +63,7 @@
             <li><strong>Prijave i Rashodi:</strong> Kroz dodatne module sredstvo može biti evidentirano kao trajno otuđeno (rashodovano).</li>
         </ul>
 
-        <h2>2. Amortizacija</h2>
+        <h2>3. Amortizacija</h2>
         <p>Proces godišnje amortizacije obračunava finansijski pad vrednosti sredstava po definisanim amortizacionim grupama i stopama.</p>
         <ul>
             <li>Idite na tab <strong>Amortizacija</strong>, odaberite godinu i kliknite na dugme <span class="highlight">Obracunaj</span>.</li>
@@ -63,7 +71,7 @@
             <li>Završene obracune možete PDF štampati koristeći dugme <span class="highlight">Štampa Izveštaja</span>. Izveštaj se sumira po Obračunskim jedinicama (RJ).</li>
         </ul>
 
-        <h2>3. Revalorizacija</h2>
+        <h2>4. Revalorizacija</h2>
         <p>Revalorizacija se radi radi usklađivanja knjigovodstvene vrednosti sredstava sa inflacijom ili trenutnim tržišnim stanjem, primenom revalorizacionih koeficijenata.</p>
         <div class="warning">
             Pre izvođenja Revalorizacije morate uneti <strong>Godišnji i Mesečni koeficijent</strong>. U starom sistemu ovo su bili parametri na glavnom ekranu aplikacije.
@@ -74,14 +82,23 @@
             <li>Program će kreirati novu liniju u tabeli koju kasnije možete <strong>Štampati</strong> kao PDF ili kliknuti <strong>Proknjiži</strong> kako bi se ažurirale vrednosti nad osnovnim sredstvima u glavnoj bazi.</li>
         </ul>
 
-        <h2>4. Popis</h2>
+        <h2>5. Popis</h2>
         <p>Na kraju godine sprovodi se obavezni popis inventara radi utvrđivanja eventualnih odstupanja između knjigovodstvenog i stvarnog stanja.</p>
         <ul>
-            <li><strong>Kreiranje Komisije:</strong> U Tab-u "Komisije" dodajte novo ime popisne komisije.</li>
+            <li><strong>Kreiranje Komisije:</strong> U Tab-u "Komisije" dodajte novo ime popisne komisije. Zatim na desnoj strani unesite imena članova i njihove uloge (Predsednik/Član).</li>
             <li><strong>Novi Popis:</strong> Kreirajte novu popisnu listu (unosi se godina, datum popisa i bira komisija).</li>
             <li><strong>Rad na terenu:</strong> Selektujte novokreirani popis i kliknite na <span class="highlight">🖨 Štampaj Praznu Listu</span>. Program će Vam otvoriti PDF koji štampate i delite radnicima da olovkom unesu stvarna stanja!</li>
             <li><strong>Unos Razlika:</strong> Dvoklikom na selektovani popis otvara se poseban ekran gde masovno unosite brojčano "Stvarnu količinu" za svako sredstvo.</li>
             <li><strong>Završni Izveštaj:</strong> Klikom na <span class="highlight">🖨 Štampaj Izveštaj o Popisu</span> dobijate detaljan račun viškova i manjkova objedinjen po Kontima.</li>
+        </ul>
+
+        <h2>6. Nalepnice i Bar-kodovi</h2>
+        <p>Za potrebe lakšeg popisa i identifikacije opreme, aplikacija omogućava štampu Bar-kod nalepnica.</p>
+        <ul>
+            <li>Idite na tab <strong>Osnovna Sredstva</strong>.</li>
+            <li>U tabeli štiklirajte kućice (u prvoj koloni) pored sredstava za koja želite da odštampate nalepnice. Prethodno možete iskoristiti polje za pretragu kako biste lakše pronašli željena sredstva.</li>
+            <li>Kliknite na dugme <span class="highlight">🖨 Nalepnice</span>.</li>
+            <li>Program će generisati PDF dokument (u A4 formatu, 3 kolone) koji sadrži naziv firme, šifru, inventarski broj, naziv sredstva i CODE-128 bar-kod spreman za štampu.</li>
         </ul>
 
         <!-- ENGLISH VERSION -->
@@ -95,7 +112,15 @@
             <strong>Note on legacy data:</strong> All your data from the old programs has been automatically migrated. The old asset code from the DBF file is stored inside the asset card under the "Legacy Code" option.
         </div>
 
-        <h2>1. Fixed Assets (Cards)</h2>
+        <h2>1. Dashboard</h2>
+        <p>Upon entering a company, you will be greeted by the Dashboard with a graphical and numerical overview of key information.</p>
+        <ul>
+            <li><strong>Summary data:</strong> Quick insight into the total number of assets, as well as the total purchase and present value of all active assets in the database.</li>
+            <li><strong>Charts:</strong> Analyze the value structure by accounts or see which 5 assets have the highest present value.</li>
+            <li><strong>Interactivity:</strong> Hovering the cursor over chart elements will display exact numerical values.</li>
+        </ul>
+
+        <h2>2. Fixed Assets (Cards)</h2>
         <p>This module allows you to manage the catalog of all fixed assets of the company.</p>
         <ul>
             <li><strong>Overview:</strong> In the table, you can see the condition, purchase, and written-off value for each asset.</li>
@@ -103,7 +128,7 @@
             <li><strong>Registrations and Write-offs:</strong> Through additional modules, an asset can be recorded as permanently alienated (written off).</li>
         </ul>
 
-        <h2>2. Depreciation</h2>
+        <h2>3. Depreciation</h2>
         <p>The annual depreciation process calculates the financial decrease in the value of assets according to defined depreciation groups and rates.</p>
         <ul>
             <li>Go to the <strong>Amortizacija</strong> (Depreciation) tab, select the year, and click the <span class="highlight">Obracunaj</span> (Calculate) button.</li>
@@ -111,7 +136,7 @@
             <li>Completed calculations can be printed as PDFs using the <span class="highlight">Štampa Izveštaja</span> (Print Report) button. The report is summarized by Accounting Units (RJ).</li>
         </ul>
 
-        <h2>3. Revaluation</h2>
+        <h2>4. Revaluation</h2>
         <p>Revaluation is performed to align the book value of assets with inflation or current market conditions, by applying revaluation coefficients.</p>
         <div class="warning">
             Before performing Revaluation, you must enter the <strong>Annual and Monthly coefficient</strong>. In the old system, these were parameters on the main application screen.
@@ -122,14 +147,23 @@
             <li>The program will create a new line in the table that you can later <strong>Print</strong> as a PDF or click <strong>Proknjiži</strong> (Post) to update the asset values in the main database.</li>
         </ul>
 
-        <h2>4. Inventory</h2>
+        <h2>5. Inventory</h2>
         <p>At the end of the year, a mandatory inventory is conducted to determine any discrepancies between the accounting and actual state.</p>
         <ul>
-            <li><strong>Creating a Commission:</strong> In the "Komisije" (Commissions) tab, add a new name for the inventory commission.</li>
+            <li><strong>Creating a Commission:</strong> In the "Komisije" (Commissions) tab, add a new name for the inventory commission. Then on the right side, enter the members' names and roles (President/Member).</li>
             <li><strong>New Inventory:</strong> Create a new inventory list (enter the year, inventory date, and select a commission).</li>
             <li><strong>Field Work:</strong> Select the newly created inventory and click <span class="highlight">🖨 Štampaj Praznu Listu</span> (Print Empty List). The program will open a PDF for you to print and distribute to workers so they can write down the actual quantities with a pen!</li>
             <li><strong>Entering Differences:</strong> Double-clicking the selected inventory opens a special screen where you massively enter the numerical "Actual quantity" for each asset.</li>
             <li><strong>Final Report:</strong> By clicking <span class="highlight">🖨 Štampaj Izveštaj o Popisu</span> (Print Inventory Report), you get a detailed calculation of surpluses and shortages consolidated by Accounts.</li>
+        </ul>
+
+        <h2>6. Labels and Barcodes</h2>
+        <p>For easier inventory and equipment identification, the application allows printing Barcode labels.</p>
+        <ul>
+            <li>Go to the <strong>Osnovna Sredstva</strong> (Fixed Assets) tab.</li>
+            <li>In the table, check the boxes (in the first column) next to the assets you want to print labels for. You can use the search field beforehand to easily find the desired assets.</li>
+            <li>Click the <span class="highlight">🖨 Nalepnice</span> (Labels) button.</li>
+            <li>The program will generate a PDF document (in A4 format, 3 columns) containing the company name, legacy code, inventory number, asset name, and a CODE-128 barcode ready for printing.</li>
         </ul>
 
         <div class="footer">
