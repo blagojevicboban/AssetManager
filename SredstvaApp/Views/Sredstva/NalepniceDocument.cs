@@ -1,11 +1,13 @@
-using System.Collections.Generic;
-using System.Linq;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using SkiaSharp;
 using SredstvaData.Models;
+using System.Collections.Generic;
 using ZXing;
 using ZXing.Common;
+using ZXing.SkiaSharp;
+using ZXing.SkiaSharp.Rendering;
 
 namespace SredstvaApp.Views.Sredstva;
 
@@ -13,14 +15,14 @@ public class NalepniceDocument : IDocument
 {
     private readonly List<Sredstvo> _sredstva;
     private readonly Firma? _firma;
-    private readonly BarcodeWriterSvg _barcodeWriter;
+    private readonly BarcodeWriter<SKBitmap> _barcodeWriter;
 
     public NalepniceDocument(List<Sredstvo> sredstva, Firma? firma)
     {
         _sredstva = sredstva;
         _firma = firma;
-        
-        _barcodeWriter = new BarcodeWriterSvg
+
+        _barcodeWriter = new BarcodeWriter<SKBitmap>
         {
             Format = BarcodeFormat.CODE_128,
             Options = new EncodingOptions
@@ -29,7 +31,8 @@ public class NalepniceDocument : IDocument
                 Height = 60,
                 Margin = 0,
                 PureBarcode = true
-            }
+            },
+            Renderer = new SKBitmapRenderer()
         };
     }
 
@@ -66,38 +69,55 @@ public class NalepniceDocument : IDocument
                 {
                     // Ime firme
                     column.Item().AlignCenter().Text(_firma?.Naziv ?? "Firma d.o.o.").FontSize(8).SemiBold();
-                    
-                    // Razmak
+
                     column.Item().PaddingTop(5);
-                    
+
                     // Sifra i Inventarski broj
                     column.Item().AlignCenter().Text($"Šifra: {sredstvo.LegacySifra} | Inv.Br: {sredstvo.InventarskiBroj}").FontSize(8).Bold();
-                    
-                    // Razmak
+
                     column.Item().PaddingTop(5);
-                    
+
                     // Bar kod
                     var barcodeContent = sredstvo.InventarskiBroj;
-                    if (string.IsNullOrWhiteSpace(barcodeContent)) barcodeContent = sredstvo.LegacySifra.ToString();
-                    
-                    try 
+                    if (string.IsNullOrWhiteSpace(barcodeContent))
+                        barcodeContent = sredstvo.LegacySifra.ToString();
+
+                    var barcodePng = TryGenerateBarcodePng(barcodeContent);
+
+                    if (barcodePng is not null)
                     {
-                        var svgImage = _barcodeWriter.Write(barcodeContent);
-                        // Fixing width and height so it scales nicely inside and doesn't push the column layout
-                        column.Item().Width(150).Height(40).AlignCenter().Svg(svgImage.Content);
+                        column.Item().AlignCenter().Width(150).Height(40).Image(barcodePng);
                     }
-                    catch
+                    else
                     {
-                        column.Item().Width(150).Height(40).AlignCenter().AlignMiddle().Text("Nevažeći bar-kod").FontColor(Colors.Red.Medium);
+                        column.Item().Width(150).Height(40).AlignCenter().AlignMiddle()
+                            .Text("Nevažeći bar-kod").FontColor(Colors.Red.Medium);
                     }
-                    
-                    // Razmak
+
                     column.Item().PaddingTop(5);
-                    
-                    // Naziv sredstva (skraćeno ako je predugačko)
+
+                    // Naziv sredstva
                     column.Item().AlignCenter().Text(sredstvo.Naziv).FontSize(8);
                 });
             }
         });
+    }
+
+    private byte[]? TryGenerateBarcodePng(string content)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+            return null;
+
+        try
+        {
+            using var bitmap = _barcodeWriter.Write(content);
+            using var image = SKImage.FromBitmap(bitmap);
+            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+            return data.ToArray();
+        }
+        catch
+        {
+            return null;
+        }
     }
 }

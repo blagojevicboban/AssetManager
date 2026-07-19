@@ -25,6 +25,7 @@
     <PackageReference Include="QuestPDF" Version="2026.7.1" />
     <PackageReference Include="Velopack" Version="1.2.0" />
     <PackageReference Include="ZXing.Net" Version="0.16.11" />
+    <PackageReference Include="ZXing.Net.Bindings.SkiaSharp" Version="0.16.22" />
   </ItemGroup>
 
   <PropertyGroup>
