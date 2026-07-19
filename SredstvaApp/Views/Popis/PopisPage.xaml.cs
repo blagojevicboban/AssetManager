@@ -244,7 +244,7 @@ public partial class PopisPage : Page
                     var firma = _db.Firme.FirstOrDefault();
                     var document = new PopisIzvestajDocument(popis, stavke, firma);
                     document.GeneratePdf(dialog.FileName);
-                    
+
                     if (MessageBox.Show("PDF je uspešno generisan. Da li želite da ga otvorite?", "Uspeh", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                     {
                         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
@@ -257,6 +257,107 @@ public partial class PopisPage : Page
                 catch (Exception ex)
                 {
                     MessageBox.Show("Greška prilikom generisanja PDF-a: " + ex.Message, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+    }
+
+    private void BtnObrisiPopis_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.Tag is SredstvaData.Models.Popis popis)
+        {
+            var result = MessageBox.Show(
+                $"Da li ste sigurni da želite obrisati popis od {popis.DatumPopisa:dd.MM.yyyy}?\n\nOvo će obrisati i sve popisne stavke.",
+                "Potvrda brisanja",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    using var transaction = _db.Database.BeginTransaction();
+                    try
+                    {
+                        // Obriši sve stavke vezane za ovaj popis
+                        var stavke = _db.PopisneStavke.Where(s => s.PopisId == popis.Id).ToList();
+                        _db.PopisneStavke.RemoveRange(stavke);
+                        _db.SaveChanges();
+
+                        // Obriši sam popis
+                        _db.Popisi.Remove(popis);
+                        _db.SaveChanges();
+
+                        transaction.Commit();
+                        LoadPopisi();
+                        MessageBox.Show("Popis je uspešno obrisan.", "Uspeh", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Greška pri brisanju popisa: " + ex.Message, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+    }
+
+    private void BtnObrisiKomisija_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.Tag is SredstvaData.Models.Komisija komisija)
+        {
+            var result = MessageBox.Show(
+                $"Da li ste sigurni da želite obrisati komisiju '{komisija.Naziv}'?\n\nOvo će obrisati i sve popis koji su kreirani za ovu komisiju, kao i sve članove komisije.",
+                "Potvrda brisanja",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    using var transaction = _db.Database.BeginTransaction();
+                    try
+                    {
+                        // Obriši sve članove komisije
+                        var clanovi = _db.ClanoviKomisije.Where(c => c.KomisijaId == komisija.Id).ToList();
+                        _db.ClanoviKomisije.RemoveRange(clanovi);
+                        _db.SaveChanges();
+
+                        // Obriši sve popise vezane za ovu komisiju
+                        var popisi = _db.Popisi.Where(p => p.KomisijaId == komisija.Id).ToList();
+                        foreach (var popis in popisi)
+                        {
+                            var stavke = _db.PopisneStavke.Where(s => s.PopisId == popis.Id).ToList();
+                            _db.PopisneStavke.RemoveRange(stavke);
+                        }
+                        _db.SaveChanges();
+
+                        _db.Popisi.RemoveRange(popisi);
+                        _db.SaveChanges();
+
+                        // Obriši samu komisiju
+                        _db.Komisije.Remove(komisija);
+                        _db.SaveChanges();
+
+                        transaction.Commit();
+                        LoadKomisije();
+                        LoadPopisi();
+                        MessageBox.Show("Komisija je uspešno obrisana.", "Uspeh", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Greška pri brisanju komisije: " + ex.Message, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

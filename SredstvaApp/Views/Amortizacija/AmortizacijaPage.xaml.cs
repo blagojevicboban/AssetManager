@@ -1,8 +1,10 @@
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using QuestPDF.Fluent;
@@ -24,7 +26,10 @@ public class AmortizacijaResultViewModel
     public decimal NabavnaVrednost { get; init; }
     public decimal PrethodnaIspravka { get; init; }
     public decimal NovaAmortizacija { get; init; }
-    
+    public int? Godina { get; init; }
+    public DateTime DatumKartice { get; init; }
+    public string OpisKartice { get; init; } = string.Empty;
+
     public decimal NovaIspravkaUkupno => PrethodnaIspravka + NovaAmortizacija;
     public decimal SadasnjaVrednost => NabavnaVrednost - NovaIspravkaUkupno;
 }
@@ -33,8 +38,11 @@ public partial class AmortizacijaPage : Page
 {
     private readonly SredstvaDbContext _db;
     private List<AmortizacijaResultViewModel> _results = new();
+    private List<AmortizacijaResultViewModel> _listaAmortizacije = new();
     private DateTime _calcOd;
     private DateTime _calcDo;
+    private List<int> _availableYears = new();
+    private int _selectedGodina = DateTime.Now.Year;
 
     public AmortizacijaPage(SredstvaDbContext db)
     {
@@ -45,9 +53,99 @@ public partial class AmortizacijaPage : Page
 
     private void AmortizacijaPage_Loaded(object sender, RoutedEventArgs e)
     {
+        // Obracun tab - default settings
         var year = DateTime.Now.Year;
         DpOd.SelectedDate = new DateTime(year, 1, 1);
         DpDo.SelectedDate = new DateTime(year, 12, 31);
+
+        // Lista amortizacija - prikazi sve godine i node prikaz lista
+        PopuniListuAmortizacija();
+    }
+
+    private void PopuniListuAmortizacija()
+    {
+        // Preuzmemo iz kartica sve kartice koje imaju opis "Redovan otpis" ili "Amortizacija"
+        var amortizacijaKartice = _db.Kartice
+            .Where(k => k.OpisPromene != null && (k.OpisPromene.StartsWith("Redovan otpis") || k.OpisPromene.StartsWith("Amortizacija")))
+            .OrderBy(k => k.SredstvoId)
+            .ThenBy(k => k.Datum)
+            .ToList();
+
+        // Učitamo unapred sredstva i sve kartice za brže procesiranje u memoriji
+        var sredstvaDict = _db.Sredstva.ToDictionary(s => s.Id, s => s);
+        var karticeDict = _db.Kartice.ToList().GroupBy(k => k.SredstvoId).ToDictionary(g => g.Key, g => g.ToList());
+
+        foreach (var kartica in amortizacijaKartice)
+        {
+            if (!sredstvaDict.TryGetValue(kartica.SredstvoId, out var sredstvo)) continue;
+
+            string pattern = @"(?:Redovan otpis|Amortizacija)\s*\(?\b(\d{4})\b\)?";
+            var match = System.Text.RegularExpressions.Regex.Match(kartica.OpisPromene, pattern);
+
+            int godina = 0;
+            if (match.Success && int.TryParse(match.Groups[1].Value, out int parsiranaGodina))
+            {
+                godina = parsiranaGodina;
+
+                decimal prethodnaIspravka = 0;
+                if (karticeDict.TryGetValue(sredstvo.Id, out var sveKarticeSredstva))
+                {
+                    // Prethodna ispravka je suma svih prethodnih ispravki za to sredstvo do momenta ove amortizacije
+                    prethodnaIspravka = sveKarticeSredstva
+                        .Where(k => k.Datum < kartica.Datum || (k.Datum == kartica.Datum && k.Id < kartica.Id))
+                        .Sum(k => k.IspravkaVrednosti);
+                }
+
+                _listaAmortizacije.Add(new AmortizacijaResultViewModel
+                {
+                    SredstvoId = sredstvo.Id,
+                    InventarskiBroj = sredstvo.InventarskiBroj,
+                    LegacySifra = sredstvo.LegacySifra,
+                    Naziv = sredstvo.Naziv,
+                    ObracunskaJedinica = sredstvo.ObracunskaJedinica,
+                    Konto = sredstvo.Konto,
+                    AmortizacionaGrupa = sredstvo.AmortizacionaGrupa,
+                    StopaAmortizacije = sredstvo.StopaAmortizacije,
+                    NabavnaVrednost = sredstvo.NabavnaVrednost,
+                    PrethodnaIspravka = prethodnaIspravka,
+                    NovaAmortizacija = kartica.IspravkaVrednosti,
+                    Godina = godina,
+                    DatumKartice = kartica.Datum,
+                    OpisKartice = kartica.OpisPromene
+                });
+            }
+        }
+        
+        // Pronađi sve godine
+        _availableYears = _listaAmortizacije
+            .Select(a => a.Godina.Value)
+            .Distinct()
+            .OrderByDescending(g => g)
+            .ToList();
+
+        CbGodine.ItemsSource = _availableYears;
+        if (_availableYears.Contains(_selectedGodina))
+        {
+            CbGodine.SelectedItem = _selectedGodina;
+        }
+        else if (_availableYears.Any())
+        {
+            _selectedGodina = _availableYears[0];
+            CbGodine.SelectedItem = _selectedGodina;
+        }
+    }
+
+    private void CbGodine_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (CbGodine.SelectedItem != null)
+        {
+            _selectedGodina = (int)CbGodine.SelectedItem;
+            var podaciZaGodinu = _listaAmortizacije
+                .Where(a => a.Godina == _selectedGodina)
+                .OrderBy(a => a.LegacySifra)
+                .ToList();
+            IzabranaAmortizacijaGrid.ItemsSource = podaciZaGodinu;
+        }
     }
 
     private void BtnObracunaj_Click(object sender, RoutedEventArgs e)
@@ -84,7 +182,7 @@ public partial class AmortizacijaPage : Page
         {
             // Kartice sortirane hronološki
             var sveKartice = s.Kartice.OrderBy(k => k.Datum).ToList();
-            
+
             // Stanje pre perioda obračuna
             decimal tekucaNabavna = sveKartice.Where(k => k.Datum < start).Sum(k => k.NabavnaVrednost);
             decimal tekucaIspravka = sveKartice.Where(k => k.Datum < start).Sum(k => k.IspravkaVrednosti);
@@ -146,7 +244,7 @@ public partial class AmortizacijaPage : Page
 
         // Prikaz rezultata
         AmortizacijaGrid.ItemsSource = _results;
-        
+
         PlaceholderPanel.Visibility = Visibility.Collapsed;
         AmortizacijaGrid.Visibility = Visibility.Visible;
 
@@ -221,7 +319,7 @@ public partial class AmortizacijaPage : Page
             _db.SaveChanges();
             transaction.Commit();
 
-            MessageBox.Show($"Uspešno je proknjižena amortizacija za {proknjizeno} sredstava.", 
+            MessageBox.Show($"Uspešno je proknjižena amortizacija za {proknjizeno} sredstava.",
                 "Uspeh", MessageBoxButton.OK, MessageBoxImage.Information);
 
             // Očistimo UI jer je knjiženje završeno
@@ -290,6 +388,32 @@ public partial class AmortizacijaPage : Page
         catch (Exception ex)
         {
             MessageBox.Show($"Greška pri eksportu: {ex.Message}", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void BtnStampaLista_Click(object sender, RoutedEventArgs e)
+    {
+        var podaciZaGodinu = IzabranaAmortizacijaGrid.ItemsSource as List<AmortizacijaResultViewModel>;
+        if (podaciZaGodinu == null || podaciZaGodinu.Count == 0)
+        {
+            MessageBox.Show("Nema podataka za štampu.", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        try
+        {
+            var firma = _db.Firme.FirstOrDefault();
+            DateTime calcOd = new DateTime(_selectedGodina, 1, 1);
+            DateTime calcDo = new DateTime(_selectedGodina, 12, 31);
+            
+            var doc = new AmortizacijaDocument(podaciZaGodinu, firma, calcOd, calcDo);
+            var tempFile = Path.Combine(Path.GetTempPath(), $"ListaAmortizacije_{_selectedGodina}_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+            doc.GeneratePdf(tempFile);
+            Process.Start(new ProcessStartInfo(tempFile) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Greška pri generisanju PDF-a: {ex.Message}", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

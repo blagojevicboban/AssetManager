@@ -147,7 +147,7 @@ public partial class MainWindow : Window
         => NavigateTo(BtnRekap, () => new Views.Izvestaji.IzvestajiPage(_db));
 
     private void BtnDobavljaci_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnDobavljaci, () => new Views.Sifrarnici.DobavljaciPage(_db));
+        => NavigateTo(BtnDobavljaci, () => new Views.Dobavljaci.DobavljaciPage(_db));
 
     private void FirmaBorder_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {

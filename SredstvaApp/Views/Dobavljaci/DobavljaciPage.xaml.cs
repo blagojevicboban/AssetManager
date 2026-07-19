@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SredstvaData;
 using SredstvaData.Models;
 
-namespace SredstvaApp.Views.Sifrarnici;
+namespace SredstvaApp.Views.Dobavljaci;
 
 public class DobavljacRedViewModel
 {
@@ -27,6 +27,7 @@ public partial class DobavljaciPage : Page
 {
     private readonly SredstvaDbContext _db;
     private List<DobavljacRedViewModel> _all = new();
+    private int _selectedDobavljacId = 0;
 
     public DobavljaciPage(SredstvaDbContext db)
     {
@@ -71,6 +72,8 @@ public partial class DobavljaciPage : Page
     {
         if (DobavljaciGrid.SelectedItem is not DobavljacRedViewModel sel) return;
 
+        _selectedDobavljacId = sel.Id;
+
         var dobavljac = _db.Dobavljaci
             .Include(d => d.Prijave)
                 .ThenInclude(p => p.Sredstvo)
@@ -103,7 +106,87 @@ public partial class DobavljaciPage : Page
 
     private void BtnNovi_Click(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("Forma za unos novog dobavljača — u razvoju.", "Novi dobavljač",
-            MessageBoxButton.OK, MessageBoxImage.Information);
+        var dialog = new DobavljacWindow(_db);
+        if (dialog.ShowDialog() == true && dialog.Uspesno)
+        {
+            // Osvežimo listu dobavljača
+            var handler = DobavljaciPage_Loaded;
+            handler?.Invoke(this, new RoutedEventArgs());
+        }
+    }
+
+    private void BtnIzmeni_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedDobavljacId == 0)
+        {
+            MessageBox.Show("Molimo odaberite dobavljača koji želite da izmenite.", "Izmena dobavljača",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        var dialog = new DobavljacWindow(_db, _selectedDobavljacId);
+        if (dialog.ShowDialog() == true && dialog.Uspesno)
+        {
+            // Osvežimo listu dobavljača
+            _selectedDobavljacId = 0;
+            DetailContent.Visibility = Visibility.Collapsed;
+            DetailPlaceholder.Visibility = Visibility.Visible;
+            var handler = DobavljaciPage_Loaded;
+            handler?.Invoke(this, new RoutedEventArgs());
+        }
+    }
+
+    private void BtnObrisi_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedDobavljacId == 0)
+        {
+            MessageBox.Show("Molimo odaberite dobavljača koji želite da obrišete.", "Brisanje dobavljača",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        var dobavljac = _db.Dobavljaci
+            .Include(d => d.Prijave)
+            .FirstOrDefault(d => d.Id == _selectedDobavljacId);
+        if (dobavljac == null) return;
+
+        // Provera da li dobavljač ima povezane prijave
+        if (dobavljac.Prijave.Any())
+        {
+            MessageBox.Show(
+                $"Nije moguće obrisati dobavljača \"{dobavljac.OpisKonta}\" jer ima povezanih prijava sredstava.\n\n" +
+                $"Broj povezanih prijava: {dobavljac.Prijave.Count}\n\n" +
+                $"Obrišite prvo sve prijave povezane sa ovim dobavljačem.",
+                "Brisanje onemogućeno", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        var result = MessageBox.Show(
+            $"Da li ste sigurni da želite da obrišete dobavljača \"{dobavljac.OpisKonta}\"?\n\n" +
+            $"Ova akcija se ne može poništiti.",
+            "Potvrda brisanja", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+        if (result == MessageBoxResult.Yes)
+        {
+            try
+            {
+                _db.Dobavljaci.Remove(dobavljac);
+                _db.SaveChanges();
+
+                MessageBox.Show("Dobavljač je uspešno obrisan.", "Uspeh", 
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+
+                _selectedDobavljacId = 0;
+                DetailContent.Visibility = Visibility.Collapsed;
+                DetailPlaceholder.Visibility = Visibility.Visible;
+                var handler = DobavljaciPage_Loaded;
+            handler?.Invoke(this, new RoutedEventArgs());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Greška pri brisanju dobavljača: {ex.Message}", "Greška",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
 }

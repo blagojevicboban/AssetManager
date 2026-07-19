@@ -144,6 +144,9 @@
                         <Button x:Name="BtnKartice" Content="📋  Analitičke kartice"
                                 Style="{StaticResource NavButton}"
                                 Click="BtnKartice_Click"/>
+                        <Button x:Name="BtnDobavljaci" Content="🏢  Dobavljači"
+                                Style="{StaticResource NavButton}"
+                                Click="BtnDobavljaci_Click"/>
 
                         <TextBlock Text="PROMENE" FontSize="10" FontWeight="SemiBold"
                                    Foreground="#52B788" Margin="24,10,0,3"/>
@@ -172,11 +175,8 @@
                                 Style="{StaticResource NavButton}"
                                 Click="BtnRekap_Click"/>
 
-                        <TextBlock Text="ŠIFARNICI" FontSize="10" FontWeight="SemiBold"
+                        <TextBlock Text="PODEŠAVANJA" FontSize="10" FontWeight="SemiBold"
                                    Foreground="#52B788" Margin="24,10,0,3"/>
-                        <Button x:Name="BtnDobavljaci" Content="🏢  Dobavljači"
-                                Style="{StaticResource NavButton}"
-                                Click="BtnDobavljaci_Click"/>
                         <Button x:Name="BtnKorisnici" Content="👥  Korisnici"
                                 Style="{StaticResource NavButton}"
                                 Click="BtnKorisnici_Click"/>

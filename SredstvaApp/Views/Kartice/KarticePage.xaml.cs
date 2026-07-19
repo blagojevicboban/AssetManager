@@ -57,7 +57,7 @@ public partial class KarticePage : Page
         {
             SredstvaList.ItemsSource = _allSredstva.Where(s =>
                 s.LegacySifra.ToString().Contains(q) ||
-                s.Naziv.Contains(q, StringComparison.OrdinalIgnoreCase)).ToList();
+                s.Naziv.Contains(q, StringComparison.OrdinalIgnoreCase)).ToList().OrderBy(s => s.LegacySifra);
         }
     }
 

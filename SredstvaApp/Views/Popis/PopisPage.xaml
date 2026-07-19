@@ -13,7 +13,7 @@
 
         <!-- Naslov -->
         <StackPanel Grid.Row="0">
-            <TextBlock Text="Popisne liste i Komisije" Style="{StaticResource PageTitle}"/>
+            <TextBlock Text="Popisne liste i komisije" Style="{StaticResource PageTitle}"/>
             <TextBlock Text="Upravljanje popisima, kreiranje komisija i unos stanja popisa"
                        Style="{StaticResource PageSubtitle}"/>
         </StackPanel>
@@ -102,6 +102,15 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Akcije" Width="100">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="🗑 Obriši" Style="{StaticResource DangerButton}" 
+                                                    Height="28" FontSize="11" Padding="4,2"
+                                                    Click="BtnObrisiPopis_Click" Tag="{Binding}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Border>
@@ -165,6 +174,15 @@
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
                                 <DataGridCheckBoxColumn Header="Aktivna" Binding="{Binding JeAktivna}" Width="80"/>
+                                <DataGridTemplateColumn Header="Akcije" Width="100">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="🗑 Obriši" Style="{StaticResource DangerButton}" 
+                                                    Height="28" FontSize="11" Padding="4,2"
+                                                    Click="BtnObrisiKomisija_Click" Tag="{Binding}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Border>

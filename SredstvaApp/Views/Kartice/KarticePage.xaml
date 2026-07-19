@@ -36,7 +36,7 @@
                         <DataTemplate>
                             <Border Padding="12,8" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
                                 <StackPanel>
-                                    <TextBlock Text="{Binding InventarskiBroj}" FontSize="11" FontWeight="Bold" Foreground="{StaticResource PrimaryLightBrush}"/>
+                                    <TextBlock Text="{Binding LegacySifra}" FontSize="11" FontWeight="Bold" Foreground="{StaticResource PrimaryLightBrush}"/>
                                     <TextBlock Text="{Binding Naziv}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" TextTrimming="CharacterEllipsis"/>
                                 </StackPanel>
                             </Border>
@@ -157,16 +157,59 @@
                             <DataGridTextColumn Header="Opis promene" Binding="{Binding OpisPromene}" Width="*" MinWidth="150"/>
                             <DataGridTextColumn Header="Konto" Binding="{Binding Konto}" Width="70"/>
                             <DataGridTextColumn Header="Am.Gr." Binding="{Binding AmGrupaFormatted}" Width="50"/>
-                            <DataGridTextColumn Header="Stopa%" Binding="{Binding StopaAmortizacije, StringFormat=N2}" Width="60"/>
-                            <DataGridTextColumn Header="Nabavna Vr." Binding="{Binding NabavnaVrednost, StringFormat=N2}" Width="110"/>
-                            <DataGridTextColumn Header="Ispravka Vr." Binding="{Binding IspravkaVrednosti, StringFormat=N2}" Width="110"/>
+                            <DataGridTextColumn Header="Stopa%" Binding="{Binding StopaAmortizacije, StringFormat=N2}" Width="60">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextAlignment" Value="Right"/>
+                                        <Setter Property="FontFamily" Value="Calibri"/>
+                                    </Style>
+                            </DataGridTextColumn.ElementStyle>
+                            <DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Nabavna Vr." Binding="{Binding NabavnaVrednost, StringFormat=N2}" Width="110">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="TextAlignment" Value="Right"/>
+                                        <Setter Property="FontFamily" Value="Calibri"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                                <DataGridTextColumn.HeaderStyle>
+                                    <Style TargetType="DataGridColumnHeader">
+                                        <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                                    </Style>
+                                </DataGridTextColumn.HeaderStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Ispravka Vr." Binding="{Binding IspravkaVrednosti, StringFormat=N2}" Width="110">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextAlignment" Value="Right"/>
+                                        <Setter Property="FontFamily" Value="Calibri"/>
+                                    </Style>
+                            </DataGridTextColumn.ElementStyle>
+                            <DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
+                            </DataGridTextColumn>
                             <DataGridTextColumn Header="Sadašnja Vr." Binding="{Binding SadasnjaVrednostKumulativna, StringFormat=N2}" Width="110">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
+                                        <Setter Property="TextAlignment" Value="Right"/>
                                         <Setter Property="FontWeight" Value="SemiBold"/>
                                         <Setter Property="Foreground" Value="#2D6A4F"/>
+                                        <Setter Property="FontFamily" Value="Calibri"/>
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
+                                <DataGridTextColumn.HeaderStyle>
+                                    <Style TargetType="DataGridColumnHeader">
+                                        <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                                    </Style>
+                                </DataGridTextColumn.HeaderStyle>
                             </DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>

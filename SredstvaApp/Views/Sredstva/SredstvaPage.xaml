@@ -56,7 +56,13 @@
                       MouseDoubleClick="SredstvaGrid_DoubleClick"
                       CanUserSortColumns="True" VerticalAlignment="Center">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Šifra" Binding="{Binding LegacySifra}" SortMemberPath="LegacySifra" Width="70"/>
+                    <DataGridTextColumn Header="Šifra" Binding="{Binding LegacySifra}" SortMemberPath="LegacySifra" Width="70">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                     <DataGridTextColumn Header="Inv. Br." Binding="{Binding InventarskiBroj}" SortMemberPath="InventarskiBroj" Width="90">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
@@ -85,6 +91,7 @@
                                 <Setter Property="HorizontalAlignment" Value="Right"/>
                                 <Setter Property="VerticalAlignment" Value="Center"/>
                                 <Setter Property="Padding" Value="0,0,8,0"/>
+                                <Setter Property="FontFamily" Value="Consolas"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>

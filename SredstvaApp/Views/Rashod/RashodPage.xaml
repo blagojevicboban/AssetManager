@@ -18,7 +18,7 @@
 
         <!-- Naslov -->
         <StackPanel Grid.Row="0">
-            <TextBlock Text="Rashod i Promene" Style="{StaticResource PageTitle}"/>
+            <TextBlock Text="Rashod i promene sredstava" Style="{StaticResource PageTitle}"/>
             <TextBlock x:Name="SubtitleText" Text="Učitavanje..."
                        Style="{StaticResource PageSubtitle}"/>
         </StackPanel>

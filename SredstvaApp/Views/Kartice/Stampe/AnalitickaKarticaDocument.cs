@@ -141,6 +141,8 @@ public class AnalitickaKarticaDocument : IDocument
                     columns.ConstantColumn(35);  // Stopa%
                     columns.ConstantColumn(50);  // Nabavna V.
                     columns.ConstantColumn(50);  // Ispravka V.
+                    columns.ConstantColumn(50);  // Nabavna V. kumul.
+                    columns.ConstantColumn(50);  // Ispravka V. kumul
                     columns.ConstantColumn(50);  // Sadašnja V.
                 });
 
@@ -150,10 +152,12 @@ public class AnalitickaKarticaDocument : IDocument
                     header.Cell().Element(CellStyle).Text("Opis promena").Bold();
                     header.Cell().Element(CellStyle).Text("Konto").Bold();
                     header.Cell().Element(CellStyle).Text("Am. Gr.").Bold();
-                    header.Cell().Element(CellStyle).AlignRight().Text("Stopa%").Bold();
-                    header.Cell().Element(CellStyle).AlignRight().Text("Nabavna V.").Bold();
-                    header.Cell().Element(CellStyle).AlignRight().Text("Ispravka V.").Bold();
-                    header.Cell().Element(CellStyle).AlignRight().Text("Sadašnja V.").Bold();
+                    header.Cell().Element(CellStyle).AlignRight().Text("%").Bold();
+                    header.Cell().Element(CellStyle).AlignRight().Text("Nabavna vr.").Bold();
+                    header.Cell().Element(CellStyle).AlignRight().Text("Amortizacija").Bold();
+                    header.Cell().Element(CellStyle).AlignRight().Text("Nabavna vr. Kumulativna").Bold();
+                    header.Cell().Element(CellStyle).AlignRight().Text("Ispravka vr. Kumulativna").Bold();
+                    header.Cell().Element(CellStyle).AlignRight().Text("Sadašnja vr.").Bold();
 
                     static IContainer CellStyle(IContainer container)
                     {
@@ -183,6 +187,8 @@ public class AnalitickaKarticaDocument : IDocument
                         table.Cell().Element(CellStyle).Text(kartica.Konto);
                         table.Cell().Element(CellStyle).Text($"{kartica.AmortizacionaGrupa1}");
                         table.Cell().Element(CellStyle).AlignRight().Text(kartica.StopaAmortizacije.ToString("N2"));
+                        table.Cell().Element(CellStyle).AlignRight().Text(kartica.NabavnaVrednost.ToString("N2"));
+                        table.Cell().Element(CellStyle).AlignRight().Text(kartica.IspravkaVrednosti.ToString("N2"));
                         table.Cell().Element(CellStyle).AlignRight().Text(kumulativnaNab.ToString("N2"));
                         table.Cell().Element(CellStyle).AlignRight().Text(kumulativnaIsp.ToString("N2"));
                         table.Cell().Element(CellStyle).AlignRight().Text((kumulativnaNab - kumulativnaIsp).ToString("N2"));
