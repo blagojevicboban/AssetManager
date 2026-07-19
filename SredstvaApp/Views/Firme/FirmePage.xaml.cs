@@ -69,7 +69,10 @@ public partial class FirmePage : Page
                         OriginalFirma = f
                     });
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Greška pri učitavanju baze '{file}': {ex.Message}");
+                }
             }
 
             // Ako nema nijedne baze podataka, pokreni inicijalizaciju podrazumevane baze podataka
@@ -106,7 +109,10 @@ public partial class FirmePage : Page
                         OriginalFirma = f
                     });
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Greška pri inicijalizaciji podrazumevane baze: {ex.Message}");
+                }
             }
 
             _allFirme = firmeList.OrderBy(f => f.Naziv).ToList();

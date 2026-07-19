@@ -19,7 +19,7 @@ public partial class LoginWindow : Window
         TxtUsername.Focus();
 
         var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-        TxtVersion.Text = $"Sistem za osnovna sredstva © 2026 - v{version?.ToString(3)}";
+        TxtVersion.Text = $"Sistem za osnovna sredstva © 2026 Blagojević Boban - v{version?.ToString(3)}";
     }
 
     private void LoadCompanyInfo()
@@ -61,14 +61,19 @@ public partial class LoginWindow : Window
             return;
         }
 
-        var hash = SredstvaDbContext.HashPassword(password);
-        
-        var korisnik = _db.Korisnici.FirstOrDefault(k => k.KorisnickoIme == username && k.LozinkaHash == hash);
+        var korisnik = _db.Korisnici.FirstOrDefault(k => k.KorisnickoIme == username);
 
-        if (korisnik == null)
+        if (korisnik == null || !SredstvaDbContext.VerifyPassword(password, korisnik.LozinkaHash))
         {
             ShowError("Pogrešno korisničko ime ili lozinka.");
             return;
+        }
+
+        // Presnimi stare, neosoljene heševe na novi (osoljeni) format pri uspešnoj prijavi
+        if (!korisnik.LozinkaHash.StartsWith("PBKDF2$", StringComparison.Ordinal))
+        {
+            korisnik.LozinkaHash = SredstvaDbContext.HashPassword(password);
+            _db.SaveChanges();
         }
 
         if (!korisnik.JeAktivan)

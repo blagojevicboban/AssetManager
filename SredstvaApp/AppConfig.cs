@@ -64,7 +64,10 @@ public static class AppConfig
                 }
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Greška pri migraciji zajedničke baze: {ex.Message}");
+        }
     }
 
     public static string DbPath

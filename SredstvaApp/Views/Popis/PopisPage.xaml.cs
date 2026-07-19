@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using Microsoft.EntityFrameworkCore;
 using SredstvaData;
 using SredstvaData.Models;
+using SredstvaData.Services;
 using QuestPDF.Fluent;
 
 namespace SredstvaApp.Views.Popis;
@@ -131,19 +132,8 @@ public partial class PopisPage : Page
                 _db.SaveChanges(); // to get Id
 
                 var aktivnaSredstva = _db.Sredstva.Where(s => s.JeAktivno).ToList();
-                foreach (var sredstvo in aktivnaSredstva)
-                {
-                    var stavka = new PopisnaStavka
-                    {
-                        PopisId = popis.Id,
-                        SredstvoId = sredstvo.Id,
-                        KnjiznaKolicina = sredstvo.Kolicina,
-                        KnjiznaVrednost = sredstvo.NabavnaVrednost - sredstvo.IspravkaVrednosti,
-                        PopisanaKolicina = sredstvo.Kolicina, // Podrazumevano je isto
-                        ProcenjenaVrednost = sredstvo.NabavnaVrednost - sredstvo.IspravkaVrednosti // Podrazumevano je isto
-                    };
-                    _db.PopisneStavke.Add(stavka);
-                }
+                var stavke = PopisCalculator.GenerisiStavke(popis.Id, aktivnaSredstva);
+                _db.PopisneStavke.AddRange(stavke);
 
                 _db.SaveChanges();
                 transaction.Commit();

@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using SredstvaData.Models;
 
@@ -32,70 +35,119 @@ public class SredstvaDbContext : DbContext
         var ctx = new SredstvaDbContext(optionsBuilder.Options);
         ctx.DbPath = dbPath;
 
-        // EnsureCreated kreira bazu sa TRENUTNIM modelom ako ne postoji.
-        // Za novu bazu: kreira sve tabele + seed admin korisnika.
-        // Za postojecu: ne radi nista (sigurno za sve slucajeve).
-        ctx.Database.EnsureCreated();
+        // Baze nastale pre uvodjenja EF Core migracija nemaju __EFMigrationsHistory
+        // tabelu. Njih jednokratno "krstimo" na trenutno stanje sheme kako bi
+        // Migrate() ispod mogao preuzeti sve buduce promene sheme na standardan,
+        // ugradjen nacin (bez rucnog SQL patch-a za svaku narednu migraciju).
+        BaselineLegacyDatabaseIfNeeded(dbPath);
 
-        // Primenimo sve schema promene idempotentno direktnim SQL-om.
-        // Ovaj pristup radi za SVE stanja baze:
-        //   A) Nova baza (EnsureCreated upravo kreirao) - sve je vec tu
-        //   B) Stara baza sa FirmaId (pre promene modela) - treba rename + add kolone
-        //   C) Baza sa novim modelom (EnsureCreated posle promene) - samo markiranje
-        using var conn = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbPath}");
-        conn.Open();
-        using var cmd = conn.CreateCommand();
+        ctx.Database.Migrate();
 
-        // 1. Kreiraj migrations history tabelu i markiraj AddKorisnici kao Done
-        cmd.CommandText = @"
-            CREATE TABLE IF NOT EXISTS __EFMigrationsHistory (
-                MigrationId TEXT NOT NULL CONSTRAINT PK___EFMigrationsHistory PRIMARY KEY,
-                ProductVersion TEXT NOT NULL);
-            INSERT OR IGNORE INTO __EFMigrationsHistory VALUES ('20260715165530_AddKorisnici', '8.0.0');";
-        cmd.ExecuteNonQuery();
+        return ctx;
+    }
 
-        // 2. Sigurno ukloni FK index ako postoji (IF EXISTS - ne pada ako nema)
-        cmd.CommandText = "DROP INDEX IF EXISTS \"IX_Sredstva_FirmaId\";";
-        cmd.ExecuteNonQuery();
-
-        // 3. Resavanje ObracunskaJedinica kolone (ranije se zvala FirmaId)
-        cmd.CommandText = "SELECT COUNT(*) FROM pragma_table_info('Sredstva') WHERE name='ObracunskaJedinica'";
-        var obracunskaJedinicaExists = (long)(cmd.ExecuteScalar() ?? 0L) > 0;
-
-        if (!obracunskaJedinicaExists)
+    /// <summary>
+    /// Dovodi bazu nastalu pre migracija (EnsureCreated era) u stanje koje odgovara
+    /// prve dve migracije (AddKorisnici, DodatiKontoObracunskaJedinica), pa markira
+    /// istoriju migracija kao izvrsenu. Ne dira baze koje vec imaju istoriju migracija
+    /// - za njih Database.Migrate() radi sve normalno.
+    /// </summary>
+    private static void BaselineLegacyDatabaseIfNeeded(string dbPath)
+    {
+        if (!File.Exists(dbPath))
         {
-            cmd.CommandText = "SELECT COUNT(*) FROM pragma_table_info('Sredstva') WHERE name='FirmaId'";
-            var firmaIdExists = (long)(cmd.ExecuteScalar() ?? 0L) > 0;
-            
-            if (firmaIdExists)
-            {
-                // Stara baza - preimenuj postojecu kolonu
-                cmd.CommandText = "ALTER TABLE \"Sredstva\" RENAME COLUMN \"FirmaId\" TO \"ObracunskaJedinica\";";
-                cmd.ExecuteNonQuery();
-            }
-            else
-            {
-                // Jako stara baza - nema ni FirmaId, znaci moramo dodati kolonu od nule
-                cmd.CommandText = "ALTER TABLE \"Sredstva\" ADD COLUMN \"ObracunskaJedinica\" INTEGER NOT NULL DEFAULT 0;";
-                cmd.ExecuteNonQuery();
-            }
+            // Nova baza - Database.Migrate() ce je kreirati od nule kroz migracije.
+            return;
         }
 
-        // 4. Dodaj Konto kolonu ako ne postoji
-        cmd.CommandText = "SELECT COUNT(*) FROM pragma_table_info('Sredstva') WHERE name='Konto'";
-        var kontoExists = (long)(cmd.ExecuteScalar() ?? 0L) > 0;
-        if (!kontoExists)
+        using var conn = new SqliteConnection($"Data Source={dbPath}");
+        conn.Open();
+
+        bool TableExists(string table)
         {
-            cmd.CommandText = "ALTER TABLE \"Sredstva\" ADD COLUMN \"Konto\" TEXT NOT NULL DEFAULT '';";
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=@t";
+            cmd.Parameters.AddWithValue("@t", table);
+            return (long)(cmd.ExecuteScalar() ?? 0L) > 0;
+        }
+
+        if (TableExists("__EFMigrationsHistory"))
+        {
+            // Baza je vec na tragu migracija - nema sta da se radi ovde.
+            return;
+        }
+
+        // Bezbednosna kopija pre bilo kakve izmene sheme (best-effort, ne blokira start).
+        try
+        {
+            var backupPath = $"{dbPath}.pre-migracija-{DateTime.Now:yyyyMMdd_HHmmss}.bak";
+            File.Copy(dbPath, backupPath, overwrite: true);
+        }
+        catch
+        {
+        }
+
+        bool ColumnExists(string table, string column)
+        {
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = $"SELECT COUNT(*) FROM pragma_table_info('{table}') WHERE name=@c";
+            cmd.Parameters.AddWithValue("@c", column);
+            return (long)(cmd.ExecuteScalar() ?? 0L) > 0;
+        }
+
+        void Exec(string sql)
+        {
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
             cmd.ExecuteNonQuery();
         }
 
-        // 5. Markiraj DodatiKontoObracunskaJedinica kao Done
-        cmd.CommandText = "INSERT OR IGNORE INTO __EFMigrationsHistory VALUES ('20260716093143_DodatiKontoObracunskaJedinica', '8.0.0');";
-        cmd.ExecuteNonQuery();
+        Exec(@"CREATE TABLE IF NOT EXISTS __EFMigrationsHistory (
+                MigrationId TEXT NOT NULL CONSTRAINT PK___EFMigrationsHistory PRIMARY KEY,
+                ProductVersion TEXT NOT NULL);");
 
-        conn.Close();
-        return ctx;
+        // 1. Korisnici tabela je uvedena tek u AddKorisnici migraciji. Baze koje
+        //    postoje od pre uvodjenja prijave/uloga korisnika je nemaju - napravimo
+        //    je sada, inace prva prijava puca sa "no such table: Korisnici".
+        if (!TableExists("Korisnici"))
+        {
+            Exec(@"CREATE TABLE ""Korisnici"" (
+                    ""Id"" INTEGER NOT NULL CONSTRAINT ""PK_Korisnici"" PRIMARY KEY AUTOINCREMENT,
+                    ""ImePrezime"" TEXT NOT NULL,
+                    ""KorisnickoIme"" TEXT NOT NULL,
+                    ""LozinkaHash"" TEXT NOT NULL,
+                    ""Uloga"" INTEGER NOT NULL,
+                    ""JeAktivan"" INTEGER NOT NULL);");
+            Exec(@"INSERT INTO ""Korisnici""
+                    (""Id"",""ImePrezime"",""KorisnickoIme"",""LozinkaHash"",""Uloga"",""JeAktivan"")
+                    VALUES (1,'Administrator','admin','" + HashPassword("admin") + @"',0,1);");
+        }
+
+        // 2. Sredstva.FirmaId -> ObracunskaJedinica (preimenovanje kolone iz stare seme)
+        Exec("DROP INDEX IF EXISTS \"IX_Sredstva_FirmaId\";");
+
+        if (!ColumnExists("Sredstva", "ObracunskaJedinica"))
+        {
+            if (ColumnExists("Sredstva", "FirmaId"))
+            {
+                Exec("ALTER TABLE \"Sredstva\" RENAME COLUMN \"FirmaId\" TO \"ObracunskaJedinica\";");
+            }
+            else
+            {
+                Exec("ALTER TABLE \"Sredstva\" ADD COLUMN \"ObracunskaJedinica\" INTEGER NOT NULL DEFAULT 0;");
+            }
+        }
+
+        // 3. Konto kolona (dodata u DodatiKontoObracunskaJedinica migraciji)
+        if (!ColumnExists("Sredstva", "Konto"))
+        {
+            Exec("ALTER TABLE \"Sredstva\" ADD COLUMN \"Konto\" TEXT NOT NULL DEFAULT '';");
+        }
+
+        // 4. Shema sada odgovara stanju posle prve dve migracije - markiraj ih kao izvrsene
+        //    da bi Database.Migrate() ispod primenio samo migracije koje dolaze POSLE ovih.
+        Exec(@"INSERT OR IGNORE INTO __EFMigrationsHistory VALUES ('20260715165530_AddKorisnici', '8.0.0');
+               INSERT OR IGNORE INTO __EFMigrationsHistory VALUES ('20260716093143_DodatiKontoObracunskaJedinica', '8.0.0');");
     }
 
     public SredstvaDbContext(DbContextOptions<SredstvaDbContext> options) : base(options)
@@ -125,7 +177,10 @@ public class SredstvaDbContext : DbContext
             Id = 1,
             ImePrezime = "Administrator",
             KorisnickoIme = "admin",
-            LozinkaHash = HashPassword("admin"), // Hardkodovani hash za "admin" za prvi login
+            // Hardkodovani (fiksni) osoljeni PBKDF2 hash za "admin" za prvi login.
+            // Mora biti konstanta, ne poziv HashPassword() - EF HasData zahteva
+            // determinističku vrednost jer ulazi u model snapshot za migracije.
+            LozinkaHash = "PBKDF2$100000$9HpsWOyoV9tk7boQMPu8Iw==$tKuZniNJrMWGpwsjSJQrN7wSaeHWIxO+c8lXgvB5hzY=",
             Uloga = UlogaKorisnika.Administrator,
             JeAktivan = true
         });
@@ -177,11 +232,53 @@ public class SredstvaDbContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
     }
 
+    private const int PasswordSaltSize = 16;
+    private const int PasswordHashSize = 32;
+    private const int PasswordIterations = 100_000;
+
     public static string HashPassword(string password)
     {
-        using var sha256 = System.Security.Cryptography.SHA256.Create();
-        var bytes = System.Text.Encoding.UTF8.GetBytes(password);
-        var hash = sha256.ComputeHash(bytes);
-        return Convert.ToBase64String(hash);
+        var salt = System.Security.Cryptography.RandomNumberGenerator.GetBytes(PasswordSaltSize);
+        var hash = System.Security.Cryptography.Rfc2898DeriveBytes.Pbkdf2(
+            password, salt, PasswordIterations, System.Security.Cryptography.HashAlgorithmName.SHA256, PasswordHashSize);
+        return $"PBKDF2${PasswordIterations}${Convert.ToBase64String(salt)}${Convert.ToBase64String(hash)}";
+    }
+
+    // Podržava i stare, neosoljene SHA-256 heševe iz baza kreiranih pre uvođenja soli -
+    // pri uspešnoj prijavi pozivalac treba da presnimi heš pozivom HashPassword.
+    public static bool VerifyPassword(string password, string storedHash)
+    {
+        if (string.IsNullOrEmpty(storedHash)) return false;
+
+        if (storedHash.StartsWith("PBKDF2$", StringComparison.Ordinal))
+        {
+            var parts = storedHash.Split('$');
+            if (parts.Length != 4 || !int.TryParse(parts[1], out var iterations)) return false;
+
+            try
+            {
+                var salt = Convert.FromBase64String(parts[2]);
+                var expected = Convert.FromBase64String(parts[3]);
+                var actual = System.Security.Cryptography.Rfc2898DeriveBytes.Pbkdf2(
+                    password, salt, iterations, System.Security.Cryptography.HashAlgorithmName.SHA256, expected.Length);
+                return System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(actual, expected);
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
+
+        try
+        {
+            var legacyHash = System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(password));
+            var legacyExpected = Convert.FromBase64String(storedHash);
+            return legacyExpected.Length == legacyHash.Length
+                && System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(legacyHash, legacyExpected);
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
     }
 }

@@ -35,19 +35,38 @@
         ul { margin-top: 10px; }
         li { margin-bottom: 10px; }
         .footer { text-align: center; margin-top: 50px; font-size: 0.9em; color: #777; }
+        .lang-divider { margin: 60px 0 40px 0; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>SredstvaApp — Korisničko Uputstvo</h1>
-        
+
         <p>Dobrodošli u novi sistem za <strong>Evidenciju i obračun osnovnih sredstava</strong>. Ova aplikacija menja Vaš stari (Clipper) softver i donosi moderno grafičko okruženje sa integrisanim sistemom za kreiranje i štampu PDF izveštaja.</p>
 
         <div class="note">
             <strong>Napomena o starim podacima:</strong> Svi vaši podaci iz starih programa automatski su migrirani. Stara šifra sredstva iz DBF datoteke čuva se unutar kartice sredstva pod opcijom "Legacy Šifra".
         </div>
 
-        <h2>1. Radna tabla (Dashboard)</h2>
+        <h2>1. Prijava i korisnički nalozi</h2>
+        <p>Pristup aplikaciji je zaštićen korisničkim nalogom.</p>
+        <ul>
+            <li><strong>Prijava:</strong> Pri pokretanju programa unesite korisničko ime i lozinku koje ste dobili od administratora.</li>
+            <li><strong>Uloge:</strong> Nalog <span class="highlight">Administrator</span> ima pun pristup, uključujući upravljanje korisnicima; nalog <span class="highlight">Operater</span> radi sa sredstvima i nalozima, bez pristupa modulu Korisnici.</li>
+            <li><strong>Upravljanje korisnicima:</strong> U tabu <strong>Korisnici</strong> administrator dodaje nove naloge, menja uloge, poništava zaboravljenu lozinku i deaktivira naloge zaposlenih koji više ne treba da imaju pristup (nalog se deaktivira, a ne briše, kako bi istorija unosa ostala sačuvana).</li>
+        </ul>
+
+        <h2>2. Firme (rad sa više preduzeća)</h2>
+        <p>Aplikacija podržava rad sa proizvoljnim brojem preduzeća u istoj instalaciji — svaka firma ima svoju odvojenu bazu podataka.</p>
+        <ul>
+            <li>U tabu <strong>Podešavanja → Firme</strong> (ili posebnom meniju Firme, u zavisnosti od verzije) dodajte novu firmu i unesite osnovne podatke (naziv, PIB, matični broj, adresa, bankovni račun...).</li>
+            <li>Klikom na <span class="highlight">⭐ Postavi kao aktivnu</span> prebacujete se na bazu podataka izabrane firme.</li>
+        </ul>
+        <div class="note">
+            Sve ostale stranice aplikacije (Osnovna sredstva, Amortizacija, Popis...) uvek prikazuju i menjaju podatke <strong>trenutno aktivne firme</strong>.
+        </div>
+
+        <h2>3. Radna tabla (Dashboard)</h2>
         <p>Po ulasku u preduzeće dočekaće vas Radna tabla sa grafičkim i numeričkim pregledom ključnih informacija.</p>
         <ul>
             <li><strong>Zbirni podaci:</strong> Brzi uvid u ukupan broj sredstava, kao i zbirnu nabavnu i sadašnju vrednost svih aktivnih sredstava u bazi.</li>
@@ -55,15 +74,41 @@
             <li><strong>Interaktivnost:</strong> Prelaskom kursora preko delova grafikona prikazaće se tačne numeričke vrednosti.</li>
         </ul>
 
-        <h2>2. Osnovna Sredstva (Kartice)</h2>
+        <h2>4. Osnovna Sredstva (Kartice)</h2>
         <p>Ovaj modul vam omogućava upravljanje katalogom svih osnovnih sredstava preduzeća.</p>
         <ul>
             <li><strong>Pregled:</strong> U tabeli možete videti stanje, nabavnu i otpisanu vrednost za svako sredstvo.</li>
             <li><strong>Izmene:</strong> Dvoklikom na red tabele ili klikom na olovku otvara se ekran za detaljno podešavanje stopa amortizacije i datuma aktivacije.</li>
+            <li><strong>Masovna selekcija:</strong> Kućica u zaglavlju prve kolone (☑) selektuje ili poništava selekciju svih sredstava trenutno prikazanih u tabeli (poštuje aktivnu pretragu), radi bržeg označavanja za akcije poput štampe nalepnica.</li>
             <li><strong>Prijave i Rashodi:</strong> Kroz dodatne module sredstvo može biti evidentirano kao trajno otuđeno (rashodovano).</li>
         </ul>
 
-        <h2>3. Amortizacija</h2>
+        <h2>5. Dobavljači</h2>
+        <p>Šifarnik dobavljača (po kontu) koristi se prilikom unosa Prijave sredstava.</p>
+        <ul>
+            <li>Pretražujte dobavljače po nazivu ili kontu preko polja za pretragu.</li>
+            <li>Klikom na dobavljača u listi, na desnoj strani se prikazuju njegovi osnovni podaci (adresa, mesto) i pregled svih Prijava sredstava koje su na njega evidentirane.</li>
+            <li>Dugmad <span class="highlight">✏️ Izmeni</span> i <span class="highlight">🗑️ Obriši</span> služe za ažuriranje šifarnika.</li>
+        </ul>
+
+        <h2>6. Prijava sredstava</h2>
+        <p>Modul za evidenciju nabavke i aktiviranja novih osnovnih sredstava kroz naloge za prijavu.</p>
+        <ul>
+            <li>Klikom na <span class="highlight">+ Nova prijava</span> otvara se ekran za unos naloga — dobavljač, datum aktiviranja i stavke (sredstva sa količinom i nabavnom vrednošću).</li>
+            <li>Leva tabela prikazuje sve naloge sa zbirnim podacima (broj stavki, ukupna nabavna vrednost, status knjiženja); desni panel prikazuje stavke naloga koji je trenutno selektovan.</li>
+            <li>Dvoklikom na nalog ili klikom na <span class="highlight">✏️ Uredi Nalog</span> otvara se nalog za dalju izmenu.</li>
+        </ul>
+
+        <h2>7. Rashod i promene</h2>
+        <p>Modul za evidenciju rashodovanja, prodaje, otuđenja, prenosa u drugu obračunsku jedinicu, brisanja i povećanja vrednosti/količine/amortizacije osnovnih sredstava.</p>
+        <ul>
+            <li>Statistika u vrhu stranice prikazuje broj naloga, broj rashodovanih i prodatih sredstava, kao i broj proknjiženih naloga i onih na čekanju.</li>
+            <li>Klikom na <span class="highlight">📤 Novi nalog</span> unosite novi nalog i biraste tip promene (kod), sredstvo i datum.</li>
+            <li>Leva tabela prikazuje sve naloge, obojene po dominantnom tipu promene; desni panel prikazuje stavke (sredstva) izabranog naloga, sa mogućnošću izmene preko <span class="highlight">✏️ Uredi Nalog</span>.</li>
+            <li>Dugme <span class="highlight">🖨 Štampa</span> generiše PDF izveštaj za trenutno prikazane (filtrirane) naloge.</li>
+        </ul>
+
+        <h2>8. Amortizacija</h2>
         <p>Proces godišnje amortizacije obračunava finansijski pad vrednosti sredstava po definisanim amortizacionim grupama i stopama.</p>
         <ul>
             <li>Idite na tab <strong>Amortizacija</strong>, odaberite godinu i kliknite na dugme <span class="highlight">Obracunaj</span>.</li>
@@ -71,7 +116,7 @@
             <li>Završene obracune možete PDF štampati koristeći dugme <span class="highlight">Štampa Izveštaja</span>. Izveštaj se sumira po Obračunskim jedinicama (RJ).</li>
         </ul>
 
-        <h2>4. Revalorizacija</h2>
+        <h2>9. Revalorizacija</h2>
         <p>Revalorizacija se radi radi usklađivanja knjigovodstvene vrednosti sredstava sa inflacijom ili trenutnim tržišnim stanjem, primenom revalorizacionih koeficijenata.</p>
         <div class="warning">
             Pre izvođenja Revalorizacije morate uneti <strong>Godišnji i Mesečni koeficijent</strong>. U starom sistemu ovo su bili parametri na glavnom ekranu aplikacije.
@@ -82,7 +127,7 @@
             <li>Program će kreirati novu liniju u tabeli koju kasnije možete <strong>Štampati</strong> kao PDF ili kliknuti <strong>Proknjiži</strong> kako bi se ažurirale vrednosti nad osnovnim sredstvima u glavnoj bazi.</li>
         </ul>
 
-        <h2>5. Popis</h2>
+        <h2>10. Popis</h2>
         <p>Na kraju godine sprovodi se obavezni popis inventara radi utvrđivanja eventualnih odstupanja između knjigovodstvenog i stvarnog stanja.</p>
         <ul>
             <li><strong>Kreiranje Komisije:</strong> U Tab-u "Komisije" dodajte novo ime popisne komisije. Zatim na desnoj strani unesite imena članova i njihove uloge (Predsednik/Član).</li>
@@ -92,27 +137,68 @@
             <li><strong>Završni Izveštaj:</strong> Klikom na <span class="highlight">🖨 Štampaj Izveštaj o Popisu</span> dobijate detaljan račun viškova i manjkova objedinjen po Kontima.</li>
         </ul>
 
-        <h2>6. Nalepnice i Bar-kodovi</h2>
+        <h2>11. Izveštaji i Rekapitulacije</h2>
+        <p>Ovaj modul objedinjuje popisne i rekapitulacione preglede osnovnih sredstava, nezavisno od godišnjeg popisa.</p>
+        <ul>
+            <li>Sa leve strane izaberite željeni izveštaj: <strong>Popis svih sredstava</strong> ili neku od <strong>Rekapitulacija</strong> (grupisano po kriterijumu iz naziva izveštaja).</li>
+            <li>Podaci se prikazuju u tabeli sa zbirnim vrednostima nabavne i sadašnje vrednosti u dnu ekrana.</li>
+            <li>Dugme <span class="highlight">💾 Export CSV</span> u gornjem desnom uglu snima trenutno prikazani izveštaj u CSV fajl (pogodno za dalju obradu u Excel-u).</li>
+        </ul>
+
+        <h2>12. Nalepnice i Bar-kodovi</h2>
         <p>Za potrebe lakšeg popisa i identifikacije opreme, aplikacija omogućava štampu Bar-kod nalepnica.</p>
         <ul>
             <li>Idite na tab <strong>Osnovna Sredstva</strong>.</li>
-            <li>U tabeli štiklirajte kućice (u prvoj koloni) pored sredstava za koja želite da odštampate nalepnice. Prethodno možete iskoristiti polje za pretragu kako biste lakše pronašli željena sredstva.</li>
+            <li>U tabeli štiklirajte kućice (u prvoj koloni) pored sredstava za koja želite da odštampate nalepnice — prethodno možete iskoristiti polje za pretragu, ili kućicu u zaglavlju kolone za brzo obeležavanje svih prikazanih sredstava.</li>
             <li>Kliknite na dugme <span class="highlight">🖨 Nalepnice</span>.</li>
             <li>Program će generisati PDF dokument (u A4 formatu, 3 kolone) koji sadrži naziv firme, šifru, inventarski broj, naziv sredstva i CODE-128 bar-kod spreman za štampu.</li>
         </ul>
 
+        <h2>13. Podešavanja</h2>
+        <p>Centralno mesto za rezervne kopije baze podataka, uvoz starih podataka i opšte postavke programa.</p>
+        <ul>
+            <li><strong>Rezervna kopija:</strong> Dugme <span class="highlight">💾 Napravi rezervnu kopiju baze podataka</span> snima trenutno stanje aktivne firme na disk. Tab prikazuje i istoriju svih dosadašnjih kopija, sa mogućnošću brzog vraćanja klikom na <strong>Vrati bazu iz izabrane kopije</strong>.</li>
+            <li><strong>Vraćanje iz fajla:</strong> Dugme <span class="highlight">📂 Izaberi i vrati bazu podataka iz kopije</span> učitava proizvoljno sačuvanu kopiju.</li>
+        </ul>
+        <div class="warning">
+            Vraćanje baze iz rezervne kopije <strong>u potpunosti zamenjuje</strong> sve trenutne podatke aktivne firme. Pre same zamene, program automatski pravi sigurnosnu kopiju trenutnog stanja.
+        </div>
+        <ul>
+            <li><strong>Auto-backup:</strong> Padajući meni omogućava da se rezervna kopija pravi automatski — nikad, pri svakom izlasku iz programa, ili jednom dnevno.</li>
+            <li><strong>Uvoz iz starog programa:</strong> U tabu "Uvoz iz starog programa" izaberite folder legacy DOS/FoxPro instalacije (npr. C:\arhibEL\SREDSTVA). Program očitava listu firmi iz KORISNIC.DBF i omogućava uvoz izabranih firmi dugmetom <strong>📥 Uvezi</strong>.</li>
+            <li><strong>Postavke programa:</strong> Uključite opciju da se program pri sledećem pokretanju automatski otvori maksimizovan.</li>
+        </ul>
+
         <!-- ENGLISH VERSION -->
-        <hr style="margin: 60px 0 40px 0; border: 1px solid #ddd;" />
+        <hr class="lang-divider" />
 
         <h1>SredstvaApp — User Manual (English)</h1>
-        
+
         <p>Welcome to the new system for <strong>Fixed Assets Management and Calculation</strong>. This application replaces your old (Clipper) software and brings a modern graphical environment with an integrated system for creating and printing PDF reports.</p>
 
         <div class="note">
             <strong>Note on legacy data:</strong> All your data from the old programs has been automatically migrated. The old asset code from the DBF file is stored inside the asset card under the "Legacy Code" option.
         </div>
 
-        <h2>1. Dashboard</h2>
+        <h2>1. Login and User Accounts</h2>
+        <p>Access to the application is protected by a user account.</p>
+        <ul>
+            <li><strong>Login:</strong> On startup, enter the username and password provided by your administrator.</li>
+            <li><strong>Roles:</strong> An <span class="highlight">Administrator</span> account has full access, including user management; an <span class="highlight">Operator</span> account works with assets and orders, without access to the Users module.</li>
+            <li><strong>Managing users:</strong> In the <strong>Korisnici</strong> (Users) tab, an administrator adds new accounts, changes roles, resets a forgotten password, and deactivates accounts for employees who should no longer have access (an account is deactivated rather than deleted, so the history of who entered what remains intact).</li>
+        </ul>
+
+        <h2>2. Companies (Multi-Company Support)</h2>
+        <p>The application supports working with any number of companies within the same installation — each company has its own separate database.</p>
+        <ul>
+            <li>In the <strong>Podešavanja → Firme</strong> tab (or a dedicated Companies menu, depending on the version), add a new company and enter its basic details (name, tax ID, registration number, address, bank account...).</li>
+            <li>Clicking <span class="highlight">⭐ Postavi kao aktivnu</span> (Set as active) switches you to the selected company's database.</li>
+        </ul>
+        <div class="note">
+            All other pages in the application (Assets, Depreciation, Inventory...) always display and modify data for the <strong>currently active company</strong>.
+        </div>
+
+        <h2>3. Dashboard</h2>
         <p>Upon entering a company, you will be greeted by the Dashboard with a graphical and numerical overview of key information.</p>
         <ul>
             <li><strong>Summary data:</strong> Quick insight into the total number of assets, as well as the total purchase and present value of all active assets in the database.</li>
@@ -120,15 +206,41 @@
             <li><strong>Interactivity:</strong> Hovering the cursor over chart elements will display exact numerical values.</li>
         </ul>
 
-        <h2>2. Fixed Assets (Cards)</h2>
+        <h2>4. Fixed Assets (Cards)</h2>
         <p>This module allows you to manage the catalog of all fixed assets of the company.</p>
         <ul>
             <li><strong>Overview:</strong> In the table, you can see the condition, purchase, and written-off value for each asset.</li>
             <li><strong>Modifications:</strong> Double-clicking a table row or clicking the pencil opens a screen for detailed configuration of depreciation rates and activation dates.</li>
+            <li><strong>Bulk selection:</strong> The checkbox in the first column's header (☑) selects or clears the selection for all assets currently shown in the table (respects the active search filter), for quickly marking assets for actions such as label printing.</li>
             <li><strong>Registrations and Write-offs:</strong> Through additional modules, an asset can be recorded as permanently alienated (written off).</li>
         </ul>
 
-        <h2>3. Depreciation</h2>
+        <h2>5. Suppliers</h2>
+        <p>The supplier registry (by account) is used when entering an Asset Registration order.</p>
+        <ul>
+            <li>Search suppliers by name or account using the search field.</li>
+            <li>Clicking a supplier in the list shows their basic details (address, city) on the right side, along with an overview of all Asset Registration orders recorded against them.</li>
+            <li>The <span class="highlight">✏️ Izmeni</span> (Edit) and <span class="highlight">🗑️ Obriši</span> (Delete) buttons are used to maintain the registry.</li>
+        </ul>
+
+        <h2>6. Asset Registration (Prijava)</h2>
+        <p>A module for recording the acquisition and activation of new fixed assets through registration orders.</p>
+        <ul>
+            <li>Clicking <span class="highlight">+ Nova prijava</span> (New registration) opens a screen for entering an order — supplier, activation date, and line items (assets with quantity and purchase value).</li>
+            <li>The left-hand table shows all orders with summary data (item count, total purchase value, posting status); the right-hand panel shows the line items of the currently selected order.</li>
+            <li>Double-clicking an order, or clicking <span class="highlight">✏️ Uredi Nalog</span> (Edit order), opens the order for further editing.</li>
+        </ul>
+
+        <h2>7. Write-offs and Changes (Rashod)</h2>
+        <p>A module for recording write-offs, sales, disposals, transfers to another accounting unit, deletions, and increases in value/quantity/depreciation of fixed assets.</p>
+        <ul>
+            <li>The statistics at the top of the page show the number of orders, the number of written-off and sold assets, and the number of posted orders versus those still pending.</li>
+            <li>Clicking <span class="highlight">📤 Novi nalog</span> (New order) lets you enter a new order and choose the type of change (code), the asset, and the date.</li>
+            <li>The left-hand table shows all orders, color-coded by the dominant type of change; the right-hand panel shows the line items (assets) of the selected order, which can be edited via <span class="highlight">✏️ Uredi Nalog</span>.</li>
+            <li>The <span class="highlight">🖨 Štampa</span> (Print) button generates a PDF report for the currently displayed (filtered) orders.</li>
+        </ul>
+
+        <h2>8. Depreciation</h2>
         <p>The annual depreciation process calculates the financial decrease in the value of assets according to defined depreciation groups and rates.</p>
         <ul>
             <li>Go to the <strong>Amortizacija</strong> (Depreciation) tab, select the year, and click the <span class="highlight">Obracunaj</span> (Calculate) button.</li>
@@ -136,7 +248,7 @@
             <li>Completed calculations can be printed as PDFs using the <span class="highlight">Štampa Izveštaja</span> (Print Report) button. The report is summarized by Accounting Units (RJ).</li>
         </ul>
 
-        <h2>4. Revaluation</h2>
+        <h2>9. Revaluation</h2>
         <p>Revaluation is performed to align the book value of assets with inflation or current market conditions, by applying revaluation coefficients.</p>
         <div class="warning">
             Before performing Revaluation, you must enter the <strong>Annual and Monthly coefficient</strong>. In the old system, these were parameters on the main application screen.
@@ -147,7 +259,7 @@
             <li>The program will create a new line in the table that you can later <strong>Print</strong> as a PDF or click <strong>Proknjiži</strong> (Post) to update the asset values in the main database.</li>
         </ul>
 
-        <h2>5. Inventory</h2>
+        <h2>10. Inventory</h2>
         <p>At the end of the year, a mandatory inventory is conducted to determine any discrepancies between the accounting and actual state.</p>
         <ul>
             <li><strong>Creating a Commission:</strong> In the "Komisije" (Commissions) tab, add a new name for the inventory commission. Then on the right side, enter the members' names and roles (President/Member).</li>
@@ -157,17 +269,40 @@
             <li><strong>Final Report:</strong> By clicking <span class="highlight">🖨 Štampaj Izveštaj o Popisu</span> (Print Inventory Report), you get a detailed calculation of surpluses and shortages consolidated by Accounts.</li>
         </ul>
 
-        <h2>6. Labels and Barcodes</h2>
+        <h2>11. Reports and Recapitulations</h2>
+        <p>This module brings together listing and recapitulation views of fixed assets, independent of the annual inventory.</p>
+        <ul>
+            <li>On the left, choose the desired report: <strong>Popis svih sredstava</strong> (Full asset listing) or one of the <strong>Rekapitulacije</strong> (Recapitulations), grouped by the criterion named in the report.</li>
+            <li>Data is shown in a table with total purchase and present values summarized at the bottom of the screen.</li>
+            <li>The <span class="highlight">💾 Export CSV</span> button in the top-right corner saves the currently displayed report to a CSV file (convenient for further processing in Excel).</li>
+        </ul>
+
+        <h2>12. Labels and Barcodes</h2>
         <p>For easier inventory and equipment identification, the application allows printing Barcode labels.</p>
         <ul>
             <li>Go to the <strong>Osnovna Sredstva</strong> (Fixed Assets) tab.</li>
-            <li>In the table, check the boxes (in the first column) next to the assets you want to print labels for. You can use the search field beforehand to easily find the desired assets.</li>
+            <li>In the table, check the boxes (in the first column) next to the assets you want to print labels for — you can use the search field beforehand, or the checkbox in the column header to quickly mark all currently displayed assets.</li>
             <li>Click the <span class="highlight">🖨 Nalepnice</span> (Labels) button.</li>
             <li>The program will generate a PDF document (in A4 format, 3 columns) containing the company name, legacy code, inventory number, asset name, and a CODE-128 barcode ready for printing.</li>
         </ul>
 
+        <h2>13. Settings</h2>
+        <p>The central place for database backups, legacy data import, and general application settings.</p>
+        <ul>
+            <li><strong>Backup:</strong> The <span class="highlight">💾 Napravi rezervnu kopiju baze podataka</span> (Create backup) button saves the current state of the active company to disk. The tab also shows the history of all previous backups, with quick restore available via <strong>Vrati bazu iz izabrane kopije</strong> (Restore from selected backup).</li>
+            <li><strong>Restore from file:</strong> The <span class="highlight">📂 Izaberi i vrati bazu podataka iz kopije</span> (Select and restore from backup) button loads an arbitrary saved backup.</li>
+        </ul>
+        <div class="warning">
+            Restoring a database from a backup <strong>completely replaces</strong> all current data for the active company. Before the replacement happens, the program automatically creates a safety copy of the current state.
+        </div>
+        <ul>
+            <li><strong>Auto-backup:</strong> A dropdown lets you have backups created automatically — never, on every exit from the program, or once a day.</li>
+            <li><strong>Legacy import:</strong> In the "Uvoz iz starog programa" (Import from old program) tab, select the folder of the legacy DOS/FoxPro installation (e.g. C:\arhibEL\SREDSTVA). The program reads the list of companies from KORISNIC.DBF and lets you import selected companies using the <strong>📥 Uvezi</strong> (Import) button.</li>
+            <li><strong>Program settings:</strong> Enable the option for the program to automatically open maximized the next time it starts.</li>
+        </ul>
+
         <div class="footer">
-            <p>SredstvaApp &copy; 2026</p>
+            <p>SredstvaApp &copy; 2026 — Autor: Blagojević Boban</p>
         </div>
     </div>
 </body>

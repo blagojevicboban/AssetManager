@@ -41,7 +41,10 @@ public class UserSettings
                 return JsonSerializer.Deserialize<UserSettings>(json) ?? new UserSettings();
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Greška pri učitavanju podešavanja: {ex.Message}");
+        }
 
         return new UserSettings();
     }
@@ -58,6 +61,9 @@ public class UserSettings
             var json = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(SettingsFile, json);
         }
-        catch { }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Greška pri čuvanju podešavanja: {ex.Message}");
+        }
     }
 }

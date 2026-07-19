@@ -67,6 +67,18 @@ public partial class SredstvaPage : Page
         // Priprema za buduće akcije na selekciji
     }
 
+    private void ChkSelectAll_Checked(object sender, RoutedEventArgs e) => SetAllSelected(true);
+
+    private void ChkSelectAll_Unchecked(object sender, RoutedEventArgs e) => SetAllSelected(false);
+
+    private void SetAllSelected(bool value)
+    {
+        if (SredstvaGrid.ItemsSource is not IEnumerable<Sredstvo> items) return;
+
+        foreach (var s in items) s.IsSelected = value;
+        SredstvaGrid.Items.Refresh();
+    }
+
     private void SredstvaGrid_DoubleClick(object sender, MouseButtonEventArgs e)
     {
         if (SredstvaGrid.SelectedItem is Sredstvo s)

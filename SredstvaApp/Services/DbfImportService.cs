@@ -111,7 +111,7 @@ public class DbfImportService
                 var val = reader.GetValue(idx);
                 if (val != null && val != DBNull.Value)
                 {
-                    try { return Convert.ToDecimal(val); } catch { }
+                    try { return Convert.ToDecimal(val); } catch { /* probaj sledeću kolonu iz colNames */ }
                 }
             }
         }
@@ -127,7 +127,7 @@ public class DbfImportService
                 var val = reader.GetValue(idx);
                 if (val != null && val != DBNull.Value)
                 {
-                    try { return Convert.ToInt32(val); } catch { }
+                    try { return Convert.ToInt32(val); } catch { /* probaj sledeću kolonu iz colNames */ }
                 }
             }
         }

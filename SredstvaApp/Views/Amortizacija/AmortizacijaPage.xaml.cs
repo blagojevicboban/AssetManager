@@ -10,6 +10,7 @@ using Microsoft.Win32;
 using QuestPDF.Fluent;
 using SredstvaData;
 using SredstvaData.Models;
+using SredstvaData.Services;
 
 namespace SredstvaApp.Views.Amortizacija;
 
@@ -79,21 +80,13 @@ public partial class AmortizacijaPage : Page
         {
             if (!sredstvaDict.TryGetValue(kartica.SredstvoId, out var sredstvo)) continue;
 
-            string pattern = @"(?:Redovan otpis|Amortizacija)\s*\(?\b(\d{4})\b\)?";
-            var match = System.Text.RegularExpressions.Regex.Match(kartica.OpisPromene, pattern);
-
-            int godina = 0;
-            if (match.Success && int.TryParse(match.Groups[1].Value, out int parsiranaGodina))
+            if (AmortizacijaCalculator.TryParseGodina(kartica.OpisPromene, out int godina))
             {
-                godina = parsiranaGodina;
-
                 decimal prethodnaIspravka = 0;
                 if (karticeDict.TryGetValue(sredstvo.Id, out var sveKarticeSredstva))
                 {
                     // Prethodna ispravka je suma svih prethodnih ispravki za to sredstvo do momenta ove amortizacije
-                    prethodnaIspravka = sveKarticeSredstva
-                        .Where(k => k.Datum < kartica.Datum || (k.Datum == kartica.Datum && k.Id < kartica.Id))
-                        .Sum(k => k.IspravkaVrednosti);
+                    prethodnaIspravka = AmortizacijaCalculator.IzracunajPrethodnuIspravku(sveKarticeSredstva, kartica);
                 }
 
                 _listaAmortizacije.Add(new AmortizacijaResultViewModel
@@ -180,46 +173,7 @@ public partial class AmortizacijaPage : Page
 
         foreach (var s in sredstva)
         {
-            // Kartice sortirane hronološki
-            var sveKartice = s.Kartice.OrderBy(k => k.Datum).ToList();
-
-            // Stanje pre perioda obračuna
-            decimal tekucaNabavna = sveKartice.Where(k => k.Datum < start).Sum(k => k.NabavnaVrednost);
-            decimal tekucaIspravka = sveKartice.Where(k => k.Datum < start).Sum(k => k.IspravkaVrednosti);
-
-            decimal ukupnaNovaAmortizacija = 0;
-            DateTime currentDate = start;
-            decimal daniUGodini = DateTime.IsLeapYear(start.Year) ? 366m : 365m;
-
-            // Kartice unutar perioda obračuna
-            var karticeUPeriodu = sveKartice.Where(k => k.Datum >= start && k.Datum <= end).ToList();
-
-            foreach (var kartica in karticeUPeriodu)
-            {
-                int days = (kartica.Datum - currentDate).Days;
-                if (days > 0 && tekucaNabavna > 0)
-                {
-                    ukupnaNovaAmortizacija += (tekucaNabavna * (s.StopaAmortizacije / 100m)) * days / daniUGodini;
-                }
-
-                // Ažuriramo tekuće stanje (npr. nabavka, rashod, revalorizacija unutar godine)
-                tekucaNabavna += kartica.NabavnaVrednost;
-                tekucaIspravka += kartica.IspravkaVrednosti;
-                currentDate = kartica.Datum;
-            }
-
-            // Ostatak perioda (do kraja obračuna)
-            int finalDays = (end - currentDate).Days + 1; // +1 da bi se obuhvatio i sam krajnji datum
-            if (finalDays > 0 && tekucaNabavna > 0)
-            {
-                ukupnaNovaAmortizacija += (tekucaNabavna * (s.StopaAmortizacije / 100m)) * finalDays / daniUGodini;
-            }
-
-            // Ograničenje: Nova ispravka ne sme da pređe neotpisanu vrednost (nabavna - dosadašnja ispravka)
-            decimal neotpisanaVrednost = tekucaNabavna - tekucaIspravka;
-            if (neotpisanaVrednost < 0) neotpisanaVrednost = 0;
-
-            ukupnaNovaAmortizacija = Math.Min(ukupnaNovaAmortizacija, neotpisanaVrednost);
+            var rezultat = AmortizacijaCalculator.Izracunaj(s.StopaAmortizacije, s.Kartice, start, end);
 
             // Dodajemo u rezultate samo ako ima promena (ili ako zelimo sve aktivne)
             // Stari sistem generiše za sva aktivna sredstva, pa ćemo prikazati sva
@@ -233,9 +187,9 @@ public partial class AmortizacijaPage : Page
                 Konto = s.Konto,
                 AmortizacionaGrupa = s.AmortizacionaGrupa,
                 StopaAmortizacije = s.StopaAmortizacije,
-                NabavnaVrednost = tekucaNabavna,
-                PrethodnaIspravka = tekucaIspravka,
-                NovaAmortizacija = Math.Round(ukupnaNovaAmortizacija, 2)
+                NabavnaVrednost = rezultat.NabavnaVrednost,
+                PrethodnaIspravka = rezultat.PrethodnaIspravka,
+                NovaAmortizacija = rezultat.NovaAmortizacija
             });
         }
 

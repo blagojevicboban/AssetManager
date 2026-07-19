@@ -61,6 +61,12 @@
                       CanUserSortColumns="True" VerticalAlignment="Center">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Width="40">
+                        <DataGridCheckBoxColumn.Header>
+                            <CheckBox x:Name="ChkSelectAll"
+                                      Checked="ChkSelectAll_Checked"
+                                      Unchecked="ChkSelectAll_Unchecked"
+                                      HorizontalAlignment="Center"/>
+                        </DataGridCheckBoxColumn.Header>
                         <DataGridCheckBoxColumn.ElementStyle>
                             <Style TargetType="CheckBox">
                                 <Setter Property="HorizontalAlignment" Value="Center"/>

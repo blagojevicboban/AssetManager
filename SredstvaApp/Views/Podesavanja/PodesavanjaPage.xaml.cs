@@ -20,7 +20,10 @@ public partial class PodesavanjaPage : Page
             var dbName = !string.IsNullOrEmpty(AppConfig.DbPath) ? Path.GetFileNameWithoutExtension(AppConfig.DbPath) : "sredstva";
             TxtPredlozenoIme.Text = $"{dbName}_backup_{DateTime.Now:yyyyMMdd_HHmmss}.db";
         }
-        catch { }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Greška pri učitavanju podataka o aktivnoj bazi: {ex.Message}");
+        }
 
         ChkStartMaximized.IsChecked = UserSettings.Instance.StartMaximized;
 
@@ -56,7 +59,10 @@ public partial class PodesavanjaPage : Page
             var kopije = BackupService.Instance.UcitajIstorijuKopija();
             LstIstorijaKopija.ItemsSource = kopije;
         }
-        catch { }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Greška pri osvežavanju istorije kopija: {ex.Message}");
+        }
     }
 
     private void BtnKreirajBackup_Click(object sender, RoutedEventArgs e)

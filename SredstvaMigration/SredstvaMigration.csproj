@@ -13,6 +13,10 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <Authors>Blagojević Boban</Authors>
+    <Company>Blagojević Boban</Company>
+    <Copyright>Copyright © Blagojević Boban 2026</Copyright>
   </PropertyGroup>
 
 </Project>

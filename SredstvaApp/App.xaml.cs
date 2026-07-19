@@ -90,7 +90,10 @@ public partial class App : Application
                 dbContext.SaveChanges();
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Greška pri ažuriranju statusa rashodovanih sredstava: {ex.Message}");
+        }
 
         var loginWindow = new Views.Korisnici.LoginWindow(dbContext);
         loginWindow.Show();
@@ -118,7 +121,10 @@ public partial class App : Application
                 }
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Greška pri automatskom pravljenju kopije prilikom izlaska: {ex.Message}");
+        }
 
         await AppHost!.StopAsync();
         base.OnExit(e);

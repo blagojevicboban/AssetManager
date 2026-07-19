@@ -38,6 +38,11 @@
     
     <!-- Citamo verziju direktno iz version.txt kako bi bila ispravna i pri buildu iz Visual Studio-a -->
     <Version>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\version.txt').Trim())</Version>
+
+    <Authors>Blagojević Boban</Authors>
+    <Company>Blagojević Boban</Company>
+    <Product>SredstvaApp</Product>
+    <Copyright>Copyright © Blagojević Boban 2026</Copyright>
   </PropertyGroup>
 
 </Project>

@@ -8,6 +8,7 @@ using Microsoft.Win32;
 using QuestPDF.Fluent;
 using SredstvaData;
 using SredstvaData.Models;
+using SredstvaData.Services;
 
 namespace SredstvaApp.Views.Revalorizacija;
 
@@ -98,47 +99,10 @@ public partial class RevalorizacijaPage : Page
 
         foreach (var s in sredstva)
         {
-            var kartice = s.Kartice.OrderBy(k => k.Datum).ToList();
-            
-            // Baza pre perioda obračuna (do start datuma)
-            decimal staraNabavna = kartice.Where(k => k.Datum < start).Sum(k => k.NabavnaVrednost);
-            decimal staraIspravka = kartice.Where(k => k.Datum < start).Sum(k => k.IspravkaVrednosti);
-
-            // Revalorizovana baza (primenjujemo godišnji koeficijent na nju)
-            decimal novaNabavna = staraNabavna * godKoef;
-            decimal novaIspravka = staraIspravka * godKoef;
-
-            // Kartice unutar perioda obračuna
-            var karticeUPeriodu = kartice.Where(k => k.Datum >= start && k.Datum <= end).ToList();
-
-            foreach (var k in karticeUPeriodu)
-            {
-                staraNabavna += k.NabavnaVrednost;
-                staraIspravka += k.IspravkaVrednosti;
-
-                // Odabir koeficijenta za tekuću promenu
-                decimal primenjenKoef = 1m;
-
-                if (k.OpisPromene.Contains("Amortizacija", StringComparison.OrdinalIgnoreCase))
-                {
-                    // Redovna amortizacija iz ove godine dobija godišnji koeficijent
-                    primenjenKoef = godKoef;
-                }
-                else
-                {
-                    // Ostale promene (npr. nabavka u toku godine) dobijaju mesečni koeficijent (za taj mesec)
-                    primenjenKoef = mesecniKoefs[k.Datum.Month];
-                }
-
-                novaNabavna += k.NabavnaVrednost * primenjenKoef;
-                novaIspravka += k.IspravkaVrednosti * primenjenKoef;
-            }
-
-            decimal efekatNabavna = novaNabavna - staraNabavna;
-            decimal efekatIspravka = novaIspravka - staraIspravka;
+            var rezultat = RevalorizacijaCalculator.Izracunaj(s.Kartice, start, end, godKoef, mesecniKoefs);
 
             // Ukoliko nema efekta (koeficijenti su 1.00 i sl.), preskačemo sredstvo za prikaz
-            if (Math.Abs(efekatNabavna) < 0.01m && Math.Abs(efekatIspravka) < 0.01m)
+            if (!rezultat.ImaEfekat)
                 continue;
 
             _results.Add(new RevalorizacijaResultViewModel
@@ -148,10 +112,10 @@ public partial class RevalorizacijaPage : Page
                 LegacySifra = s.LegacySifra,
                 Naziv = s.Naziv,
                 PrimenjeniGodisnjiKoef = godKoef,
-                StaraNabavna = staraNabavna,
-                StaraIspravka = staraIspravka,
-                NovaNabavna = novaNabavna,
-                NovaIspravka = novaIspravka
+                StaraNabavna = rezultat.StaraNabavna,
+                StaraIspravka = rezultat.StaraIspravka,
+                NovaNabavna = rezultat.NovaNabavna,
+                NovaIspravka = rezultat.NovaIspravka
             });
         }
 

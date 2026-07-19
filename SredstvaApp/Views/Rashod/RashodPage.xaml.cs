@@ -118,6 +118,53 @@ public partial class RashodPage : Page
         }
     }
 
+    private void RashodGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (RashodGrid.SelectedItem is RashodNalogViewModel r)
+        {
+            StatusText.Text = $"Nalog #{r.BrojNaloga}  •  Dupli klik za pregled naloga";
+            UcitajStavke(r.BrojNaloga);
+        }
+        else
+        {
+            StavkeGrid.ItemsSource = null;
+            TxtDetaljiNaslov.Text = "Izaberite nalog";
+        }
+    }
+
+    private void UcitajStavke(int brojNaloga)
+    {
+        TxtDetaljiNaslov.Text = $"Stavke (Nalog #{brojNaloga})";
+        var stavke = _db.Rashodi
+            .Include(r => r.Sredstvo)
+            .Where(r => r.BrojNaloga == brojNaloga)
+            .OrderBy(r => r.RedBroj)
+            .Select(r => new
+            {
+                r.RedBroj,
+                SredstvoNaziv = r.Sredstvo != null ? r.Sredstvo.Naziv : "Nema naziva",
+                r.KodTekst,
+                r.Podaci
+            })
+            .ToList();
+
+        StavkeGrid.ItemsSource = stavke;
+    }
+
+    private void BtnEditNalog_Click(object sender, RoutedEventArgs e)
+    {
+        if (RashodGrid.SelectedItem is RashodNalogViewModel r)
+        {
+            var w = new RashodWindow(_db, r.BrojNaloga);
+            if (w.ShowDialog() == true)
+                RashodPage_Loaded(null!, null!);
+        }
+        else
+        {
+            MessageBox.Show("Izaberite nalog iz tabele levo.", "Uredi Nalog", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+    }
+
     private void BtnNoviRashod_Click(object sender, RoutedEventArgs e)
     {
         var w = new RashodWindow(_db, null);
