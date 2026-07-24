@@ -119,8 +119,8 @@
                         <TextBox x:Name="TxtKonto" Height="28"/>
                     </StackPanel>
                     <StackPanel Grid.Row="2" Grid.Column="4">
-                        <TextBlock Text="Obr. Jedinica" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,0,0,4"/>
-                        <TextBox x:Name="TxtOJ" Height="28"/>
+                        <TextBlock Text="Poreska Grupa" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,0,0,4"/>
+                        <ComboBox x:Name="CmbPoreskaGrupa" Height="28" DisplayMemberPath="Naziv" SelectedValuePath="Kod"/>
                     </StackPanel>
                     
                     <Button x:Name="BtnDodaj" Grid.Row="2" Grid.Column="6" Content="Dodaj" Style="{StaticResource SecondaryButton}" Height="28" VerticalAlignment="Bottom" Click="BtnDodajStavku_Click"/>

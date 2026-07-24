@@ -62,4 +62,17 @@ public class PoreskaAmortizacijaCalculatorTests
         Assert.Equal(2_000m, res.NovaPoreskaAmortizacija);
         Assert.Equal(0m, res.PoreskaNeotpisanaVrednost);
     }
+
+    [Theory]
+    [InlineData("0220", "Upravna Zgrada", "I", 2.5)]
+    [InlineData("0230", "Putničko vozilo", "II", 10.0)]
+    [InlineData("0230", "Kompjuter HP Pro", "V", 30.0)]
+    [InlineData("0230", "Radionički sto", "III", 15.0)]
+    public void PoreskaGrupaCatalog_PredlazeTacnuGrupuIStopu(string konto, string naziv, string ocekivaniKod, decimal ocekivanaStopa)
+    {
+        var predlog = PoreskaGrupaCatalog.PredloziGrupu(konto, naziv);
+
+        Assert.Equal(ocekivaniKod, predlog.Kod);
+        Assert.Equal(ocekivanaStopa, predlog.Stopa);
+    }
 }

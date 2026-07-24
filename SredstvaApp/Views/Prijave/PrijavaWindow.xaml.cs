@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
 using SredstvaData;
 using SredstvaData.Models;
+using SredstvaData.Services;
 using SredstvaApp.Views.Prijave.Stampe;
 
 namespace SredstvaApp.Views.Rashod;
@@ -26,6 +27,8 @@ public class PrijavaStavkaViewModel
     public decimal OtpisanaVrednost { get; set; }
     public int Sifra { get; set; }
     public string BrojFakture { get; set; } = string.Empty;
+    public string PoreskaGrupa { get; set; } = string.Empty;
+    public decimal PoreskaStopa { get; set; }
 }
 
 public partial class PrijavaWindow : Window
@@ -47,6 +50,11 @@ public partial class PrijavaWindow : Window
     {
         CmbDobavljac.ItemsSource = _db.Dobavljaci.OrderBy(d => d.OpisKonta).ToList();
         DpDatum.SelectedDate = DateTime.Today;
+        CmbPoreskaGrupa.ItemsSource = PoreskaGrupaCatalog.Grupe;
+        CmbPoreskaGrupa.SelectedIndex = 2; // Default: Grupa III (15%)
+
+        TxtNaziv.LostFocus += TxtNaziv_LostFocus;
+        TxtKonto.LostFocus += TxtNaziv_LostFocus;
 
         if (_brojNaloga.HasValue)
         {
@@ -59,6 +67,15 @@ public partial class PrijavaWindow : Window
             // Autogenerate next Nalog ID based on max in Prijave
             var maxNalog = _db.Prijave.Any() ? _db.Prijave.Max(p => p.BrojNaloga) : 0;
             TxtBrojNaloga.Text = (maxNalog + 1).ToString();
+        }
+    }
+
+    private void TxtNaziv_LostFocus(object sender, RoutedEventArgs e)
+    {
+        var predlog = PoreskaGrupaCatalog.PredloziGrupu(TxtKonto.Text, TxtNaziv.Text);
+        if (predlog != null)
+        {
+            CmbPoreskaGrupa.SelectedValue = predlog.Kod;
         }
     }
 
@@ -138,7 +155,9 @@ public partial class PrijavaWindow : Window
             return;
         }
 
-        int.TryParse(TxtOJ.Text.Trim(), out int oj);
+        int oj = 1;
+        string pgKod = CmbPoreskaGrupa.SelectedValue as string ?? "III";
+        decimal pgStopa = PoreskaGrupaCatalog.GetStopaZaGrupu(pgKod);
 
         var novaStavka = new PrijavaStavkaViewModel
         {
@@ -150,9 +169,11 @@ public partial class PrijavaWindow : Window
             AmortizacionaGrupa = TxtGrupa.Text.Trim(),
             Konto = TxtKonto.Text.Trim(),
             ObracunskaJedinica = oj,
-            Kolicina = 1m, // Podrazumevana količina, kasnije možemo dodati unos na UI ako treba
+            Kolicina = 1m, // Podrazumevana količina
             OtpisanaVrednost = 0m,
-            BrojFakture = ""
+            BrojFakture = "",
+            PoreskaGrupa = pgKod,
+            PoreskaStopa = pgStopa
         };
 
         Stavke.Add(novaStavka);
@@ -167,37 +188,26 @@ public partial class PrijavaWindow : Window
         TxtStopa.Text = "";
         TxtGrupa.Text = "";
         TxtKonto.Text = "";
-        TxtOJ.Text = "";
         TxtInvBroj.Focus();
     }
 
     private void BtnProknjizi_Click(object sender, RoutedEventArgs e)
     {
-        if (Stavke.Count == 0)
+        if (!Stavke.Any())
         {
-            MessageBox.Show("Nalog nema nijednu stavku.", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show("Nema stavki u nalogu za knjiženje.", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
-        
-        if (!int.TryParse(TxtBrojNaloga.Text.Trim(), out int brojNaloga))
-        {
-            MessageBox.Show("Neispravan broj naloga.", "Greška", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
+
+        var resMsg = MessageBox.Show($"Da li ste sigurni da želite da proknjižite nalog sa {Stavke.Count} stavki?", "Potvrda", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        if (resMsg != MessageBoxResult.Yes) return;
 
         using var transaction = _db.Database.BeginTransaction();
         try
         {
-            var datum = DpDatum.SelectedDate ?? DateTime.Today;
+            DateTime datum = DpDatum.SelectedDate ?? DateTime.Today;
             int? dobId = CmbDobavljac.SelectedValue as int?;
-            var firmaId = _db.Firme.FirstOrDefault()?.Id ?? 1;
-            
-            // Delete existing unposted records for this Nalog if any
-            var postojece = _db.Prijave.Where(p => p.BrojNaloga == brojNaloga).ToList();
-            if (postojece.Any())
-            {
-                _db.Prijave.RemoveRange(postojece);
-            }
+            int brojNaloga = _brojNaloga ?? ((_db.Prijave.Max(p => (int?)p.BrojNaloga) ?? 0) + 1);
 
             foreach (var stavka in Stavke)
             {
@@ -214,6 +224,10 @@ public partial class PrijavaWindow : Window
                     SadasnjaVrednost = stavka.NabavnaVrednost,
                     StopaAmortizacije = stavka.StopaAmortizacije,
                     AmortizacionaGrupa = stavka.AmortizacionaGrupa,
+                    PoreskaGrupa = !string.IsNullOrEmpty(stavka.PoreskaGrupa) ? stavka.PoreskaGrupa : "III",
+                    PoreskaStopa = stavka.PoreskaStopa > 0 ? stavka.PoreskaStopa : 15m,
+                    PoreskaNabavnaVrednost = stavka.NabavnaVrednost,
+                    PoreskaIspravkaVrednosti = stavka.OtpisanaVrednost,
                     JeAktivno = true,
                     LegacySifra = 0
                 };
