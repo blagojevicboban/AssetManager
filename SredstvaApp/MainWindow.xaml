@@ -129,7 +129,9 @@
 
                 <!-- Verzija dole -->
                 <TextBlock DockPanel.Dock="Bottom" x:Name="VersionText" Text="v1.0.0  •  2026"
-                           FontSize="11" Foreground="#52B788" TextAlignment="Center" Margin="0,0,0,12"/>
+                           FontSize="11" Foreground="#52B788" TextAlignment="Center" Margin="0,0,0,12"
+                           Cursor="Hand" ToolTip="Kliknite za prikaz istorije izmena (Changelog)"
+                           MouseLeftButtonDown="VersionText_MouseLeftButtonDown"/>
 
                 <!-- Navigacija -->
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
@@ -192,6 +194,9 @@
                         <Button x:Name="BtnPomoc" Content="❓  Pomoć (Uputstvo)"
                                 Style="{StaticResource NavButton}"
                                 Click="BtnPomoc_Click"/>
+                        <Button x:Name="BtnChangelog" Content="📋  Istorija izmena"
+                                Style="{StaticResource NavButton}"
+                                Click="BtnChangelog_Click"/>
 
                     </StackPanel>
                 </ScrollViewer>

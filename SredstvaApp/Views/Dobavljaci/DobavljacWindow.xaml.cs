@@ -9,6 +9,7 @@ public partial class DobavljacWindow : Window
 {
     private readonly SredstvaDbContext _db;
     public bool Uspesno { get; private set; }
+    public int NoviDobavljacId { get; private set; }
     private int? _editingId = null;
 
     // Konstruktor za dodavanje novog dobavljača
@@ -118,6 +119,7 @@ public partial class DobavljacWindow : Window
 
                 _db.Dobavljaci.Add(noviDobavljac);
                 _db.SaveChanges();
+                NoviDobavljacId = noviDobavljac.Id;
                 MessageBox.Show("Dobavljač je uspešno dodan.", "Uspeh", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else

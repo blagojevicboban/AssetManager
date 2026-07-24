@@ -32,22 +32,26 @@
                         <ColumnDefinition Width="200"/>
                         <ColumnDefinition Width="16"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    
+
                     <StackPanel>
                         <TextBlock Text="Broj naloga" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,0,0,4"/>
                         <TextBox x:Name="TxtBrojNaloga" Height="28"/>
                     </StackPanel>
-                    
+
                     <StackPanel Grid.Column="2">
                         <TextBlock Text="Datum aktiviranja" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,0,0,4"/>
                         <DatePicker x:Name="DpDatum" Height="28"/>
                     </StackPanel>
-                    
+
                     <StackPanel Grid.Column="4">
                         <TextBlock Text="Dobavljač" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,0,0,4"/>
                         <ComboBox x:Name="CmbDobavljac" Height="28" DisplayMemberPath="OpisKonta" SelectedValuePath="Id"/>
                     </StackPanel>
+
+                    <Button x:Name="BtnNoviDobavljac" Grid.Column="6" Content="+ Novi dobavljač" Style="{StaticResource SecondaryButton}" Height="28" VerticalAlignment="Bottom" Click="BtnNoviDobavljac_Click"/>
                 </Grid>
             </StackPanel>
         </Border>

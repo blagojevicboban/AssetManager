@@ -70,6 +70,16 @@ public partial class PrijavaWindow : Window
         }
     }
 
+    private void BtnNoviDobavljac_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new SredstvaApp.Views.Dobavljaci.DobavljacWindow(_db) { Owner = this };
+        if (dialog.ShowDialog() == true && dialog.Uspesno)
+        {
+            CmbDobavljac.ItemsSource = _db.Dobavljaci.OrderBy(d => d.OpisKonta).ToList();
+            CmbDobavljac.SelectedValue = dialog.NoviDobavljacId;
+        }
+    }
+
     private void TxtNaziv_LostFocus(object sender, RoutedEventArgs e)
     {
         var predlog = PoreskaGrupaCatalog.PredloziGrupu(TxtKonto.Text, TxtNaziv.Text);

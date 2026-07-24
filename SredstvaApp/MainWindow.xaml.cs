@@ -199,4 +199,23 @@ public partial class MainWindow : Window
             MessageBox.Show("Nije moguće otvoriti uputstvo: " + ex.Message, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
+
+    private void BtnChangelog_Click(object sender, RoutedEventArgs e)
+    {
+        PrikaziChangelog();
+    }
+
+    private void VersionText_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        PrikaziChangelog();
+    }
+
+    private void PrikaziChangelog()
+    {
+        var win = new Views.Pomoc.ChangelogWindow
+        {
+            Owner = this
+        };
+        win.ShowDialog();
+    }
 }
