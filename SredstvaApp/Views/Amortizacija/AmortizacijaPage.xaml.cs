@@ -521,4 +521,51 @@ public partial class AmortizacijaPage : Page
             MessageBox.Show($"Greška pri generisanju izveštaja PB-1: {ex.Message}", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
+
+    private void BtnMasovnaDodelaGrupa_Click(object sender, RoutedEventArgs e)
+    {
+        var activeAssets = _db.Sredstva.Where(s => s.JeAktivno).ToList();
+        if (!activeAssets.Any())
+        {
+            MessageBox.Show("Nema aktivnih sredstava u bazi.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        var confirm = MessageBox.Show(
+            $"Čarobnjak će analizirati svih {activeAssets.Count} aktivnih sredstava i automatski dodeliti zakonske poreske grupe (I-V) i stope na osnovu konta i naziva.\n\nDa li želite da nastavite?",
+            "Masovna dodela poreskih grupa", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+        if (confirm != MessageBoxResult.Yes) return;
+
+        int updatedCount = 0;
+        var stats = new Dictionary<string, int>();
+
+        foreach (var s in activeAssets)
+        {
+            var predlog = PoreskaGrupaCatalog.PredloziGrupu(s.Konto, s.Naziv);
+            s.PoreskaGrupa = predlog.Kod;
+            s.PoreskaStopa = predlog.Stopa;
+            if (s.PoreskaNabavnaVrednost == 0)
+            {
+                s.PoreskaNabavnaVrednost = s.NabavnaVrednost;
+            }
+
+            updatedCount++;
+            stats[predlog.Kod] = stats.GetValueOrDefault(predlog.Kod, 0) + 1;
+        }
+
+        _db.SaveChanges();
+
+        string summary = string.Join("\n", stats.OrderBy(k => k.Key).Select(k => $"  • Grupa {k.Key}: {k.Value} sredstava"));
+
+        MessageBox.Show(
+            $"Uspešno su ažurirane poreske grupe za {updatedCount} sredstava!\n\nStatistika po grupama:\n{summary}",
+            "Uspešna masovna dodela", MessageBoxButton.OK, MessageBoxImage.Information);
+
+        // Automatski osveži tabelu poreske amortizacije ako je pokrenuta
+        if (_poreskiRezultati.Count > 0)
+        {
+            BtnObracunajPoresku_Click(sender, e);
+        }
+    }
 }

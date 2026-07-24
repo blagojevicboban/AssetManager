@@ -359,6 +359,8 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="12"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
@@ -377,6 +379,10 @@
                         <Button Grid.Column="7" x:Name="BtnStampaPB1" Content="📄  PB-1 Izveštaj (PDF)"
                                 Style="{StaticResource SecondaryButton}" Height="34" Padding="14,0" IsEnabled="False" Margin="10,0,0,0"
                                 Click="BtnStampaPB1_Click"/>
+
+                        <Button Grid.Column="9" x:Name="BtnMasovnaDodelaGrupa" Content="🪄  Masovna Dodela Grupa"
+                                Style="{StaticResource SecondaryButton}" Height="34" Padding="14,0" Margin="10,0,0,0"
+                                Click="BtnMasovnaDodelaGrupa_Click"/>
                     </Grid>
                 </Border>
 
