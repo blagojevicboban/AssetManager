@@ -11,18 +11,23 @@
 - 🔐 **Prijava i korisnici** — pristup aplikaciji preko korisničkog naloga (lozinka + uloga), sa modulom "Korisnici" za kreiranje naloga, dodelu uloga (Administrator / Operater), poništavanje lozinke i deaktivaciju.
 - 🏢 **Firme (rad sa više preduzeća)** — evidencija proizvoljnog broja firmi u istoj instalaciji, svaka sa sopstvenom SQLite bazom podataka, uz brzo prebacivanje koja je firma trenutno aktivna za rad i izveštaje.
 - 📊 **Radna tabla (Dashboard)** — vizuelni pregled statistike sredstava sa interaktivnim grafikonima.
-- 🏗️ **Osnovna sredstva (Kartice)** — evidencija, kreiranje i praćenje osnovnih sredstava (nabavna, otpisana i sadašnja vrednost), sa masovnom selekcijom (uključujući "izaberi sve") za akcije poput štampe nalepnica.
+- 🏗️ **Osnovna sredstva (Kartice)** — evidencija, kreiranje i praćenje osnovnih sredstava (nabavna, rezidualna, otpisana i sadašnja vrednost po MRS 16), sa masovnom selekcijom za akcije poput štampe nalepnica.
 - 📋 **Analitičke kartice** — istorijski pregled svih promena (nabavka, amortizacija, revalorizacija, rashod) za pojedinačno sredstvo.
 - 🏢 **Dobavljači** — šifarnik dobavljača (po kontu) sa pregledom svih prijava sredstava vezanih za odabranog dobavljača.
-- 📥 **Prijava sredstava** — unos naloga za nabavku/aktiviranje novih sredstava, sa pregledom naloga i stavki (master-detail), i mogućnošću izmene proknjiženih i neproknjiženih naloga.
-- 📤 **Rashod i promene** — evidencija rashodovanja, prodaje, otuđenja, prenosa u drugu obračunsku jedinicu, brisanja i povećanja vrednosti/količine/amortizacije kroz naloge, sa pregledom naloga i stavki (master-detail) i PDF štampom naloga.
-- 📉 **Amortizacija** — automatski godišnji obračun amortizacije, sa kreiranjem detaljnih PDF izveštaja (po kontu i obračunskim jedinicama).
+- 📥 **Prijava sredstava** — unos naloga za nabavku/aktiviranje novih sredstava, sa automatskim asistentom za izbor zakonske Poreske grupe i stope (`PoreskaGrupaCatalog`), i pregledom naloga i stavki (master-detail).
+- 📤 **Rashod i promene** — evidencija rashodovanja, prodaje, otuđenja, prenosa u drugu obračunsku jedinicu i povećanja vrednosti, uz **automatski srazmeran obračun računovodstvene amortizacije do datuma rashodovanja**.
+- 📉 **Amortizacija (MRS 16 & Poreska)** — 
+  - **Računovodstvena amortizacija (MRS 16)**: Podrška za rezidualnu vrednost, pravila početka amortizacije (`SrazmernoDanima` / `OdNarednogMeseca`), kao i mesečni, kvartalni i proizvoljni periodični obračun.
+  - **Poreska amortizacija (Obrazac OA)**: Obračun pojedinačne poreske amortizacije za sredstva nabavljena od 1.1.2019. po zakonskim grupama I–V, uz generisanje PDF **Obrasca OA**.
+  - **Poreski Bilans (Obrazac PB-1)**: Obračun privremenih poreskih razlika (Računovodstvena − Poreska amortizacija) sa izvozom zvaničnog PDF izveštaja za Poreski Bilans.
+  - **Čarobnjak za masovnu dodelu**: Automatska dodela poreskih grupa i stopa postojećim sredstvima u bazi.
+  - **Stara sredstva pre 2019 (Čl. 4 & 7 Pravilnika)**: Obračun degresivnog salda grupa II–V i automatska primena pravila 5 bruto zarada (mali saldo grupe).
 - 📈 **Revalorizacija** — obračun revalorizacije po definisanim koeficijentima i ažuriranje sadašnje vrednosti sredstava.
 - 📋 **Popisne liste** — kreiranje popisnih komisija sa definisanjem članova i uloga (Predsednik/Član), štampanje praznih listi za terenski rad i obrada knjigovodstvenih odstupanja i viškova/manjkova kroz integrisani UI. PDF izveštaji generišu dinamička polja sa imenima članova za potpisivanje.
 - 📑 **Izveštaji i Rekapitulacije** — popis svih sredstava i rekapitulacije grupisane po kontu, obračunskoj jedinici ili amortizacionoj grupi, sa izvozom u CSV.
 - 🖨 **Nalepnice sa kodovima** — štampanje bar-kod (CODE-128) nalepnica za obeležavanje opreme, sa podrškom za vizuelnu selekciju više sredstava i automatskim generisanjem prilagođenog PDF rasporeda za A4 format nalepnica koristeći ZXing.Net.
 - ⚙️ **Podešavanja** — ručna i automatska rezervna kopija baze (backup/restore) sa istorijom kopija, uvoz podataka iz starog DOS/FoxPro programa (DBF fajlovi), i opšte postavke ponašanja programa.
-- 📄 **Štampa i izveštaji** — izveštaji se generišu u PDF formatu preko **QuestPDF** biblioteke i prilagođeni su za A3/A4 landscape format štampe.
+- 📄 **Štampa i izveštaji** — izveštaji se generišu u PDF formatu preko **QuestPDF** biblioteke i prilagođeni su za A3/A4 landscape/portrait format štampe.
 
 ---
 
@@ -138,18 +143,23 @@ Aplikacija se instalira u profil korisnika bez administratorskih prava, a svako 
 - 🔐 **Login and users** — access to the application via a user account (password + role), with a "Korisnici" (Users) module for creating accounts, assigning roles (Administrator / Operator), resetting passwords, and deactivating accounts.
 - 🏢 **Companies (multi-company support)** — record any number of companies in the same installation, each with its own SQLite database, with quick switching of which company is currently active for work and reports.
 - 📊 **Dashboard** — visual overview of asset statistics with interactive charts.
-- 🏗️ **Fixed Assets (Cards)** — registration, creation, and tracking of fixed assets (purchase, written-off, and present value), with bulk selection (including "select all") for actions such as label printing.
+- 🏗️ **Fixed Assets (Cards)** — registration, creation, and tracking of fixed assets (purchase, residual, written-off, and present value per IAS 16), with bulk selection for actions such as label printing.
 - 📋 **Analytical Cards** — historical view of all changes (acquisition, depreciation, revaluation, write-off) for an individual asset.
 - 🏢 **Suppliers (Dobavljači)** — a supplier registry (by account) with an overview of all asset registrations linked to the selected supplier.
-- 📥 **Asset Registration (Prijava)** — enter orders for acquiring/activating new assets, with an order + line-item overview (master-detail), and the ability to edit both posted and unposted orders.
-- 📤 **Write-offs and Changes (Rashod)** — record write-offs, sales, disposals, transfers to another accounting unit, deletions, and increases in value/quantity/depreciation through orders, with an order + line-item overview (master-detail) and PDF printing of orders.
-- 📉 **Depreciation** — automatic annual calculation of depreciation, with the creation of detailed PDF reports (by account and accounting units).
+- 📥 **Asset Registration (Prijava)** — enter orders for acquiring/activating new assets, with automatic smart assistant for statutory Tax Group & rate recommendation (`PoreskaGrupaCatalog`), and an order + line-item overview (master-detail).
+- 📤 **Write-offs and Changes (Rashod)** — record write-offs, sales, disposals, transfers to another accounting unit, and increases in value, with **automatic proportional pre-disposal accounting depreciation calculation**.
+- 📉 **Depreciation (IAS 16 & Tax Depreciation)** — 
+  - **Accounting Depreciation (IAS 16)**: Residual value support, depreciation start rules (`ProportionalDays` / `NextMonth`), and monthly, quarterly, or custom period calculations.
+  - **Tax Depreciation (Form OA)**: Individual tax depreciation calculation for assets acquired since Jan 1, 2019 by statutory tax groups I–V, with PDF **Form OA** generation.
+  - **Tax Balance (Form PB-1)**: Temporary tax differences calculation (Accounting − Tax Depreciation) with export of official PDF reports for Form PB-1.
+  - **Bulk Assignment Wizard**: Automatic batch assignment of tax groups and rates to existing assets in the database.
+  - **Legacy Pre-2019 Assets (Art. 4 & 7 Rulebook)**: Collective declining-balance group II–V calculation and automatic 5 gross salary small balance threshold rule.
 - 📈 **Revaluation** — revaluation calculation according to defined coefficients and updating the present value of assets.
 - 📋 **Inventory Lists** — creation of inventory commissions with defined members and roles (President/Member), printing of empty lists for field work, and processing accounting deviations and surpluses/shortages through an integrated UI. PDF reports feature dynamic signature fields with member names.
 - 📑 **Reports and Recapitulations** — a full asset listing plus recapitulations grouped by account, accounting unit, or depreciation group, with CSV export.
 - 🖨 **Barcode Labels** — printing of barcode (CODE-128) labels for marking equipment, with support for visually selecting multiple assets and automatic generation of a custom PDF layout for A4-format labels using ZXing.Net.
 - ⚙️ **Settings** — manual and automatic database backup/restore with backup history, importing data from the old DOS/FoxPro program (DBF files), and general application behavior settings.
-- 📄 **Printing and Reports** — reports are generated in PDF format via the **QuestPDF** library and are adapted for A3/A4 landscape printing format.
+- 📄 **Printing and Reports** — reports are generated in PDF format via the **QuestPDF** library and are adapted for A3/A4 landscape/portrait printing format.
 
 ---
 

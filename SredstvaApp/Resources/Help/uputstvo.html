@@ -108,12 +108,38 @@
             <li>Dugme <span class="highlight">🖨 Štampa</span> generiše PDF izveštaj za trenutno prikazane (filtrirane) naloge.</li>
         </ul>
 
-        <h2>8. Amortizacija</h2>
-        <p>Proces godišnje amortizacije obračunava finansijski pad vrednosti sredstava po definisanim amortizacionim grupama i stopama.</p>
+        <h2>8. Računovodstvena i Poreska Amortizacija</h2>
+        <p>Modul za obračun računovodstvene amortizacije (po MRS 16) i poreske amortizacije (po Pravilniku o poreskoj amortizaciji i Zakonu o porezu na dobit).</p>
         <ul>
-            <li>Idite na tab <strong>Amortizacija</strong>, odaberite godinu i kliknite na dugme <span class="highlight">Obracunaj</span>.</li>
-            <li>Program proračunava nabavne i otpisane vrednosti za svako sredstvo na dan bilansiranja.</li>
-            <li>Završene obracune možete PDF štampati koristeći dugme <span class="highlight">Štampa Izveštaja</span>. Izveštaj se sumira po Obračunskim jedinicama (RJ).</li>
+            <li><strong>Računovodstvena Amortizacija (MRS 16):</strong>
+                <ul>
+                    <li>Podržan unos <strong>Rezidualne (spasavajuće) vrednosti</strong> — osnovica za amortizaciju računa se kao $Nabavna - Rezidualna$ vrednost i sredstvo se ne otpisuje ispod rezidualnog iznosa.</li>
+                    <li>Izbor pravila početka amortizacije: <span class="highlight">Srazmerno danima</span> (od tačnog datuma aktiviranja) ili <span class="highlight">Od narednog meseca</span>.</li>
+                    <li>Brzi odabir perioda: Godišnji obračun, kvartalni (Q1–Q4) ili proizvoljni mesečni period sa automatskim opisnim dnevnikom knjiženja.</li>
+                    <li>Štampa detaljnih PDF izveštaja po kontima i obračunskim jedinicama (RJ).</li>
+                </ul>
+            </li>
+            <li><strong>Poreska Amortizacija (Obrazac OA):</strong>
+                <ul>
+                    <li>Pojedinačna proporcionalna poreska amortizacija za sredstva stvorena/nabavljena od 1.1.2019. razvrstana u zakonske grupe I (2,5%), II (10%), III (15%), IV (20%) i V (30%).</li>
+                    <li>Automatski asistent <span class="highlight">PoreskaGrupaCatalog</span> predlaže zakonsku grupu i stopu pri unosu sredstava.</li>
+                    <li>Dugme <span class="highlight">🪄 Masovna Dodela Grupa</span> vrši masovnu dodelu grupa i stopa za sva postojeća sredstva u bazi sa prikazom rekapitulacije.</li>
+                    <li>Generisanje zvaničnog PDF izveštaja <span class="highlight">🖨️ Obrazac OA</span>.</li>
+                </ul>
+            </li>
+            <li><strong>Poreski Bilans (Obrazac PB-1):</strong>
+                <ul>
+                    <li>Praćenje i obračun privremenih poreskih razlika (Računovodstvena − Poreska amortizacija).</li>
+                    <li>Dugme <span class="highlight">📄 PB-1 Izveštaj (PDF)</span> kreira zvanični izveštaj sa zbirnim podacima za unos u Poreski Bilans.</li>
+                </ul>
+            </li>
+            <li><strong>Stara Sredstva Pre 2019 (Čl. 4 & 7 Pravilnika):</strong>
+                <ul>
+                    <li>Obračun degresivne amortizacije na ukupni saldo grupa II–V.</li>
+                    <li>Automatska primena pravila 5 bruto zarada u RS: ako je krajnji saldo grupe manji od 5 prosečnih bruto zarada, celokupan saldo grupe se priznaje kao rashod i saldo grupe postaje 0.</li>
+                </ul>
+            </li>
+            <li><strong>Automatska Amortizacija pri Rashodovanju:</strong> Prilikom rashodovanja u toku godine, sistem automatski obračunava i knjiži srazmernu računovodstvenu amortizaciju od početka godine do datuma rashoda pre samog storniranja.</li>
         </ul>
 
         <h2>9. Revalorizacija</h2>
@@ -240,12 +266,38 @@
             <li>The <span class="highlight">🖨 Štampa</span> (Print) button generates a PDF report for the currently displayed (filtered) orders.</li>
         </ul>
 
-        <h2>8. Depreciation</h2>
-        <p>The annual depreciation process calculates the financial decrease in the value of assets according to defined depreciation groups and rates.</p>
+        <h2>8. Accounting and Tax Depreciation</h2>
+        <p>A comprehensive module for calculating accounting depreciation (per IAS 16) and statutory tax depreciation (per statutory Rulebook & Corporate Income Tax Law).</p>
         <ul>
-            <li>Go to the <strong>Amortizacija</strong> (Depreciation) tab, select the year, and click the <span class="highlight">Obracunaj</span> (Calculate) button.</li>
-            <li>The program calculates the purchase and written-off values for each asset on the balance sheet date.</li>
-            <li>Completed calculations can be printed as PDFs using the <span class="highlight">Štampa Izveštaja</span> (Print Report) button. The report is summarized by Accounting Units (RJ).</li>
+            <li><strong>Accounting Depreciation (IAS 16):</strong>
+                <ul>
+                    <li>Supports <strong>Residual (salvage) value</strong> — the depreciable base is calculated as $Purchase - Residual$ value and assets are never depreciated below their residual value.</li>
+                    <li>Depreciation start rule choices: <span class="highlight">Proportional to days</span> (from exact activation date) or <span class="highlight">From next month</span>.</li>
+                    <li>Quick period selection: Annual calculation, quarterly (Q1–Q4), or custom monthly periods with automatic descriptive journal entry logs.</li>
+                    <li>Detailed PDF report printing grouped by accounts and accounting units (RJ).</li>
+                </ul>
+            </li>
+            <li><strong>Tax Depreciation (Form OA):</strong>
+                <ul>
+                    <li>Individual straight-line tax depreciation for assets acquired since Jan 1, 2019 classified into statutory tax groups I (2.5%), II (10%), III (15%), IV (20%), and V (30%).</li>
+                    <li>Automatic smart assistant <span class="highlight">PoreskaGrupaCatalog</span> suggests statutory tax groups & rates when entering assets.</li>
+                    <li>The <span class="highlight">🪄 Masovna Dodela Grupa</span> (Bulk Group Assignment) button batch assigns tax groups and rates to all existing assets with a summary report.</li>
+                    <li>Official PDF report generation via <span class="highlight">🖨️ Obrazac OA</span>.</li>
+                </ul>
+            </li>
+            <li><strong>Tax Balance (Form PB-1):</strong>
+                <ul>
+                    <li>Calculation and tracking of temporary tax differences (Accounting − Tax Depreciation).</li>
+                    <li>The <span class="highlight">📄 PB-1 Izveštaj (PDF)</span> button generates an official report with totals ready for Form PB-1 entry.</li>
+                </ul>
+            </li>
+            <li><strong>Legacy Pre-2019 Assets (Art. 4 & 7 Rulebook):</strong>
+                <ul>
+                    <li>Declining-balance group II–V calculation for legacy assets acquired prior to 2019.</li>
+                    <li>Automatic 5 gross salary small balance threshold rule: if the remaining group balance drops below 5 average gross national salaries, the entire balance is recognized as an expense and the group balance becomes 0.</li>
+                </ul>
+            </li>
+            <li><strong>Automatic Pre-disposal Depreciation:</strong> When an asset is disposed of mid-year, the system automatically calculates and posts proportional accounting depreciation up to the disposal date before executing write-off.</li>
         </ul>
 
         <h2>9. Revaluation</h2>
