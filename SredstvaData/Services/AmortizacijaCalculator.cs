@@ -15,7 +15,7 @@ public enum PocetakAmortizacijeRule
 /// </summary>
 public static class AmortizacijaCalculator
 {
-    private static readonly Regex GodinaPattern = new(@"(?:Redovan otpis|Amortizacija)\s*\(?\b(\d{4})\b\)?", RegexOptions.Compiled);
+    private static readonly Regex GodinaPattern = new(@"(?:Redovan otpis|Amortizacija)\s*\(?.*?\b(\d{4})\b\)?", RegexOptions.Compiled);
 
     public record Rezultat(decimal NabavnaVrednost, decimal PrethodnaIspravka, decimal NovaAmortizacija);
 
@@ -99,7 +99,37 @@ public static class AmortizacijaCalculator
     }
 
     /// <summary>
-    /// Parsira godinu obračuna iz opisa promene kartice (npr. "Amortizacija (2026)").
+    /// Generiše standardizovani opis promene u kartici na osnovu opsega perioda obračuna.
+    /// (npr. "Amortizacija (2026)", "Amortizacija (03/2026)", "Amortizacija (Q1/2026)").
+    /// </summary>
+    public static string GenerisiOpisPromene(DateTime start, DateTime end)
+    {
+        if (start.Year == end.Year)
+        {
+            if (start.Month == 1 && start.Day == 1 && end.Month == 12 && end.Day == 31)
+            {
+                return $"Amortizacija ({start.Year})";
+            }
+
+            if (start.Month == end.Month && start.Day == 1 && end.Day == DateTime.DaysInMonth(start.Year, start.Month))
+            {
+                return $"Amortizacija ({start.Month:D2}/{start.Year})";
+            }
+
+            if (start.Day == 1)
+            {
+                if (start.Month == 1 && end.Month == 3 && end.Day == 31) return $"Amortizacija (Q1/{start.Year})";
+                if (start.Month == 4 && end.Month == 6 && end.Day == 30) return $"Amortizacija (Q2/{start.Year})";
+                if (start.Month == 7 && end.Month == 9 && end.Day == 30) return $"Amortizacija (Q3/{start.Year})";
+                if (start.Month == 10 && end.Month == 12 && end.Day == 31) return $"Amortizacija (Q4/{start.Year})";
+            }
+        }
+
+        return $"Amortizacija ({start:dd.MM.yyyy}-{end:dd.MM.yyyy})";
+    }
+
+    /// <summary>
+    /// Parsira godinu obračuna iz opisa promene kartice (npr. "Amortizacija (2026)", "Amortizacija (03/2026)").
     /// </summary>
     public static bool TryParseGodina(string opisPromene, out int godina)
     {

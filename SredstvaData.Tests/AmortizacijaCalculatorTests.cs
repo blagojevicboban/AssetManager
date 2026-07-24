@@ -94,6 +94,8 @@ public class AmortizacijaCalculatorTests
 
     [Theory]
     [InlineData("Amortizacija (2026)", true, 2026)]
+    [InlineData("Amortizacija (03/2026)", true, 2026)]
+    [InlineData("Amortizacija (Q1/2026)", true, 2026)]
     [InlineData("Redovan otpis (2025)", true, 2025)]
     [InlineData("Redovan otpis 2024", true, 2024)]
     [InlineData("Revalorizacija (2026)", false, 0)]
@@ -105,6 +107,21 @@ public class AmortizacijaCalculatorTests
         Assert.Equal(ocekivanUspeh, uspeh);
         if (ocekivanUspeh)
             Assert.Equal(ocekivanaGodina, godina);
+    }
+
+    [Theory]
+    [InlineData("2026-01-01", "2026-12-31", "Amortizacija (2026)")]
+    [InlineData("2026-03-01", "2026-03-31", "Amortizacija (03/2026)")]
+    [InlineData("2026-01-01", "2026-03-31", "Amortizacija (Q1/2026)")]
+    [InlineData("2026-04-01", "2026-06-30", "Amortizacija (Q2/2026)")]
+    public void GenerisiOpisPromene_FormiraStandardniOpisZaPeriod(string startStr, string endStr, string ocekivano)
+    {
+        DateTime start = DateTime.Parse(startStr);
+        DateTime end = DateTime.Parse(endStr);
+
+        string rezultat = AmortizacijaCalculator.GenerisiOpisPromene(start, end);
+
+        Assert.Equal(ocekivano, rezultat);
     }
 
     [Fact]

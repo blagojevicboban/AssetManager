@@ -60,10 +60,42 @@ public partial class AmortizacijaPage : Page
         var year = DateTime.Now.Year;
         DpOd.SelectedDate = new DateTime(year, 1, 1);
         DpDo.SelectedDate = new DateTime(year, 12, 31);
-        TxtPoreskaGodina.Text = year.ToString();
-
         // Lista amortizacija - prikazi sve godine i node prikaz lista
         PopuniListuAmortizacija();
+    }
+
+    private void CbTipPerioda_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (DpOd == null || DpDo == null || CbTipPerioda == null) return;
+
+        int year = DateTime.Now.Year;
+        if (DpOd.SelectedDate.HasValue) year = DpOd.SelectedDate.Value.Year;
+
+        switch (CbTipPerioda.SelectedIndex)
+        {
+            case 0: // Godišnji
+                DpOd.SelectedDate = new DateTime(year, 1, 1);
+                DpDo.SelectedDate = new DateTime(year, 12, 31);
+                break;
+            case 1: // Q1
+                DpOd.SelectedDate = new DateTime(year, 1, 1);
+                DpDo.SelectedDate = new DateTime(year, 3, 31);
+                break;
+            case 2: // Q2
+                DpOd.SelectedDate = new DateTime(year, 4, 1);
+                DpDo.SelectedDate = new DateTime(year, 6, 30);
+                break;
+            case 3: // Q3
+                DpOd.SelectedDate = new DateTime(year, 7, 1);
+                DpDo.SelectedDate = new DateTime(year, 9, 30);
+                break;
+            case 4: // Q4
+                DpOd.SelectedDate = new DateTime(year, 10, 1);
+                DpDo.SelectedDate = new DateTime(year, 12, 31);
+                break;
+            case 5: // Custom
+                break;
+        }
     }
 
     private void PopuniListuAmortizacija()
@@ -251,7 +283,7 @@ public partial class AmortizacijaPage : Page
                 {
                     SredstvoId = res.SredstvoId,
                     Datum = _calcDo,
-                    OpisPromene = $"Amortizacija ({_calcOd.Year})",
+                    OpisPromene = AmortizacijaCalculator.GenerisiOpisPromene(_calcOd, _calcDo),
                     ObracunskaJedinica = 1, // Ili neka specifična OJ
                     Konto = "", // Ako treba specifičan konto, preuzeti sa sredstva ili prethodne kartice
                     AmortizacionaGrupa1 = 0,
