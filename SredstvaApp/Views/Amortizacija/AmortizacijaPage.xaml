@@ -355,6 +355,11 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="12"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Text="Godina obračuna:" VerticalAlignment="Center" Margin="0,0,8,0"
@@ -365,9 +370,13 @@
                                 Style="{StaticResource PrimaryButton}" Height="34" Padding="16,0"
                                 Click="BtnObracunajPoresku_Click"/>
 
-                        <Button Grid.Column="5" x:Name="BtnStampaOA" Content="🖨  Generiši Obrazac OA (PDF)"
-                                Style="{StaticResource SecondaryButton}" Height="34" Padding="16,0" IsEnabled="False"
+                        <Button Grid.Column="5" x:Name="BtnStampaOA" Content="🖨  Obrazac OA (PDF)"
+                                Style="{StaticResource SecondaryButton}" Height="34" Padding="14,0" IsEnabled="False"
                                 Click="BtnStampaOA_Click"/>
+
+                        <Button Grid.Column="7" x:Name="BtnStampaPB1" Content="📄  PB-1 Izveštaj (PDF)"
+                                Style="{StaticResource SecondaryButton}" Height="34" Padding="14,0" IsEnabled="False" Margin="10,0,0,0"
+                                Click="BtnStampaPB1_Click"/>
                     </Grid>
                 </Border>
 

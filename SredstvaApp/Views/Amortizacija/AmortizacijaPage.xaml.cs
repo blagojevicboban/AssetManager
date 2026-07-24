@@ -469,6 +469,7 @@ public partial class AmortizacijaPage : Page
         TxtUkupnaPoreskaRazlika.Text = ukupnaRazlika.ToString("N2");
 
         BtnStampaOA.IsEnabled = _poreskiRezultati.Count > 0;
+        BtnStampaPB1.IsEnabled = _poreskiRezultati.Count > 0;
     }
 
     private void BtnStampaOA_Click(object sender, RoutedEventArgs e)
@@ -493,6 +494,31 @@ public partial class AmortizacijaPage : Page
         catch (Exception ex)
         {
             MessageBox.Show($"Greška pri generisanju Obrasca OA: {ex.Message}", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void BtnStampaPB1_Click(object sender, RoutedEventArgs e)
+    {
+        if (_poreskiRezultati.Count == 0)
+        {
+            MessageBox.Show("Nema podataka za štampu izveštaja PB-1. Pokrenite obračun.", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        try
+        {
+            int.TryParse(TxtPoreskaGodina.Text.Trim(), out int godina);
+            if (godina == 0) godina = DateTime.Now.Year;
+
+            var firma = _db.Firme.FirstOrDefault();
+            var doc = new ObrazacPB1Document(_poreskiRezultati, firma, godina);
+            var tempFile = Path.Combine(Path.GetTempPath(), $"Poreske_Razlike_PB1_{godina}_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+            doc.GeneratePdf(tempFile);
+            Process.Start(new ProcessStartInfo(tempFile) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Greška pri generisanju izveštaja PB-1: {ex.Message}", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }
