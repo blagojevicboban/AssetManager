@@ -136,4 +136,59 @@ public class AmortizacijaCalculatorTests
 
         Assert.Equal(10m, prethodna);
     }
+
+    [Fact]
+    public void RezidualnaVrednost_UmanjujeOsnovicuAmortizacije()
+    {
+        // Nabavna 100_000, rezidualna 10_000 -> osnovica 90_000. Stopa 20% -> 18_000 za punu godinu.
+        var kartice = new List<Kartica> { K(new DateTime(2020, 1, 1), nabavna: 100_000m) };
+
+        var rezultat = AmortizacijaCalculator.Izracunaj(
+            stopaAmortizacije: 20m,
+            kartice: kartice,
+            start: new DateTime(2026, 1, 1),
+            end: new DateTime(2026, 12, 31),
+            rezidualnaVrednost: 10_000m);
+
+        Assert.Equal(18_000m, rezultat.NovaAmortizacija);
+    }
+
+    [Fact]
+    public void RezidualnaVrednost_OgranicavaMaksimalniOtpis()
+    {
+        // Nabavna 100_000, rezidualna 10_000 -> Max ispravka 90_000.
+        // Već je otpisano 89_000, nova amortizacija bi po stopi bila 18_000, ali sme biti max 1_000.
+        var kartice = new List<Kartica> { K(new DateTime(2020, 1, 1), nabavna: 100_000m, ispravka: 89_000m) };
+
+        var rezultat = AmortizacijaCalculator.Izracunaj(
+            stopaAmortizacije: 20m,
+            kartice: kartice,
+            start: new DateTime(2026, 1, 1),
+            end: new DateTime(2026, 12, 31),
+            rezidualnaVrednost: 10_000m);
+
+        Assert.Equal(1_000m, rezultat.NovaAmortizacija);
+    }
+
+    [Fact]
+    public void PraviloOdNarednogMeseca_AktivacijaUsredMeseca_PocinjePrvogUSledecomMesecu()
+    {
+        // Aktivacija 15.05.2026.
+        // Po pravilu OdNarednogMeseca, obračun u 2026. godini počinje od 01.06.2026. do 31.12.2026 (7 meseci = 214 dana).
+        var kartice = new List<Kartica> { K(new DateTime(2026, 5, 15), nabavna: 120_000m) };
+
+        var rezultat = AmortizacijaCalculator.Izracunaj(
+            stopaAmortizacije: 10m,
+            kartice: kartice,
+            start: new DateTime(2026, 1, 1),
+            end: new DateTime(2026, 12, 31),
+            rezidualnaVrednost: 0m,
+            pocetakRule: PocetakAmortizacijeRule.OdNarednogMeseca,
+            datumAktiviranja: new DateTime(2026, 5, 15));
+
+        int ocekivaniDani = (new DateTime(2026, 12, 31) - new DateTime(2026, 6, 1)).Days + 1; // 214 dana
+        decimal ocekivano = Math.Round(120_000m * 0.10m * ocekivaniDani / 365m, 2);
+
+        Assert.Equal(ocekivano, rezultat.NovaAmortizacija);
+    }
 }

@@ -25,6 +25,7 @@ public class AmortizacijaResultViewModel
     public string AmortizacionaGrupa { get; init; } = string.Empty;
     public decimal StopaAmortizacije { get; init; }
     public decimal NabavnaVrednost { get; init; }
+    public decimal RezidualnaVrednost { get; init; }
     public decimal PrethodnaIspravka { get; init; }
     public decimal NovaAmortizacija { get; init; }
     public int? Godina { get; init; }
@@ -100,6 +101,7 @@ public partial class AmortizacijaPage : Page
                     AmortizacionaGrupa = sredstvo.AmortizacionaGrupa,
                     StopaAmortizacije = sredstvo.StopaAmortizacije,
                     NabavnaVrednost = sredstvo.NabavnaVrednost,
+                    RezidualnaVrednost = sredstvo.RezidualnaVrednost,
                     PrethodnaIspravka = prethodnaIspravka,
                     NovaAmortizacija = kartica.IspravkaVrednosti,
                     Godina = godina,
@@ -165,6 +167,10 @@ public partial class AmortizacijaPage : Page
     {
         _results.Clear();
 
+        var pocetakRule = CbPocetakRule.SelectedIndex == 1
+            ? PocetakAmortizacijeRule.OdNarednogMeseca
+            : PocetakAmortizacijeRule.SrazmernoDanima;
+
         // Učitavamo sva aktivna sredstva sa njihovim karticama (koje prethode ili su unutar perioda)
         var sredstva = _db.Sredstva
             .Include(s => s.Kartice)
@@ -173,7 +179,14 @@ public partial class AmortizacijaPage : Page
 
         foreach (var s in sredstva)
         {
-            var rezultat = AmortizacijaCalculator.Izracunaj(s.StopaAmortizacije, s.Kartice, start, end);
+            var rezultat = AmortizacijaCalculator.Izracunaj(
+                s.StopaAmortizacije,
+                s.Kartice,
+                start,
+                end,
+                rezidualnaVrednost: s.RezidualnaVrednost,
+                pocetakRule: pocetakRule,
+                datumAktiviranja: s.DatumAktiviranja);
 
             // Dodajemo u rezultate samo ako ima promena (ili ako zelimo sve aktivne)
             // Stari sistem generiše za sva aktivna sredstva, pa ćemo prikazati sva
@@ -188,6 +201,7 @@ public partial class AmortizacijaPage : Page
                 AmortizacionaGrupa = s.AmortizacionaGrupa,
                 StopaAmortizacije = s.StopaAmortizacije,
                 NabavnaVrednost = rezultat.NabavnaVrednost,
+                RezidualnaVrednost = s.RezidualnaVrednost,
                 PrethodnaIspravka = rezultat.PrethodnaIspravka,
                 NovaAmortizacija = rezultat.NovaAmortizacija
             });

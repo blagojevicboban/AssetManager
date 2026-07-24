@@ -33,19 +33,28 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Text="Period od:" VerticalAlignment="Center" Margin="0,0,8,0"
                                    Foreground="{StaticResource TextSecondaryBrush}" FontWeight="SemiBold"/>
-                        <DatePicker x:Name="DpOd" Grid.Column="1" Width="130" Height="34" Margin="0,0,24,0"/>
+                        <DatePicker x:Name="DpOd" Grid.Column="1" Width="130" Height="34" Margin="0,0,16,0"/>
 
                         <TextBlock Text="Period do:" Grid.Column="2" VerticalAlignment="Center" Margin="0,0,8,0"
                                    Foreground="{StaticResource TextSecondaryBrush}" FontWeight="SemiBold"/>
-                        <DatePicker x:Name="DpDo" Grid.Column="3" Width="130" Height="34"/>
+                        <DatePicker x:Name="DpDo" Grid.Column="3" Width="130" Height="34" Margin="0,0,16,0"/>
 
-                        <Button Grid.Column="5" Content="⚙️  Obračunaj"
+                        <TextBlock Text="Pravilo:" Grid.Column="4" VerticalAlignment="Center" Margin="0,0,8,0"
+                                   Foreground="{StaticResource TextSecondaryBrush}" FontWeight="SemiBold"/>
+                        <ComboBox x:Name="CbPocetakRule" Grid.Column="5" Width="210" Height="34" SelectedIndex="0">
+                            <ComboBoxItem Content="Srazmerno po danima"/>
+                            <ComboBoxItem Content="Od narednog meseca po aktivaciji"/>
+                        </ComboBox>
+
+                        <Button Grid.Column="7" Content="⚙️  Obračunaj"
                                 Style="{StaticResource PrimaryButton}" Height="34" Padding="20,0"
                                 Click="BtnObracunaj_Click"/>
                     </Grid>
@@ -85,6 +94,17 @@
                                             <Setter Property="HorizontalAlignment" Value="Right"/>
                                             <Setter Property="Padding" Value="0,0,10,0"/>
                                             <Setter Property="FontFamily" Value="Consolas"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+
+                                <DataGridTextColumn Header="Rezidualna Vr." Binding="{Binding RezidualnaVrednost, StringFormat=N2}" Width="110">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                                            <Setter Property="Padding" Value="0,0,10,0"/>
+                                            <Setter Property="FontFamily" Value="Consolas"/>
+                                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>

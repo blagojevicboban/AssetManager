@@ -45,6 +45,9 @@ public class Sredstvo
     [Column(TypeName = "decimal(5,2)")]
     public decimal StopaAmortizacije { get; set; }
     
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal RezidualnaVrednost { get; set; } = 0m;
+    
     public bool JeAktivno { get; set; } = true;
 
     [Column(TypeName = "decimal(18,2)")]

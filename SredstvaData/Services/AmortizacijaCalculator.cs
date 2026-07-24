@@ -3,6 +3,12 @@ using SredstvaData.Models;
 
 namespace SredstvaData.Services;
 
+public enum PocetakAmortizacijeRule
+{
+    SrazmernoDanima,
+    OdNarednogMeseca
+}
+
 /// <summary>
 /// Čista kalkulaciona logika za obračun amortizacije, izdvojena iz AmortizacijaPage
 /// radi mogućnosti unit testiranja bez UI/DB zavisnosti.
@@ -19,24 +25,57 @@ public static class AmortizacijaCalculator
     /// na neotpisanu vrednost sredstva.
     /// </summary>
     public static Rezultat Izracunaj(decimal stopaAmortizacije, IEnumerable<Kartica> kartice, DateTime start, DateTime end)
+        => Izracunaj(stopaAmortizacije, kartice, start, end, rezidualnaVrednost: 0m, pocetakRule: PocetakAmortizacijeRule.SrazmernoDanima, datumAktiviranja: null);
+
+    public static Rezultat Izracunaj(
+        decimal stopaAmortizacije,
+        IEnumerable<Kartica> kartice,
+        DateTime start,
+        DateTime end,
+        decimal rezidualnaVrednost = 0m,
+        PocetakAmortizacijeRule pocetakRule = PocetakAmortizacijeRule.SrazmernoDanima,
+        DateTime? datumAktiviranja = null)
     {
         var sveKartice = kartice.OrderBy(k => k.Datum).ToList();
 
         decimal tekucaNabavna = sveKartice.Where(k => k.Datum < start).Sum(k => k.NabavnaVrednost);
         decimal tekucaIspravka = sveKartice.Where(k => k.Datum < start).Sum(k => k.IspravkaVrednosti);
 
+        DateTime calcStartDate = start;
+
+        if (datumAktiviranja.HasValue && datumAktiviranja.Value > start)
+        {
+            if (pocetakRule == PocetakAmortizacijeRule.OdNarednogMeseca)
+            {
+                calcStartDate = new DateTime(datumAktiviranja.Value.Year, datumAktiviranja.Value.Month, 1).AddMonths(1);
+            }
+            else
+            {
+                calcStartDate = datumAktiviranja.Value;
+            }
+        }
+
+        if (calcStartDate > end)
+        {
+            return new Rezultat(tekucaNabavna, tekucaIspravka, 0m);
+        }
+
+        tekucaNabavna = sveKartice.Where(k => k.Datum < calcStartDate).Sum(k => k.NabavnaVrednost);
+        tekucaIspravka = sveKartice.Where(k => k.Datum < calcStartDate).Sum(k => k.IspravkaVrednosti);
+
         decimal ukupnaNovaAmortizacija = 0;
-        DateTime currentDate = start;
+        DateTime currentDate = calcStartDate;
         decimal daniUGodini = DateTime.IsLeapYear(start.Year) ? 366m : 365m;
 
-        var karticeUPeriodu = sveKartice.Where(k => k.Datum >= start && k.Datum <= end).ToList();
+        var karticeUPeriodu = sveKartice.Where(k => k.Datum >= calcStartDate && k.Datum <= end).ToList();
 
         foreach (var kartica in karticeUPeriodu)
         {
             int days = (kartica.Datum - currentDate).Days;
-            if (days > 0 && tekucaNabavna > 0)
+            if (days > 0)
             {
-                ukupnaNovaAmortizacija += (tekucaNabavna * (stopaAmortizacije / 100m)) * days / daniUGodini;
+                decimal osnovica = Math.Max(0m, tekucaNabavna - rezidualnaVrednost);
+                ukupnaNovaAmortizacija += (osnovica * (stopaAmortizacije / 100m)) * days / daniUGodini;
             }
 
             tekucaNabavna += kartica.NabavnaVrednost;
@@ -45,13 +84,14 @@ public static class AmortizacijaCalculator
         }
 
         int finalDays = (end - currentDate).Days + 1;
-        if (finalDays > 0 && tekucaNabavna > 0)
+        if (finalDays > 0)
         {
-            ukupnaNovaAmortizacija += (tekucaNabavna * (stopaAmortizacije / 100m)) * finalDays / daniUGodini;
+            decimal osnovica = Math.Max(0m, tekucaNabavna - rezidualnaVrednost);
+            ukupnaNovaAmortizacija += (osnovica * (stopaAmortizacije / 100m)) * finalDays / daniUGodini;
         }
 
-        decimal neotpisanaVrednost = tekucaNabavna - tekucaIspravka;
-        if (neotpisanaVrednost < 0) neotpisanaVrednost = 0;
+        decimal amortizabilnaOsnovica = Math.Max(0m, tekucaNabavna - rezidualnaVrednost);
+        decimal neotpisanaVrednost = Math.Max(0m, amortizabilnaOsnovica - tekucaIspravka);
 
         ukupnaNovaAmortizacija = Math.Min(ukupnaNovaAmortizacija, neotpisanaVrednost);
 

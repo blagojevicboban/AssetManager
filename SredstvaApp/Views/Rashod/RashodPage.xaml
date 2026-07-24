@@ -195,7 +195,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock x:Name="TxtDetaljiNaslov" Text="Izaberite nalog" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
-                        <Button Grid.Column="1" Content="✏️ Uredi Nalog" Style="{StaticResource SecondaryButton}" Height="30" Click="BtnEditNalog_Click"/>
+                        <Button Grid.Column="1" Content="✏️ Uredi Nalog" Style="{StaticResource SecondaryButton}" Margin="0,0,10,0" Click="BtnEditNalog_Click"/>
                     </Grid>
 
                     <DataGrid x:Name="StavkeGrid" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True"
