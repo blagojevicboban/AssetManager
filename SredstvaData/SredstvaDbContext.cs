@@ -40,6 +40,7 @@ public class SredstvaDbContext : DbContext
         // Migrate() ispod mogao preuzeti sve buduce promene sheme na standardan,
         // ugradjen nacin (bez rucnog SQL patch-a za svaku narednu migraciju).
         BaselineLegacyDatabaseIfNeeded(dbPath);
+        EnsureExtraColumnsExist(dbPath);
 
         ctx.Database.Migrate();
 
@@ -170,6 +171,63 @@ public class SredstvaDbContext : DbContext
         //    da bi Database.Migrate() ispod primenio samo migracije koje dolaze POSLE ovih.
         Exec(@"INSERT OR IGNORE INTO __EFMigrationsHistory VALUES ('20260715165530_AddKorisnici', '8.0.0');
                INSERT OR IGNORE INTO __EFMigrationsHistory VALUES ('20260716093143_DodatiKontoObracunskaJedinica', '8.0.0');");
+    }
+
+    /// <summary>
+    /// Osigurava da sve baze (i legacy i one sa migracijama) imaju najnovija polja (RezidualnaVrednost, PoreskaGrupa, PoreskaStopa...).
+    /// </summary>
+    private static void EnsureExtraColumnsExist(string dbPath)
+    {
+        if (!File.Exists(dbPath)) return;
+
+        using var conn = new SqliteConnection($"Data Source={dbPath}");
+        conn.Open();
+
+        bool TableExists(string table)
+        {
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=@t";
+            cmd.Parameters.AddWithValue("@t", table);
+            return (long)(cmd.ExecuteScalar() ?? 0L) > 0;
+        }
+
+        if (!TableExists("Sredstva")) return;
+
+        bool ColumnExists(string table, string column)
+        {
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = $"SELECT COUNT(*) FROM pragma_table_info('{table}') WHERE name=@c";
+            cmd.Parameters.AddWithValue("@c", column);
+            return (long)(cmd.ExecuteScalar() ?? 0L) > 0;
+        }
+
+        void Exec(string sql)
+        {
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = sql;
+            cmd.ExecuteNonQuery();
+        }
+
+        if (!ColumnExists("Sredstva", "RezidualnaVrednost"))
+        {
+            Exec("ALTER TABLE \"Sredstva\" ADD COLUMN \"RezidualnaVrednost\" TEXT NOT NULL DEFAULT '0';");
+        }
+        if (!ColumnExists("Sredstva", "PoreskaGrupa"))
+        {
+            Exec("ALTER TABLE \"Sredstva\" ADD COLUMN \"PoreskaGrupa\" TEXT NOT NULL DEFAULT '';");
+        }
+        if (!ColumnExists("Sredstva", "PoreskaStopa"))
+        {
+            Exec("ALTER TABLE \"Sredstva\" ADD COLUMN \"PoreskaStopa\" TEXT NOT NULL DEFAULT '0';");
+        }
+        if (!ColumnExists("Sredstva", "PoreskaNabavnaVrednost"))
+        {
+            Exec("ALTER TABLE \"Sredstva\" ADD COLUMN \"PoreskaNabavnaVrednost\" TEXT NOT NULL DEFAULT '0';");
+        }
+        if (!ColumnExists("Sredstva", "PoreskaIspravkaVrednosti"))
+        {
+            Exec("ALTER TABLE \"Sredstva\" ADD COLUMN \"PoreskaIspravkaVrednosti\" TEXT NOT NULL DEFAULT '0';");
+        }
     }
 
     public SredstvaDbContext(DbContextOptions<SredstvaDbContext> options) : base(options)
