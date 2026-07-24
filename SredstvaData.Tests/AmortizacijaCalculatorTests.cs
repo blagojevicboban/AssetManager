@@ -83,6 +83,24 @@ public class AmortizacijaCalculatorTests
     }
 
     [Fact]
+    public void AmortizacijaDoRashoda_ObracunavaSrazmeranIznosDoDatumaRashodovanja()
+    {
+        // Sredstvo nabavljeno 2020 sa 100,000 RSD i stopom 20%.
+        // Rashod se vrši 15. maja 2026. (od 1.1.2026 do 15.05.2026 = 135 dana).
+        var kartice = new List<Kartica>
+        {
+            K(new DateTime(2020, 1, 1), nabavna: 100_000m)
+        };
+
+        var rezultat = AmortizacijaCalculator.Izracunaj(
+            20m, kartice, new DateTime(2026, 1, 1), new DateTime(2026, 5, 15));
+
+        // 100,000 * 20% * (135 / 365) = 7,397.26
+        Assert.True(rezultat.NovaAmortizacija > 0);
+        Assert.Equal(7397.26m, rezultat.NovaAmortizacija);
+    }
+
+    [Fact]
     public void NultaStopaAmortizacije_DajeNuluBezObziraNaOsnovicu()
     {
         var kartice = new List<Kartica> { K(new DateTime(2020, 1, 1), nabavna: 100_000m) };

@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using Microsoft.EntityFrameworkCore;
 using SredstvaData;
 using SredstvaData.Models;
+using SredstvaData.Services;
 using SredstvaApp.Views.Rashod.Stampe;
 
 namespace SredstvaApp.Views.Rashod;
@@ -275,6 +276,58 @@ public partial class RashodWindow : Window
                     IspravkaVrednosti = 0,
                     KoeficijentRevalorizacije = 1
                 };
+
+                // Provera i automatski obračun srazmerne amortizacije do datuma rashoda u toku godine (MRS 16)
+                if (stavka.Tip is TipoviPromena.Rashodovanje or TipoviPromena.Prodaja or TipoviPromena.Otudjenje or TipoviPromena.Brisanje or TipoviPromena.KolicinskoRashodovanje)
+                {
+                    var sveKarticeSredstva = _db.Kartice.Where(k => k.SredstvoId == sredstvo.Id).ToList();
+                    DateTime startPerioda = new DateTime(datum.Year, 1, 1);
+
+                    var karticaUTekucojGodini = sveKarticeSredstva
+                        .Where(k => k.Datum.Year == datum.Year && k.Datum <= datum)
+                        .OrderByDescending(k => k.Datum)
+                        .FirstOrDefault();
+
+                    if (karticaUTekucojGodini != null)
+                    {
+                        startPerioda = karticaUTekucojGodini.Datum;
+                    }
+
+                    if (startPerioda < datum)
+                    {
+                        var resAmort = AmortizacijaCalculator.Izracunaj(
+                            sredstvo.StopaAmortizacije,
+                            sveKarticeSredstva,
+                            startPerioda,
+                            datum,
+                            sredstvo.RezidualnaVrednost,
+                            PocetakAmortizacijeRule.SrazmernoDanima,
+                            sredstvo.DatumAktiviranja);
+
+                        if (resAmort.NovaAmortizacija > 0)
+                        {
+                            var amortKartica = new Kartica
+                            {
+                                SredstvoId = sredstvo.Id,
+                                RedBroj = ++maxKartica,
+                                Datum = datum,
+                                OpisPromene = $"Amortizacija do rashodovanja ({datum:dd.MM.yyyy})",
+                                Konto = poslednjaKartica?.Konto ?? string.Empty,
+                                ObracunskaJedinica = currentOj,
+                                AmortizacionaGrupa1 = poslednjaKartica?.AmortizacionaGrupa1 ?? 0,
+                                AmortizacionaGrupa2 = poslednjaKartica?.AmortizacionaGrupa2 ?? 0,
+                                StopaAmortizacije = sredstvo.StopaAmortizacije,
+                                Kolicina = currentKolicina,
+                                NabavnaVrednost = 0,
+                                IspravkaVrednosti = resAmort.NovaAmortizacija,
+                                KoeficijentRevalorizacije = 1
+                            };
+
+                            _db.Kartice.Add(amortKartica);
+                            sredstvo.IspravkaVrednosti += resAmort.NovaAmortizacija;
+                        }
+                    }
+                }
 
                 switch (stavka.Tip)
                 {
