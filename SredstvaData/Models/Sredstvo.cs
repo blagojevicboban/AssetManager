@@ -47,6 +47,18 @@ public class Sredstvo
     
     [Column(TypeName = "decimal(18,2)")]
     public decimal RezidualnaVrednost { get; set; } = 0m;
+
+    [MaxLength(10)]
+    public string PoreskaGrupa { get; set; } = string.Empty;
+
+    [Column(TypeName = "decimal(5,2)")]
+    public decimal PoreskaStopa { get; set; } = 0m;
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal PoreskaNabavnaVrednost { get; set; } = 0m;
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal PoreskaIspravkaVrednosti { get; set; } = 0m;
     
     public bool JeAktivno { get; set; } = true;
 

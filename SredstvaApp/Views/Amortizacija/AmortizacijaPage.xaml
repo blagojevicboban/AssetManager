@@ -311,5 +311,146 @@
                 </DataGrid>
             </Grid>
         </TabItem>
+
+        <!-- Tab 3: Poreska amortizacija (Obrazac OA) -->
+        <TabItem Header="🏛️ Poreska amortizacija (Obrazac OA)">
+            <Grid Margin="28,24,24,24">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="16"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="16"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Naslov -->
+                <StackPanel Grid.Row="0">
+                    <TextBlock Text="Poreska Amortizacija i Obrazac OA" Style="{StaticResource PageTitle}"/>
+                    <TextBlock Text="Obračun po Zakonu o porezu na dobit pravnih lica i generisanje Obrasca OA za poreski bilans (PB-1)"
+                               Style="{StaticResource PageSubtitle}"/>
+                </StackPanel>
+
+                <!-- Toolbar za poresku amortizaciju -->
+                <Border Grid.Row="2" Style="{StaticResource Card}" Padding="16,12">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Godina obračuna:" VerticalAlignment="Center" Margin="0,0,8,0"
+                                   Foreground="{StaticResource TextSecondaryBrush}" FontWeight="SemiBold"/>
+                        <TextBox x:Name="TxtPoreskaGodina" Grid.Column="1" Width="90" Height="34" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold"/>
+
+                        <Button Grid.Column="3" Content="⚙️  Obračunaj Poresku Amortizaciju"
+                                Style="{StaticResource PrimaryButton}" Height="34" Padding="16,0"
+                                Click="BtnObracunajPoresku_Click"/>
+
+                        <Button Grid.Column="5" x:Name="BtnStampaOA" Content="🖨  Generiši Obrazac OA (PDF)"
+                                Style="{StaticResource SecondaryButton}" Height="34" Padding="16,0" IsEnabled="False"
+                                Click="BtnStampaOA_Click"/>
+                    </Grid>
+                </Border>
+
+                <!-- Tabela Poreske Amortizacije sa Poreskim Razlikama -->
+                <Border Grid.Row="4" Style="{StaticResource Card}" Padding="0">
+                    <DataGrid x:Name="PoreskaAmortizacijaGrid"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              BorderThickness="0"
+                              CanUserSortColumns="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Šifra" Binding="{Binding LegacySifra}" SortMemberPath="LegacySifra" Width="65"/>
+                            <DataGridTextColumn Header="Inv. Broj" Binding="{Binding InventarskiBroj}" SortMemberPath="InventarskiBroj" Width="90"/>
+                            <DataGridTextColumn Header="Naziv Sredstva" Binding="{Binding Naziv}" Width="*" MinWidth="180"/>
+                            <DataGridTextColumn Header="Por. Grupa" Binding="{Binding PoreskaGrupa}" Width="80"/>
+                            <DataGridTextColumn Header="Por. Stopa %" Binding="{Binding PoreskaStopa, StringFormat=N2}" Width="85">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                                        <Setter Property="Padding" Value="0,0,8,0"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Poreska Osnovica" Binding="{Binding PoreskaNabavnaVrednost, StringFormat=N2}" Width="130">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                                        <Setter Property="Padding" Value="0,0,8,0"/>
+                                        <Setter Property="FontFamily" Value="Consolas"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Preth. Por. Ispravka" Binding="{Binding PrethodnaPoreskaIspravka, StringFormat=N2}" Width="130">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                                        <Setter Property="Padding" Value="0,0,8,0"/>
+                                        <Setter Property="FontFamily" Value="Consolas"/>
+                                        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Poreska Amortizacija" Binding="{Binding NovaPoreskaAmortizacija, StringFormat=N2}" Width="140">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                                        <Setter Property="Padding" Value="0,0,8,0"/>
+                                        <Setter Property="FontFamily" Value="Consolas"/>
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                        <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Por. Neotpisano" Binding="{Binding PoreskaNeotpisanaVrednost, StringFormat=N2}" Width="120">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                                        <Setter Property="Padding" Value="0,0,8,0"/>
+                                        <Setter Property="FontFamily" Value="Consolas"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Rač. Amortizacija" Binding="{Binding RacunovodstvenaAmortizacija, StringFormat=N2}" Width="130">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                                        <Setter Property="Padding" Value="0,0,8,0"/>
+                                        <Setter Property="FontFamily" Value="Consolas"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Poreska Razlika (PB-1)" Binding="{Binding PrivremenaPoreskaRazlika, StringFormat=N2}" Width="140">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                                        <Setter Property="Padding" Value="0,0,8,0"/>
+                                        <Setter Property="FontFamily" Value="Consolas"/>
+                                        <Setter Property="FontWeight" Value="SemiBold"/>
+                                        <Setter Property="Foreground" Value="{StaticResource WarningBrush}"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+
+                <!-- Footer rezime za Poresku amortizaciju -->
+                <Border Grid.Row="5" Background="#F8FAFC" Padding="20,12" Margin="0" CornerRadius="0,0,10,10">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock Text="Ukupna Poreska Amortizacija:" Foreground="{StaticResource TextSecondaryBrush}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock x:Name="TxtUkupnaPoreskaAmortizacija" Text="0.00" FontWeight="Bold" FontSize="16" Foreground="{StaticResource AccentBrush}" Margin="0,0,24,0"/>
+
+                        <TextBlock Text="Ukupna Privremena Razlika (Rač. − Por.):" Foreground="{StaticResource TextSecondaryBrush}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock x:Name="TxtUkupnaPoreskaRazlika" Text="0.00" FontWeight="Bold" FontSize="16" Foreground="{StaticResource WarningBrush}" Margin="0,0,8,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </TabItem>
     </TabControl>
 </Page>

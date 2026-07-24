@@ -41,6 +41,7 @@ public partial class AmortizacijaPage : Page
     private readonly SredstvaDbContext _db;
     private List<AmortizacijaResultViewModel> _results = new();
     private List<AmortizacijaResultViewModel> _listaAmortizacije = new();
+    private List<PoreskaAmortizacijaCalculator.RezultatPoreskeAmortizacije> _poreskiRezultati = new();
     private DateTime _calcOd;
     private DateTime _calcDo;
     private List<int> _availableYears = new();
@@ -59,6 +60,7 @@ public partial class AmortizacijaPage : Page
         var year = DateTime.Now.Year;
         DpOd.SelectedDate = new DateTime(year, 1, 1);
         DpDo.SelectedDate = new DateTime(year, 12, 31);
+        TxtPoreskaGodina.Text = year.ToString();
 
         // Lista amortizacija - prikazi sve godine i node prikaz lista
         PopuniListuAmortizacija();
@@ -382,6 +384,83 @@ public partial class AmortizacijaPage : Page
         catch (Exception ex)
         {
             MessageBox.Show($"Greška pri generisanju PDF-a: {ex.Message}", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void BtnObracunajPoresku_Click(object sender, RoutedEventArgs e)
+    {
+        if (!int.TryParse(TxtPoreskaGodina.Text.Trim(), out int godina) || godina < 1990 || godina > 2100)
+        {
+            MessageBox.Show("Molimo unesite ispravnu godinu za poreski obračun.", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        DateTime start = new DateTime(godina, 1, 1);
+        DateTime end = new DateTime(godina, 12, 31);
+
+        _poreskiRezultati.Clear();
+
+        var sredstva = _db.Sredstva
+            .Include(s => s.Kartice)
+            .Where(s => s.JeAktivno)
+            .ToList();
+
+        foreach (var s in sredstva)
+        {
+            // Izračunavamo računovodstvenu amortizaciju za referencu
+            var racRez = AmortizacijaCalculator.Izracunaj(
+                s.StopaAmortizacije,
+                s.Kartice,
+                start,
+                end,
+                rezidualnaVrednost: s.RezidualnaVrednost,
+                pocetakRule: PocetakAmortizacijeRule.SrazmernoDanima,
+                datumAktiviranja: s.DatumAktiviranja);
+
+            // Obračun poreske amortizacije po Pravilniku (Obrazac OA)
+            var porRez = PoreskaAmortizacijaCalculator.IzracunajZaSredstvo(
+                s,
+                start,
+                end,
+                racunovodstvenaAmortizacija: racRez.NovaAmortizacija);
+
+            _poreskiRezultati.Add(porRez);
+        }
+
+        _poreskiRezultati = _poreskiRezultati.OrderBy(r => r.LegacySifra).ToList();
+        PoreskaAmortizacijaGrid.ItemsSource = _poreskiRezultati;
+
+        decimal ukupnaPoreska = _poreskiRezultati.Sum(r => r.NovaPoreskaAmortizacija);
+        decimal ukupnaRazlika = _poreskiRezultati.Sum(r => r.PrivremenaPoreskaRazlika);
+
+        TxtUkupnaPoreskaAmortizacija.Text = ukupnaPoreska.ToString("N2");
+        TxtUkupnaPoreskaRazlika.Text = ukupnaRazlika.ToString("N2");
+
+        BtnStampaOA.IsEnabled = _poreskiRezultati.Count > 0;
+    }
+
+    private void BtnStampaOA_Click(object sender, RoutedEventArgs e)
+    {
+        if (_poreskiRezultati.Count == 0)
+        {
+            MessageBox.Show("Nema podataka za štampu Obrasca OA. Pokrenite obračun.", "Upozorenje", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        try
+        {
+            int.TryParse(TxtPoreskaGodina.Text.Trim(), out int godina);
+            if (godina == 0) godina = DateTime.Now.Year;
+
+            var firma = _db.Firme.FirstOrDefault();
+            var doc = new ObrazacOADocument(_poreskiRezultati, firma, godina);
+            var tempFile = Path.Combine(Path.GetTempPath(), $"Obrazac_OA_{godina}_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+            doc.GeneratePdf(tempFile);
+            Process.Start(new ProcessStartInfo(tempFile) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Greška pri generisanju Obrasca OA: {ex.Message}", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

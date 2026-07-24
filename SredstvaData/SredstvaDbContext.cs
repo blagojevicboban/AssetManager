@@ -149,6 +149,23 @@ public class SredstvaDbContext : DbContext
             Exec("ALTER TABLE \"Sredstva\" ADD COLUMN \"RezidualnaVrednost\" TEXT NOT NULL DEFAULT '0';");
         }
 
+        if (!ColumnExists("Sredstva", "PoreskaGrupa"))
+        {
+            Exec("ALTER TABLE \"Sredstva\" ADD COLUMN \"PoreskaGrupa\" TEXT NOT NULL DEFAULT '';");
+        }
+        if (!ColumnExists("Sredstva", "PoreskaStopa"))
+        {
+            Exec("ALTER TABLE \"Sredstva\" ADD COLUMN \"PoreskaStopa\" TEXT NOT NULL DEFAULT '0';");
+        }
+        if (!ColumnExists("Sredstva", "PoreskaNabavnaVrednost"))
+        {
+            Exec("ALTER TABLE \"Sredstva\" ADD COLUMN \"PoreskaNabavnaVrednost\" TEXT NOT NULL DEFAULT '0';");
+        }
+        if (!ColumnExists("Sredstva", "PoreskaIspravkaVrednosti"))
+        {
+            Exec("ALTER TABLE \"Sredstva\" ADD COLUMN \"PoreskaIspravkaVrednosti\" TEXT NOT NULL DEFAULT '0';");
+        }
+
         // 4. Shema sada odgovara stanju posle prve dve migracije - markiraj ih kao izvrsene
         //    da bi Database.Migrate() ispod primenio samo migracije koje dolaze POSLE ovih.
         Exec(@"INSERT OR IGNORE INTO __EFMigrationsHistory VALUES ('20260715165530_AddKorisnici', '8.0.0');
