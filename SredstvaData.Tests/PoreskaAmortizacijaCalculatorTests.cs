@@ -75,4 +75,26 @@ public class PoreskaAmortizacijaCalculatorTests
         Assert.Equal(ocekivaniKod, predlog.Kod);
         Assert.Equal(ocekivanaStopa, predlog.Stopa);
     }
+
+    [Fact]
+    public void IzracunajSaldoGrupaPre2019_PrimenjujeDegresivnuMetoduIMaliSaldoPrag()
+    {
+        var sredstva = new List<Sredstvo>
+        {
+            new Sredstvo { Id = 1, PoreskaGrupa = "II", NabavnaVrednost = 500_000m, PoreskaIspravkaVrednosti = 0m },
+            new Sredstvo { Id = 2, PoreskaGrupa = "V", NabavnaVrednost = 100_000m, PoreskaIspravkaVrednosti = 50_000m }
+        };
+
+        var salda = PoreskaAmortizacijaCalculator.IzracunajSaldoGrupaPre2019(sredstva, pragMaliSaldo: 675_000m);
+
+        var g2 = salda.First(s => s.Grupa == "II");
+        Assert.True(g2.PrimijenjenMaliSaldo);
+        Assert.Equal(500_000m, g2.ObracunataAmortizacija);
+        Assert.Equal(0m, g2.KrajnjiSaldo);
+
+        var g5 = salda.First(s => s.Grupa == "V");
+        Assert.True(g5.PrimijenjenMaliSaldo);
+        Assert.Equal(50_000m, g5.ObracunataAmortizacija);
+        Assert.Equal(0m, g5.KrajnjiSaldo);
+    }
 }

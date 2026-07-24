@@ -60,9 +60,10 @@ public static class PoreskaAmortizacijaCalculator
         novaPoreskaAmortizacija = Math.Min(novaPoreskaAmortizacija, neotpisana);
         novaPoreskaAmortizacija = Math.Round(novaPoreskaAmortizacija, 2);
 
-        decimal novaIspravka = prethodnaIspravka + novaPoreskaAmortizacija;
-        decimal preostalaNeotpisana = Math.Max(0m, poreskaOsnovica - novaIspravka);
-        decimal privremenaRazlika = racunovodstvenaAmortizacija - novaPoreskaAmortizacija;
+        decimal novaIspravka = Math.Round(prethodnaIspravka + novaPoreskaAmortizacija, 2);
+        decimal novaNeotpisana = Math.Max(0m, Math.Round(poreskaOsnovica - novaIspravka, 2));
+
+        decimal razlika = Math.Round(racunovodstvenaAmortizacija - novaPoreskaAmortizacija, 2);
 
         return new RezultatPoreskeAmortizacije(
             s.Id,
@@ -76,9 +77,78 @@ public static class PoreskaAmortizacijaCalculator
             prethodnaIspravka,
             novaPoreskaAmortizacija,
             novaIspravka,
-            preostalaNeotpisana,
+            novaNeotpisana,
             racunovodstvenaAmortizacija,
-            privremenaRazlika
+            razlika
         );
+    }
+
+    public record SaldoGrupeResult(
+        string Grupa,
+        decimal Stopa,
+        int BrojSredstava,
+        decimal PocetniSaldo,
+        decimal Nabavke,
+        decimal Otudjenja,
+        decimal OsnovicaZaAmortizaciju,
+        decimal ObracunataAmortizacija,
+        decimal KrajnjiSaldo,
+        bool PrimijenjenMaliSaldo);
+
+    /// <summary>
+    /// Obračunava degresivni saldo grupa II-V za sredstva nabavljena pre 01.01.2019. (Član 4. i Član 7. Pravilnika).
+    /// </summary>
+    public static List<SaldoGrupeResult> IzracunajSaldoGrupaPre2019(
+        IEnumerable<Sredstvo> sredstvaPre2019,
+        decimal pragMaliSaldo = 675_000m)
+    {
+        var rezultati = new List<SaldoGrupeResult>();
+        var grupe = new[]
+        {
+            new { Kod = "II", Stopa = 10.0m },
+            new { Kod = "III", Stopa = 15.0m },
+            new { Kod = "IV", Stopa = 20.0m },
+            new { Kod = "V", Stopa = 30.0m }
+        };
+
+        foreach (var g in grupe)
+        {
+            var sredstvaGrupe = sredstvaPre2019
+                .Where(s => string.Equals(s.PoreskaGrupa, g.Kod, StringComparison.OrdinalIgnoreCase) ||
+                            (string.IsNullOrEmpty(s.PoreskaGrupa) && string.Equals(s.AmortizacionaGrupa, g.Kod, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
+            decimal pocetniSaldo = sredstvaGrupe.Sum(s => Math.Max(0m, (s.PoreskaNabavnaVrednost > 0 ? s.PoreskaNabavnaVrednost : s.NabavnaVrednost) - s.PoreskaIspravkaVrednosti));
+            decimal nabavke = 0m;
+            decimal otudjenja = 0m;
+            decimal osnovica = Math.Max(0m, pocetniSaldo + nabavke - otudjenja);
+
+            decimal obracunataAmortizacija = Math.Round(osnovica * (g.Stopa / 100m), 2);
+            decimal krajnjiSaldo = Math.Max(0m, osnovica - obracunataAmortizacija);
+            bool maliSaldo = false;
+
+            // Član 7. Pravilnika: Ako je krajnji saldo grupe manji od 5 prosečnih bruto plata (pragMaliSaldo)
+            if (krajnjiSaldo > 0 && krajnjiSaldo < pragMaliSaldo)
+            {
+                maliSaldo = true;
+                obracunataAmortizacija = osnovica; // Celokupan saldo se priznaje kao rashod
+                krajnjiSaldo = 0m;
+            }
+
+            rezultati.Add(new SaldoGrupeResult(
+                g.Kod,
+                g.Stopa,
+                sredstvaGrupe.Count,
+                pocetniSaldo,
+                nabavke,
+                otudjenja,
+                osnovica,
+                obracunataAmortizacija,
+                krajnjiSaldo,
+                maliSaldo
+            ));
+        }
+
+        return rezultati;
     }
 }
