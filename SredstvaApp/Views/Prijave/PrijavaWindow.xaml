@@ -51,7 +51,7 @@
                         <ComboBox x:Name="CmbDobavljac" Height="28" DisplayMemberPath="OpisKonta" SelectedValuePath="Id"/>
                     </StackPanel>
 
-                    <Button x:Name="BtnNoviDobavljac" Grid.Column="6" Content="+ Novi dobavljač" Style="{StaticResource SecondaryButton}" Height="28" VerticalAlignment="Bottom" Click="BtnNoviDobavljac_Click"/>
+                    <Button x:Name="BtnNoviDobavljac" Grid.Column="6" Content="+ Novi dobavljač" Style="{StaticResource SecondaryButton}" Height="28" Padding="16,2" VerticalAlignment="Bottom" Click="BtnNoviDobavljac_Click"/>
                 </Grid>
             </StackPanel>
         </Border>
@@ -87,7 +87,7 @@
                         <ColumnDefinition Width="12"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="12"/>
-                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="160"/>
                         <ColumnDefinition Width="12"/>
                         <ColumnDefinition Width="80"/>
                     </Grid.ColumnDefinitions>
@@ -120,14 +120,21 @@
                     </StackPanel>
                     <StackPanel Grid.Row="2" Grid.Column="2">
                         <TextBlock Text="Konto" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,0,0,4"/>
-                        <TextBox x:Name="TxtKonto" Height="28"/>
+                        <TextBox x:Name="TxtKonto" Height="28" Width="90" HorizontalAlignment="Left"/>
                     </StackPanel>
                     <StackPanel Grid.Row="2" Grid.Column="4">
                         <TextBlock Text="Poreska Grupa" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,0,0,4"/>
-                        <ComboBox x:Name="CmbPoreskaGrupa" Height="28" DisplayMemberPath="Naziv" SelectedValuePath="Kod"/>
+                        <ComboBox x:Name="CmbPoreskaGrupa" Height="28" DisplayMemberPath="Naziv" SelectedValuePath="Kod"
+                                  ToolTip="{Binding SelectedItem.Opis, RelativeSource={RelativeSource Self}}">
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="ComboBoxItem">
+                                    <Setter Property="ToolTip" Value="{Binding Opis}"/>
+                                </Style>
+                            </ComboBox.ItemContainerStyle>
+                        </ComboBox>
                     </StackPanel>
                     
-                    <Button x:Name="BtnDodaj" Grid.Row="2" Grid.Column="6" Content="Dodaj" Style="{StaticResource SecondaryButton}" Height="28" VerticalAlignment="Bottom" Click="BtnDodajStavku_Click"/>
+                    <Button x:Name="BtnDodaj" Grid.Row="2" Grid.Column="6" Content="Dodaj" Style="{StaticResource SecondaryButton}" Height="28" Padding="16,2" VerticalAlignment="Bottom" Click="BtnDodajStavku_Click"/>
                 </Grid>
             </StackPanel>
         </Border>

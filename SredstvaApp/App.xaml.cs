@@ -69,6 +69,18 @@ public partial class App : Application
     {
         VelopackApp.Build().Run();
 
+        for (int i = 0; i < e.Args.Length; i++)
+        {
+            if (e.Args[i] == "--db-path" && i + 1 < e.Args.Length)
+            {
+                var customPath = e.Args[i + 1];
+                if (File.Exists(customPath))
+                {
+                    UserSettings.Instance.ActiveDbPath = customPath;
+                }
+            }
+        }
+
         QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
         await AppHost!.StartAsync();
 

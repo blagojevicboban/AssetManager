@@ -6,6 +6,16 @@ Format je zasnovan na [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) s
 
 ---
 
+## [1.0.45] - 2026-07-29
+
+### 🚀 ErpHub Integracija & CLI Ruting
+- **Podrška za `--db-path` CLI parametar**: Omogućeno pokretanje `SredstvaApp.exe` iz ErpHub centralnog kontrolnog panela sa automatskim prosleđivanjem putanje do baze podataka.
+
+### 🎨 UI / UX Poboljšanja
+- **Refaktorisana forma unosa prijave (`PrijavaWindow`)**: Proširena kolona za izbor Poreske grupe sa ToolTip prikazom zakonskih stopa, dodata unutrašnja margina na dugmad `+ Novi dobavljač` i `Dodaj` za bolji vizuelni odziv.
+
+---
+
 ## [1.0.43] - 2026-07-24
 
 ### ✨ Nove Funkcionalnosti
