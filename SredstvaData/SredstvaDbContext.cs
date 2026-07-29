@@ -228,6 +228,15 @@ public class SredstvaDbContext : DbContext
         {
             Exec("ALTER TABLE \"Sredstva\" ADD COLUMN \"PoreskaIspravkaVrednosti\" TEXT NOT NULL DEFAULT '0';");
         }
+
+        // Kolone iznad su istorijski dodavane samo ovim rucnim patch-em, bez prave
+        // EF migracije, pa "DodajPoreskaPoljaSredstva" ne postoji u __EFMigrationsHistory
+        // za baze koje su vec ovuda prosle. Markiramo je kao izvrsenu da Migrate() ispod
+        // ne pokusa AddColumn na kolonama koje ovaj patch vec garantuje da postoje.
+        if (TableExists("__EFMigrationsHistory"))
+        {
+            Exec("INSERT OR IGNORE INTO __EFMigrationsHistory VALUES ('20260729100300_DodajPoreskaPoljaSredstva', '8.0.0');");
+        }
     }
 
     public SredstvaDbContext(DbContextOptions<SredstvaDbContext> options) : base(options)
