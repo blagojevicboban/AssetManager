@@ -39,7 +39,7 @@ public partial class MainWindow : Window
         VersionText.Text = $"v{versionStr}  •  {System.DateTime.Now.Year}";
         
         // Prikazujemo prvu stranicu (Radna tabla)
-        NavigateTo(BtnDashboard, () => new Views.Dashboard.DashboardPage(_db));
+        NavigateTo(BtnDashboard, "📊 Radna tabla", () => new Views.Dashboard.DashboardPage(_db));
 
         // Provera ažuriranja u pozadini
         _ = CheckForUpdatesAsync();
@@ -104,8 +104,46 @@ public partial class MainWindow : Window
         ImeFirmeText.Text = firma?.Naziv ?? "—";
     }
 
+    private void Window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+        if (e.Key == System.Windows.Input.Key.M &&
+            (System.Windows.Input.Keyboard.Modifiers & System.Windows.Input.ModifierKeys.Control) == System.Windows.Input.ModifierKeys.Control)
+        {
+            BtnToggleSidebar_Click(sender, e);
+            e.Handled = true;
+        }
+    }
+
+    private void BtnToggleSidebar_Click(object sender, RoutedEventArgs e)
+    {
+        if (SidebarColumn.Width.Value > 100)
+        {
+            SidebarColumn.Width = new GridLength(64);
+            TxtBrandTitle.Visibility = Visibility.Collapsed;
+            TxtBrandSubtitle.Visibility = Visibility.Collapsed;
+            HeaderEvidencija.Visibility = Visibility.Collapsed;
+            HeaderPromene.Visibility = Visibility.Collapsed;
+            HeaderObracuni.Visibility = Visibility.Collapsed;
+            HeaderIzvestaji.Visibility = Visibility.Collapsed;
+            HeaderPodesavanja.Visibility = Visibility.Collapsed;
+            HeaderDokumentacija.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            SidebarColumn.Width = new GridLength(220);
+            TxtBrandTitle.Visibility = Visibility.Visible;
+            TxtBrandSubtitle.Visibility = Visibility.Visible;
+            HeaderEvidencija.Visibility = Visibility.Visible;
+            HeaderPromene.Visibility = Visibility.Visible;
+            HeaderObracuni.Visibility = Visibility.Visible;
+            HeaderIzvestaji.Visibility = Visibility.Visible;
+            HeaderPodesavanja.Visibility = Visibility.Visible;
+            HeaderDokumentacija.Visibility = Visibility.Visible;
+        }
+    }
+
     // ── Navigacija ────────────────────────────────────────────────
-    private void NavigateTo(Button sender, Func<Page> pageFactory)
+    private void NavigateTo(Button sender, string title, Func<Page> pageFactory, string subtitle = "")
     {
         if (_activeNavButton != null)
             _activeNavButton.Style = FindResource("NavButton") as Style;
@@ -113,60 +151,58 @@ public partial class MainWindow : Window
         sender.Style = FindResource("NavButtonActive") as Style;
         _activeNavButton = sender;
 
+        TxtHeaderTitle.Text = title;
+        TxtHeaderSubtitle.Text = subtitle;
         MainFrame.Navigate(pageFactory());
     }
 
     // ── Sidebar dugmad ────────────────────────────────────────────
     private void BtnDashboard_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnDashboard, () => new Views.Dashboard.DashboardPage(_db));
+        => NavigateTo(BtnDashboard, "📊 Radna tabla", () => new Views.Dashboard.DashboardPage(_db), "Pregled i statistika osnovnih sredstava");
 
     private void BtnSredstva_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnSredstva, () => new Views.Sredstva.SredstvaPage(_db));
+        => NavigateTo(BtnSredstva, "🏗️ Osnovna sredstva", () => new Views.Sredstva.SredstvaPage(_db));
 
     private void BtnKartice_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnKartice, () => new Views.Kartice.KarticePage(_db));
+        => NavigateTo(BtnKartice, "📋 Analitičke kartice", () => new Views.Kartice.KarticePage(_db));
 
     public void OpenAnalitickaKartica(int sredstvoId)
     {
-        NavigateTo(BtnKartice, () => new Views.Kartice.KarticePage(_db, sredstvoId));
+        NavigateTo(BtnKartice, "📋 Analitičke kartice", () => new Views.Kartice.KarticePage(_db, sredstvoId));
     }
 
     private void BtnPrijava_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnPrijava, () => new Views.Rashod.PrijavaPage(_db));
+        => NavigateTo(BtnPrijava, "📥 Prijava sredstava", () => new Views.Rashod.PrijavaPage(_db));
 
     private void BtnRashod_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnRashod, () => new Views.Rashod.RashodPage(_db));
+        => NavigateTo(BtnRashod, "📤 Rashod i promene", () => new Views.Rashod.RashodPage(_db));
 
     private void BtnAmortizacija_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnAmortizacija, () => new Views.Amortizacija.AmortizacijaPage(_db));
+        => NavigateTo(BtnAmortizacija, "📊 Amortizacija", () => new Views.Amortizacija.AmortizacijaPage(_db));
 
     private void BtnRevalorizacija_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnRevalorizacija, () => new Views.Revalorizacija.RevalorizacijaPage(_db));
+        => NavigateTo(BtnRevalorizacija, "📈 Revalorizacija", () => new Views.Revalorizacija.RevalorizacijaPage(_db), "Usklađivanje vrednosti osnovnih sredstava primenom zadatih koeficijenata");
 
     private void BtnPopis_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnPopis, () => new Views.Popis.PopisPage(_db));
+        => NavigateTo(BtnPopis, "📄 Popis sredstava", () => new Views.Popis.PopisPage(_db), "Upravljanje popisima, kreiranje komisija i unos stanja popisa");
 
     private void BtnRekap_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnRekap, () => new Views.Izvestaji.IzvestajiPage(_db));
+        => NavigateTo(BtnRekap, "📑 Rekapitulacija", () => new Views.Izvestaji.IzvestajiPage(_db), "Pregled i analiza osnovnih sredstava po različitim kriterijumima");
 
     private void BtnDobavljaci_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnDobavljaci, () => new Views.Dobavljaci.DobavljaciPage(_db));
+        => NavigateTo(BtnDobavljaci, "🏢 Dobavljači", () => new Views.Dobavljaci.DobavljaciPage(_db));
 
     private void FirmaBorder_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-    {
-        if (_activeNavButton != null)
-        {
-            _activeNavButton.Style = FindResource("NavButton") as Style;
-            _activeNavButton = null;
-        }
-        MainFrame.Navigate(new Views.Firme.FirmePage());
-    }
+        => NavigateTo(BtnFirme, "🏢 Upravljanje firmama", () => new Views.Firme.FirmePage(), "Pregled, izmena, unos novih i odabir aktivne firme za obračune i izveštaje");
+
+    private void BtnFirme_Click(object sender, RoutedEventArgs e)
+        => NavigateTo(BtnFirme, "🏢 Upravljanje firmama", () => new Views.Firme.FirmePage(), "Pregled, izmena, unos novih i odabir aktivne firme za obračune i izveštaje");
 
     private void BtnKorisnici_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnKorisnici, () => new Views.Korisnici.KorisniciPage(_db));
+        => NavigateTo(BtnKorisnici, "👥 Korisnici", () => new Views.Korisnici.KorisniciPage(_db), "Upravljanje pristupom i ulogama zaposlenih");
 
     private void BtnPodesavanja_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnPodesavanja, () => new Views.Podesavanja.PodesavanjaPage());
+        => NavigateTo(BtnPodesavanja, "⚙️ Podešavanja", () => new Views.Podesavanja.PodesavanjaPage(), "Upravljanje osnovnim podacima o firmi i kreiranje/vraćanje rezervne kopije baze podataka");
 
     private void BtnOdjava_Click(object sender, RoutedEventArgs e)
     {

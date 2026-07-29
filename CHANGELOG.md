@@ -6,7 +6,16 @@ Format je zasnovan na [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) s
 
 ---
 
+## [1.0.47] - 2026-07-29
+
+### 🎨 UI / UX i Odzivnost
+- **Usklađene boje UI komponenti**: Vizuelne boje navigacije, dugmića i header elemenata usklađene sa zvaničnom paletom aplikacije (`PrimaryColor #1B4332`, `AccentColor #52B788`).
+- **Osveženi prikazi svih stranica**: Usklađeni layout i stilovi za `MainWindow`, `DashboardPage`, `SredstvaPage`, `RashodPage`, `RevalorizacijaPage`, `PopisPage`, `DobavljaciPage`, `IzvestajiPage`, `KorisniciPage`, `FirmePage`, `PodesavanjaPage` i `PrijavaPage`.
+
+---
+
 ## [1.0.45] - 2026-07-29
+
 
 ### 🚀 ErpHub Integracija & CLI Ruting
 - **Podrška za `--db-path` CLI parametar**: Omogućeno pokretanje `SredstvaApp.exe` iz ErpHub centralnog kontrolnog panela sa automatskim prosleđivanjem putanje do baze podataka.

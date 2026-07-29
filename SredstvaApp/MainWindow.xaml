@@ -5,11 +5,12 @@
         Height="720" Width="1200"
         MinHeight="600" MinWidth="900"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource SurfaceBrush}">
+        Background="{StaticResource SurfaceBrush}"
+        PreviewKeyDown="Window_PreviewKeyDown">
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="220"/>
+            <ColumnDefinition x:Name="SidebarColumn" Width="220"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
@@ -89,8 +90,8 @@
             <DockPanel>
                 <!-- Logo -->
                 <StackPanel DockPanel.Dock="Top" Margin="20,16,20,10">
-                    <TextBlock Text="🏭 SREDSTVA" FontSize="22" FontWeight="Bold" Foreground="White"/>
-                    <TextBlock Text="Osnovna sredstva preduzeća" FontSize="11"
+                    <TextBlock x:Name="TxtBrandTitle" Text="🏭 SREDSTVA" FontSize="22" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="TxtBrandSubtitle" Text="Osnovna sredstva preduzeća" FontSize="11"
                                Foreground="#95D5B2" Margin="0,2,0,0"/>
                 </StackPanel>
 
@@ -127,6 +128,11 @@
                     </Grid>
                 </Border>
 
+                <!-- Help dugme na dnu -->
+                <Button x:Name="BtnPomoc" DockPanel.Dock="Bottom" Content="❓  Pomoć (Uputstvo)"
+                        Style="{StaticResource NavButton}" Margin="8,0,8,2"
+                        Click="BtnPomoc_Click"/>
+
                 <!-- Verzija dole -->
                 <TextBlock DockPanel.Dock="Bottom" x:Name="VersionText" Text="v1.0.0  •  2026"
                            FontSize="11" Foreground="#52B788" TextAlignment="Center" Margin="0,0,0,12"
@@ -138,7 +144,7 @@
                               BorderThickness="0">
                     <StackPanel Margin="0,8,0,0">
 
-                        <TextBlock Text="EVIDENCIJA" FontSize="10" FontWeight="SemiBold"
+                        <TextBlock x:Name="HeaderEvidencija" Text="EVIDENCIJA" FontSize="10" FontWeight="SemiBold"
                                    Foreground="#52B788" Margin="24,6,0,3"/>
                         <Button x:Name="BtnDashboard" Content="📊  Radna tabla (Početna)"
                                 Style="{StaticResource NavButtonActive}"
@@ -153,7 +159,7 @@
                                 Style="{StaticResource NavButton}"
                                 Click="BtnDobavljaci_Click"/>
 
-                        <TextBlock Text="PROMENE" FontSize="10" FontWeight="SemiBold"
+                        <TextBlock x:Name="HeaderPromene" Text="PROMENE" FontSize="10" FontWeight="SemiBold"
                                    Foreground="#52B788" Margin="24,10,0,3"/>
                         <Button x:Name="BtnPrijava" Content="📥  Prijava sredstava"
                                 Style="{StaticResource NavButton}"
@@ -162,7 +168,7 @@
                                 Style="{StaticResource NavButton}"
                                 Click="BtnRashod_Click"/>
 
-                        <TextBlock Text="OBRAČUNI" FontSize="10" FontWeight="SemiBold"
+                        <TextBlock x:Name="HeaderObracuni" Text="OBRAČUNI" FontSize="10" FontWeight="SemiBold"
                                    Foreground="#52B788" Margin="24,10,0,3"/>
                         <Button x:Name="BtnAmortizacija" Content="📊  Amortizacija"
                                 Style="{StaticResource NavButton}"
@@ -171,7 +177,7 @@
                                 Style="{StaticResource NavButton}"
                                 Click="BtnRevalorizacija_Click"/>
 
-                        <TextBlock Text="IZVEŠTAJI" FontSize="10" FontWeight="SemiBold"
+                        <TextBlock x:Name="HeaderIzvestaji" Text="IZVEŠTAJI" FontSize="10" FontWeight="SemiBold"
                                    Foreground="#52B788" Margin="24,10,0,3"/>
                         <Button x:Name="BtnPopis" Content="📄  Popis sredstava"
                                 Style="{StaticResource NavButton}"
@@ -180,8 +186,11 @@
                                 Style="{StaticResource NavButton}"
                                 Click="BtnRekap_Click"/>
 
-                        <TextBlock Text="PODEŠAVANJA" FontSize="10" FontWeight="SemiBold"
+                        <TextBlock x:Name="HeaderPodesavanja" Text="PODEŠAVANJA" FontSize="10" FontWeight="SemiBold"
                                    Foreground="#52B788" Margin="24,10,0,3"/>
+                        <Button x:Name="BtnFirme" Content="🏢  Upravljanje firmama"
+                                Style="{StaticResource NavButton}"
+                                Click="BtnFirme_Click"/>
                         <Button x:Name="BtnKorisnici" Content="👥  Korisnici"
                                 Style="{StaticResource NavButton}"
                                 Click="BtnKorisnici_Click"/>
@@ -189,11 +198,8 @@
                                 Style="{StaticResource NavButton}"
                                 Click="BtnPodesavanja_Click"/>
                                 
-                        <TextBlock Text="DOKUMENTACIJA" FontSize="10" FontWeight="SemiBold"
+                        <TextBlock x:Name="HeaderDokumentacija" Text="DOKUMENTACIJA" FontSize="10" FontWeight="SemiBold"
                                    Foreground="#52B788" Margin="24,10,0,3"/>
-                        <Button x:Name="BtnPomoc" Content="❓  Pomoć (Uputstvo)"
-                                Style="{StaticResource NavButton}"
-                                Click="BtnPomoc_Click"/>
                         <Button x:Name="BtnChangelog" Content="📋  Istorija izmena"
                                 Style="{StaticResource NavButton}"
                                 Click="BtnChangelog_Click"/>
@@ -204,8 +210,31 @@
         </Border>
 
         <!-- ══ SADRŽAJ ═══════════════════════════════════════════════ -->
-        <Frame x:Name="MainFrame" Grid.Column="1"
-               NavigationUIVisibility="Hidden"
-               Background="{StaticResource SurfaceBrush}"/>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="56"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="16,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button x:Name="BtnToggleSidebar" Content="☰" FontSize="16" FontWeight="Bold" Width="36" Height="36"
+                            Background="{StaticResource SurfaceBrush}" Foreground="{StaticResource TextPrimaryBrush}" BorderThickness="0" Margin="0,0,16,0" Cursor="Hand"
+                            ToolTip="Sklopi / Proširi bočni meni (Ctrl+M)" Click="BtnToggleSidebar_Click">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="8"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <TextBlock x:Name="TxtHeaderTitle" Text="Radna tabla" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="TxtHeaderSubtitle" Text="" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center" Margin="10,2,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Frame x:Name="MainFrame" Grid.Row="1"
+                   NavigationUIVisibility="Hidden"
+                   Background="{StaticResource SurfaceBrush}"/>
+        </Grid>
     </Grid>
 </Window>

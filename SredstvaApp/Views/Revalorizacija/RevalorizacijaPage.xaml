@@ -14,13 +14,6 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Naslov -->
-        <StackPanel Grid.Row="0">
-            <TextBlock Text="Obračun Revalorizacije" Style="{StaticResource PageTitle}"/>
-            <TextBlock Text="Usklađivanje vrednosti osnovnih sredstava primenom zadatih koeficijenata"
-                       Style="{StaticResource PageSubtitle}"/>
-        </StackPanel>
-
         <!-- Parametri za obračun -->
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>

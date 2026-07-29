@@ -18,12 +18,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Naslov -->
-        <StackPanel Grid.Row="0">
-            <TextBlock Text="Radna tabla" Style="{StaticResource PageTitle}"/>
-            <TextBlock Text="Pregled i statistika osnovnih sredstava" Style="{StaticResource PageSubtitle}"/>
-        </StackPanel>
-
         <!-- KPI Kartice -->
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
@@ -61,52 +55,56 @@
 
         <!-- Grafikoni -->
         <Grid Grid.Row="4">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="20"/>
-                <RowDefinition Height="1.8*"/>
-            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1.8*"/>
                 <ColumnDefinition Width="20"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Status sredstava (Donut) -->
-            <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource Card}" Padding="15">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="Status sredstava" FontWeight="SemiBold" FontSize="16" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,10"/>
-                    <lvc:PieChart Grid.Row="1" Series="{Binding StatusSeries}" LegendPosition="Right" />
-                </Grid>
-            </Border>
-
-            <!-- Vrednost po kontima (Pie) -->
-            <Border Grid.Row="0" Grid.Column="2" Style="{StaticResource Card}" Padding="15">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="Sadašnja vrednost po kontima (Top 10)" FontWeight="SemiBold" FontSize="16" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,10"/>
-                    <lvc:PieChart Grid.Row="1" Series="{Binding KontoSeries}" LegendPosition="Right" />
-                </Grid>
-            </Border>
-
-            <!-- Top najvrednijih (Bar) -->
-            <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Style="{StaticResource Card}" Padding="15">
+            <!-- Top najvrednijih (horizontalni bar) -->
+            <Border Grid.Column="0" Style="{StaticResource Card}" Padding="15">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <TextBlock Text="Top 5 najvrednijih aktivnih sredstava" FontWeight="SemiBold" FontSize="16" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,10"/>
-                    <lvc:CartesianChart Grid.Row="1" Series="{Binding TopSredstvaSeries}" XAxes="{Binding TopSredstvaXAxes}" />
+                    <lvc:CartesianChart Grid.Row="1" Series="{Binding TopSredstvaSeries}" XAxes="{Binding TopSredstvaXAxes}" YAxes="{Binding TopSredstvaYAxes}" />
                 </Grid>
             </Border>
+
+            <!-- Desna kolona: Status sredstava i Vrednost po kontima, jedno ispod drugog -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Status sredstava (Donut) -->
+                <Border Grid.Row="0" Style="{StaticResource Card}" Padding="15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Status sredstava" FontWeight="SemiBold" FontSize="16" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,10"/>
+                        <lvc:PieChart Grid.Row="1" Series="{Binding StatusSeries}" LegendPosition="Right" />
+                    </Grid>
+                </Border>
+
+                <!-- Vrednost po kontima (Pie) -->
+                <Border Grid.Row="2" Style="{StaticResource Card}" Padding="15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Sadašnja vrednost po kontima (Top 10)" FontWeight="SemiBold" FontSize="16" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,10"/>
+                        <lvc:PieChart Grid.Row="1" Series="{Binding KontoSeries}" LegendPosition="Right" />
+                    </Grid>
+                </Border>
+            </Grid>
         </Grid>
     </Grid>
 </Page>

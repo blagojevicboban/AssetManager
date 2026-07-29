@@ -11,13 +11,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Naslov -->
-        <StackPanel Grid.Row="0">
-            <TextBlock Text="Izveštaji i Rekapitulacije" Style="{StaticResource PageTitle}"/>
-            <TextBlock Text="Pregled i analiza osnovnih sredstava po različitim kriterijumima"
-                       Style="{StaticResource PageSubtitle}"/>
-        </StackPanel>
-
         <!-- Prikaz zavisi od selektovanog izveštaja -->
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>

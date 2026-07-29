@@ -11,13 +11,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Naslov -->
-        <StackPanel Grid.Row="0">
-            <TextBlock Text="Popisne liste i komisije" Style="{StaticResource PageTitle}"/>
-            <TextBlock Text="Upravljanje popisima, kreiranje komisija i unos stanja popisa"
-                       Style="{StaticResource PageSubtitle}"/>
-        </StackPanel>
-
         <!-- Sadržaj (Tabs) -->
         <TabControl Grid.Row="2" Background="Transparent" BorderThickness="0">
             

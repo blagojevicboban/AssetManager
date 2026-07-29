@@ -12,12 +12,7 @@
 
         <!-- Header -->
         <DockPanel Grid.Row="0" Margin="0,0,0,16">
-            <StackPanel DockPanel.Dock="Left">
-                <TextBlock Text="Korisnički nalozi" FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
-                <TextBlock Text="Upravljanje pristupom i ulogama zaposlenih" FontSize="14" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0"/>
-            </StackPanel>
-            
-            <Button DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Top" 
+            <Button DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Top"
                     Content="Novi korisnik" Style="{StaticResource PrimaryButton}" 
                     Width="140" Height="36" Click="BtnNoviKorisnik_Click"/>
         </DockPanel>

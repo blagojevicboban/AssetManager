@@ -37,6 +37,9 @@ public partial class DashboardViewModel : ObservableObject
     [ObservableProperty]
     private Axis[] _topSredstvaXAxes = Array.Empty<Axis>();
 
+    [ObservableProperty]
+    private Axis[] _topSredstvaYAxes = Array.Empty<Axis>();
+
     public DashboardViewModel(SredstvaDbContext db)
     {
         _db = db;
@@ -84,35 +87,46 @@ public partial class DashboardViewModel : ObservableObject
         }
         KontoSeries = kontoPieSeries.ToArray();
 
-        // Top 5 Najvrednijih Sredstava (Bar Chart)
+        // Top 5 Najvrednijih Sredstava (horizontalni bar chart)
         var top5 = svaSredstva
             .Where(s => s.JeAktivno)
             .OrderByDescending(s => s.SadasnjaVrednost)
             .Take(5)
             .ToList();
 
+        // Redosled je obrnut jer RowSeries crta prvu stavku pri dnu - zelimo najveci iznos na vrhu
+        var top5ZaGrafikon = Enumerable.Reverse(top5).ToList();
+
         TopSredstvaSeries = new ISeries[]
         {
-            new ColumnSeries<double>
+            new RowSeries<double>
             {
-                Values = top5.Select(s => (double)s.SadasnjaVrednost).ToArray(),
+                Values = top5ZaGrafikon.Select(s => (double)s.SadasnjaVrednost).ToArray(),
                 Name = "Sadašnja vrednost",
                 Fill = new SolidColorPaint(SKColor.Parse("#2B4B80")), // Primary color
                 DataLabelsPaint = new SolidColorPaint(SKColor.Parse("#333333")),
-                DataLabelsPosition = DataLabelsPosition.Top,
-                DataLabelsFormatter = point => point.Model.ToString("N0"),
+                DataLabelsPosition = DataLabelsPosition.Right,
+                DataLabelsFormatter = point =>
+                {
+                    var s = top5ZaGrafikon[point.Index];
+                    var naziv = string.IsNullOrWhiteSpace(s.Naziv) ? s.InventarskiBroj : $"({s.InventarskiBroj}) {s.Naziv}";
+                    return $"{point.Model:N0}   {naziv}";
+                },
                 YToolTipLabelFormatter = point => $"{point.Model:N2}"
             }
         };
 
+        // MaxLimit veci od najveceg iznosa ostavlja prostor sa desne strane najduzeg stubica za labelu
+        var maxVrednost = top5.Count > 0 ? top5.Max(s => (double)s.SadasnjaVrednost) : 0;
+
         TopSredstvaXAxes = new Axis[]
         {
-            new Axis
-            {
-                Labels = top5.Select(s => string.IsNullOrWhiteSpace(s.Naziv) ? s.InventarskiBroj : $"({s.InventarskiBroj}) {s.Naziv}").ToArray(),
-                LabelsRotation = 15,
-                TextSize = 12
-            }
+            new Axis { IsVisible = false, MinLimit = 0, MaxLimit = maxVrednost * 1.9 }
+        };
+
+        TopSredstvaYAxes = new Axis[]
+        {
+            new Axis { IsVisible = false }
         };
     }
 }
