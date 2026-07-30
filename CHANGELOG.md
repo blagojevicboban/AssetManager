@@ -6,6 +6,13 @@ Format je zasnovan na [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) s
 
 ---
 
+## [1.0.48] - 2026-07-30
+
+### 🎨 Zvanična ERPi Ikonica
+- **Novi Vizuelni Identitet**: Dodata nova visoko-rezoluciona ikona `app.ico` (motiv poslovne aktovke + ERPi SREDSTVA) na plavoj zaobljenoj podlozi (`#2563EB`).
+
+---
+
 ## [1.0.47] - 2026-07-29
 
 ### 🎨 UI / UX i Odzivnost

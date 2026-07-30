@@ -16,10 +16,15 @@ public partial class LoginWindow : Window
         _db = db;
 
         LoadCompanyInfo();
+
+#if DEBUG
+        TxtUsername.Text = "admin";
+        TxtPassword.Password = "admin";
+#endif
         TxtUsername.Focus();
 
         var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-        TxtVersion.Text = $"Sistem za osnovna sredstva © 2026 Blagojević Boban - v{version?.ToString(3)}";
+        TxtVersion.Text = $"ERPi © 2026 Blagojević Boban - v{version?.ToString(3)}";
     }
 
     private void LoadCompanyInfo()
