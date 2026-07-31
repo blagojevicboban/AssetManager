@@ -194,8 +194,8 @@
                         </StackPanel>
 
                         <StackPanel Grid.Column="2" Orientation="Horizontal">
-                            <Button x:Name="BtnStampa" Content="🖨 Štampa"
-                                    Style="{StaticResource SecondaryButton}" Height="34" Margin="0,0,12,0"
+                            <Button x:Name="BtnStampa" Content="🖨️"
+                                    Style="{StaticResource SecondaryButton}" Width="34" Height="34" Padding="0" ToolTip="Štampa" Margin="0,0,12,0"
                                     IsEnabled="False" Click="BtnStampa_Click"/>
                             <Button x:Name="BtnExport" Content="💾 Eksport (CSV)"
                                     Style="{StaticResource SecondaryButton}" Height="34" Margin="0,0,12,0"
@@ -244,8 +244,8 @@
                                   SelectionChanged="CbGodine_SelectionChanged"
                                   IsEditable="False" IsReadOnly="True"/>
                                   
-                        <Button Grid.Column="3" x:Name="BtnStampaLista" Content="🖨 Štampa"
-                                Style="{StaticResource SecondaryButton}" Height="34" Margin="0,0,0,0"
+                        <Button Grid.Column="3" x:Name="BtnStampaLista" Content="🖨️"
+                                Style="{StaticResource SecondaryButton}" Width="34" Height="34" Padding="0" ToolTip="Štampa" Margin="0,0,0,0"
                                 Click="BtnStampaLista_Click"/>
                     </Grid>
                 </Border>
@@ -372,12 +372,12 @@
                                 Style="{StaticResource PrimaryButton}" Height="34" Padding="16,0"
                                 Click="BtnObracunajPoresku_Click"/>
 
-                        <Button Grid.Column="5" x:Name="BtnStampaOA" Content="🖨  Obrazac OA (PDF)"
-                                Style="{StaticResource SecondaryButton}" Height="34" Padding="14,0" IsEnabled="False"
+                        <Button Grid.Column="5" x:Name="BtnStampaOA" Content="🖨️"
+                                Style="{StaticResource SecondaryButton}" Width="34" Height="34" Padding="0" IsEnabled="False" ToolTip="Obrazac OA (PDF)"
                                 Click="BtnStampaOA_Click"/>
 
-                        <Button Grid.Column="7" x:Name="BtnStampaPB1" Content="📄  PB-1 Izveštaj (PDF)"
-                                Style="{StaticResource SecondaryButton}" Height="34" Padding="14,0" IsEnabled="False" Margin="10,0,0,0"
+                        <Button Grid.Column="7" x:Name="BtnStampaPB1" Content="🖨️"
+                                Style="{StaticResource SecondaryButton}" Width="34" Height="34" Padding="0" IsEnabled="False" ToolTip="PB-1 Izveštaj (PDF)" Margin="10,0,0,0"
                                 Click="BtnStampaPB1_Click"/>
 
                         <Button Grid.Column="9" x:Name="BtnMasovnaDodelaGrupa" Content="🪄  Masovna Dodela Grupa"

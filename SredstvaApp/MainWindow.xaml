@@ -90,7 +90,7 @@
             <DockPanel>
                 <!-- Logo -->
                 <StackPanel DockPanel.Dock="Top" Margin="20,16,20,10">
-                    <TextBlock x:Name="TxtBrandTitle" Text="⚡ ERPi Sredstva" FontSize="20" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="TxtBrandTitle" Text="🏢 ERPi Sredstva" FontSize="20" FontWeight="Bold" Foreground="White"/>
                     <TextBlock x:Name="TxtBrandSubtitle" Text="Osnovna sredstva i sitan inventar" FontSize="11"
                                Foreground="#95D5B2" Margin="0,2,0,0"/>
                 </StackPanel>

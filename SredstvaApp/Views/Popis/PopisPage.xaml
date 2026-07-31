@@ -111,11 +111,11 @@
                     <!-- Akcije štampanja -->
                     <Border Grid.Row="4" Style="{StaticResource Card}" Padding="16,12">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button x:Name="BtnStampaPrazne" Content="🖨 Štampaj Praznu Listu" 
-                                    Style="{StaticResource SecondaryButton}" Height="34" Margin="0,0,12,0"
+                            <Button x:Name="BtnStampaPrazne" Content="🖨️"
+                                    Style="{StaticResource SecondaryButton}" Width="34" Height="34" Padding="0" ToolTip="Štampaj Praznu Listu" Margin="0,0,12,0"
                                     IsEnabled="False" Click="BtnStampaPrazne_Click" />
-                            <Button x:Name="BtnStampaIzvestaj" Content="🖨 Štampaj Izveštaj o Popisu" 
-                                    Style="{StaticResource PrimaryButton}" Height="34"
+                            <Button x:Name="BtnStampaIzvestaj" Content="🖨️"
+                                    Style="{StaticResource PrimaryButton}" Width="34" Height="34" Padding="0" ToolTip="Štampaj Izveštaj o Popisu"
                                     IsEnabled="False" Click="BtnStampaIzvestaj_Click" />
                         </StackPanel>
                     </Border>

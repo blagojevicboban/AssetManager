@@ -81,8 +81,8 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button Content="🖨 Štampa" Style="{StaticResource SecondaryButton}"
-                            Height="34" Margin="0,0,10,0" Click="BtnStampa_Click"/>
+                    <Button Content="🖨️" Style="{StaticResource SecondaryButton}"
+                            Width="34" Height="34" Padding="0" ToolTip="Štampa" Margin="0,0,10,0" Click="BtnStampa_Click"/>
                     <Button Content="📤  Novi nalog" Style="{StaticResource PrimaryButton}"
                             Height="34" Click="BtnNoviRashod_Click"/>
                 </StackPanel>
