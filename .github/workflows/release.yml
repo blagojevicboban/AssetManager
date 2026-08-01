@@ -57,7 +57,7 @@ jobs:
               "--packDir", "publish_output",
               "--mainExe", "SredstvaApp.exe",
               "--outputDir", "ReleasePackage",
-              "--packTitle", "SredstvaSystem",
+              "--packTitle", "ERPi Sredstva",
               "--icon", "SredstvaApp\app.ico"
           )
           
