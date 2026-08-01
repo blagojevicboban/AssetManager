@@ -6,6 +6,14 @@ Format je zasnovan na [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) s
 
 ---
 
+## [1.0.52] - 2026-08-01
+
+### 🚀 Nove funkcionalnosti i Sinhronizacija
+- **Integracija sa AccountingSystem (Poreska Amortizacija Obrazac OA)** — sinhronizovan proračun poreske amortizacije po I–V grupama sa Glavnom knjigom i Poreskim Bilansom (Obrazac PB-1).
+- **Proširena evidencija fiksnih sredstava** — usklađena polja poreskih grupa, nabavnih i sadašnjih vrednosti za izvoz u PDF/Excel.
+
+---
+
 ## [1.0.48] - 2026-07-30
 
 ### 🎨 Zvanična ERPi Ikonica
