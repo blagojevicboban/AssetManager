@@ -26,7 +26,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="🏢" FontSize="36" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                <TextBlock Grid.Column="0" Text="🏢" FontSize="36" Foreground="White" VerticalAlignment="Center" Margin="0,0,16,0"/>
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                     <TextBlock Text="ERPi Sredstva" FontSize="22" FontWeight="Bold" Foreground="White"/>
                     <TextBlock Text="Osnovna sredstva i sitan inventar" FontSize="12" Foreground="#E2E8F0" Margin="0,3,0,0"/>

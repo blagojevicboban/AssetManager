@@ -6,6 +6,13 @@ Format je zasnovan na [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) s
 
 ---
 
+## [1.0.54] - 2026-08-01
+
+### 🎨 UI / UX
+- Ikonica 🏢 na login ekranu sada bela (`Foreground="White"`) — ranije se renderovala crno i gubila na tamnom header-u.
+
+---
+
 ## [1.0.52] - 2026-08-01
 
 ### 🚀 Nove funkcionalnosti i Sinhronizacija
