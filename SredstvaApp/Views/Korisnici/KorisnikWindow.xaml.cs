@@ -1,5 +1,7 @@
 using System;
 using System.Windows;
+using System.Windows.Input;
+using SredstvaApp.Views.Pomoc;
 using SredstvaData;
 using SredstvaData.Models;
 
@@ -13,6 +15,7 @@ public partial class KorisnikWindow : Window
     public KorisnikWindow(SredstvaDbContext db, Korisnik? korisnik)
     {
         InitializeComponent();
+        ContextHelpFix.UkloniDugmeZaPomoc(this);
         _db = db;
         _korisnik = korisnik;
 
@@ -81,5 +84,26 @@ public partial class KorisnikWindow : Window
         _db.SaveChanges();
         DialogResult = true;
         Close();
+    }
+
+    private void Window_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.F1)
+        {
+            OtvoriPomoc();
+        }
+    }
+
+    private void OtvoriPomoc()
+    {
+        new EditHelpWindow(
+            "👤 Pomoć — Korisnik",
+            "Kreiranje i izmena korisničkih naloga i njihovih uloga.",
+            new (string, string)[]
+            {
+                ("Esc", "Zatvara prozor bez čuvanja izmena."),
+            },
+            "Pri izmeni postojećeg korisnika, polje lozinke ostavite prazno da zadržite postojeću — unesite novu samo ako je zaista menjate. Uloga Administrator ima pun pristup uključujući upravljanje korisnicima; Operater radi sa sredstvima i nalozima bez pristupa modulu Korisnici."
+        ) { Owner = this }.ShowDialog();
     }
 }

@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using SredstvaApp.ViewModels;
+using SredstvaApp.Views.Pomoc;
 using SredstvaData;
 using Velopack;
 
@@ -10,6 +11,7 @@ public partial class MainWindow : Window
 {
     private readonly SredstvaDbContext _db;
     private Button? _activeNavButton;
+    private string _trenutnaSekcijaKljuc = "";
 
     public MainWindow(SredstvaDbContext db)
     {
@@ -112,6 +114,11 @@ public partial class MainWindow : Window
             BtnToggleSidebar_Click(sender, e);
             e.Handled = true;
         }
+        else if (e.Key == System.Windows.Input.Key.F1)
+        {
+            OtvoriPomocKontekstualno();
+            e.Handled = true;
+        }
     }
 
     private void BtnToggleSidebar_Click(object sender, RoutedEventArgs e)
@@ -143,7 +150,7 @@ public partial class MainWindow : Window
     }
 
     // ── Navigacija ────────────────────────────────────────────────
-    private void NavigateTo(Button sender, string title, Func<Page> pageFactory, string subtitle = "")
+    private void NavigateTo(Button sender, string title, Func<Page> pageFactory, string subtitle = "", string helpAnchor = "")
     {
         if (_activeNavButton != null)
             _activeNavButton.Style = FindResource("NavButton") as Style;
@@ -153,56 +160,57 @@ public partial class MainWindow : Window
 
         TxtHeaderTitle.Text = title;
         TxtHeaderSubtitle.Text = subtitle;
+        _trenutnaSekcijaKljuc = helpAnchor;
         MainFrame.Navigate(pageFactory());
     }
 
     // ── Sidebar dugmad ────────────────────────────────────────────
     private void BtnDashboard_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnDashboard, "📊 Radna tabla", () => new Views.Dashboard.DashboardPage(_db), "Pregled i statistika osnovnih sredstava");
+        => NavigateTo(BtnDashboard, "📊 Radna tabla", () => new Views.Dashboard.DashboardPage(_db), "Pregled i statistika osnovnih sredstava", helpAnchor: "dashboard");
 
     private void BtnSredstva_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnSredstva, "🏗️ Osnovna sredstva", () => new Views.Sredstva.SredstvaPage(_db));
+        => NavigateTo(BtnSredstva, "🏗️ Osnovna sredstva", () => new Views.Sredstva.SredstvaPage(_db), helpAnchor: "sredstva");
 
     private void BtnKartice_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnKartice, "📋 Analitičke kartice", () => new Views.Kartice.KarticePage(_db));
+        => NavigateTo(BtnKartice, "📋 Analitičke kartice", () => new Views.Kartice.KarticePage(_db), helpAnchor: "sredstva");
 
     public void OpenAnalitickaKartica(int sredstvoId)
     {
-        NavigateTo(BtnKartice, "📋 Analitičke kartice", () => new Views.Kartice.KarticePage(_db, sredstvoId));
+        NavigateTo(BtnKartice, "📋 Analitičke kartice", () => new Views.Kartice.KarticePage(_db, sredstvoId), helpAnchor: "sredstva");
     }
 
     private void BtnPrijava_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnPrijava, "📥 Prijava sredstava", () => new Views.Rashod.PrijavaPage(_db));
+        => NavigateTo(BtnPrijava, "📥 Prijava sredstava", () => new Views.Rashod.PrijavaPage(_db), helpAnchor: "prijava");
 
     private void BtnRashod_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnRashod, "📤 Rashod i promene", () => new Views.Rashod.RashodPage(_db));
+        => NavigateTo(BtnRashod, "📤 Rashod i promene", () => new Views.Rashod.RashodPage(_db), helpAnchor: "rashod");
 
     private void BtnAmortizacija_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnAmortizacija, "📊 Amortizacija", () => new Views.Amortizacija.AmortizacijaPage(_db));
+        => NavigateTo(BtnAmortizacija, "📊 Amortizacija", () => new Views.Amortizacija.AmortizacijaPage(_db), helpAnchor: "amortizacija");
 
     private void BtnRevalorizacija_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnRevalorizacija, "📈 Revalorizacija", () => new Views.Revalorizacija.RevalorizacijaPage(_db), "Usklađivanje vrednosti osnovnih sredstava primenom zadatih koeficijenata");
+        => NavigateTo(BtnRevalorizacija, "📈 Revalorizacija", () => new Views.Revalorizacija.RevalorizacijaPage(_db), "Usklađivanje vrednosti osnovnih sredstava primenom zadatih koeficijenata", helpAnchor: "revalorizacija");
 
     private void BtnPopis_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnPopis, "📄 Popis sredstava", () => new Views.Popis.PopisPage(_db), "Upravljanje popisima, kreiranje komisija i unos stanja popisa");
+        => NavigateTo(BtnPopis, "📄 Popis sredstava", () => new Views.Popis.PopisPage(_db), "Upravljanje popisima, kreiranje komisija i unos stanja popisa", helpAnchor: "popis");
 
     private void BtnRekap_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnRekap, "📑 Rekapitulacija", () => new Views.Izvestaji.IzvestajiPage(_db), "Pregled i analiza osnovnih sredstava po različitim kriterijumima");
+        => NavigateTo(BtnRekap, "📑 Rekapitulacija", () => new Views.Izvestaji.IzvestajiPage(_db), "Pregled i analiza osnovnih sredstava po različitim kriterijumima", helpAnchor: "izvestaji");
 
     private void BtnDobavljaci_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnDobavljaci, "🏢 Dobavljači", () => new Views.Dobavljaci.DobavljaciPage(_db));
+        => NavigateTo(BtnDobavljaci, "🏢 Dobavljači", () => new Views.Dobavljaci.DobavljaciPage(_db), helpAnchor: "dobavljaci");
 
     private void FirmaBorder_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        => NavigateTo(BtnFirme, "🏢 Upravljanje firmama", () => new Views.Firme.FirmePage(), "Pregled, izmena, unos novih i odabir aktivne firme za obračune i izveštaje");
+        => NavigateTo(BtnFirme, "🏢 Upravljanje firmama", () => new Views.Firme.FirmePage(), "Pregled, izmena, unos novih i odabir aktivne firme za obračune i izveštaje", helpAnchor: "firme");
 
     private void BtnFirme_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnFirme, "🏢 Upravljanje firmama", () => new Views.Firme.FirmePage(), "Pregled, izmena, unos novih i odabir aktivne firme za obračune i izveštaje");
+        => NavigateTo(BtnFirme, "🏢 Upravljanje firmama", () => new Views.Firme.FirmePage(), "Pregled, izmena, unos novih i odabir aktivne firme za obračune i izveštaje", helpAnchor: "firme");
 
     private void BtnKorisnici_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnKorisnici, "👥 Korisnici", () => new Views.Korisnici.KorisniciPage(_db), "Upravljanje pristupom i ulogama zaposlenih");
+        => NavigateTo(BtnKorisnici, "👥 Korisnici", () => new Views.Korisnici.KorisniciPage(_db), "Upravljanje pristupom i ulogama zaposlenih", helpAnchor: "korisnici");
 
     private void BtnPodesavanja_Click(object sender, RoutedEventArgs e)
-        => NavigateTo(BtnPodesavanja, "⚙️ Podešavanja", () => new Views.Podesavanja.PodesavanjaPage(), "Upravljanje osnovnim podacima o firmi i kreiranje/vraćanje rezervne kopije baze podataka");
+        => NavigateTo(BtnPodesavanja, "⚙️ Podešavanja", () => new Views.Podesavanja.PodesavanjaPage(), "Upravljanje osnovnim podacima o firmi i kreiranje/vraćanje rezervne kopije baze podataka", helpAnchor: "podesavanja");
 
     private void BtnOdjava_Click(object sender, RoutedEventArgs e)
     {
@@ -214,26 +222,16 @@ public partial class MainWindow : Window
 
     private void BtnPomoc_Click(object sender, RoutedEventArgs e)
     {
-        try
-        {
-            var helpPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Help", "uputstvo.html");
-            if (System.IO.File.Exists(helpPath))
-            {
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = helpPath,
-                    UseShellExecute = true
-                });
-            }
-            else
-            {
-                MessageBox.Show("Uputstvo nije pronađeno. Fajl ne postoji na putanji: " + helpPath, "Greška", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show("Nije moguće otvoriti uputstvo: " + ex.Message, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+        TxtHeaderTitle.Text = "❓ Pomoć";
+        TxtHeaderSubtitle.Text = "";
+        MainFrame.Navigate(new PomocPage());
+    }
+
+    private void OtvoriPomocKontekstualno()
+    {
+        TxtHeaderTitle.Text = "❓ Pomoć";
+        TxtHeaderSubtitle.Text = "";
+        MainFrame.Navigate(new PomocPage(_trenutnaSekcijaKljuc));
     }
 
     private void BtnChangelog_Click(object sender, RoutedEventArgs e)

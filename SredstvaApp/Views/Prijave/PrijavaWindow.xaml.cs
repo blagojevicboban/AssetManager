@@ -2,10 +2,12 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using System.IO;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
+using SredstvaApp.Views.Pomoc;
 using SredstvaData;
 using SredstvaData.Models;
 using SredstvaData.Services;
@@ -325,5 +327,28 @@ public partial class PrijavaWindow : Window
         {
             MessageBox.Show($"Greška prilikom generisanja PDF-a: {ex.Message}", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+    }
+
+    private void Window_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.F1)
+        {
+            OtvoriPomoc();
+        }
+    }
+
+    private void OtvoriPomoc()
+    {
+        new EditHelpWindow(
+            "📥 Pomoć — Prijava sredstava",
+            "Nalog za evidenciju nabavke i aktiviranja novih osnovnih sredstava.",
+            new (string, string)[]
+            {
+                ("Esc", "Zatvara prozor."),
+                ("+ Dodaj", "Dodaje stavku (sredstvo, količinu, nabavnu vrednost) na nalog."),
+                ("+ Novi dobavljač", "Otvara brzi unos novog dobavljača bez napuštanja naloga."),
+            },
+            "Nalog se ne knjiži dok se ne klikne 'Proknjiži Nalog' — do tada se stavke mogu slobodno menjati. Dugme '🖨️' generiše PDF nalog za štampu."
+        ) { Owner = this }.ShowDialog();
     }
 }

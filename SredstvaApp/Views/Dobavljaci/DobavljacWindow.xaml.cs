@@ -1,5 +1,7 @@
 using System.Windows;
+using System.Windows.Input;
 using Microsoft.EntityFrameworkCore;
+using SredstvaApp.Views.Pomoc;
 using SredstvaData;
 using SredstvaData.Models;
 
@@ -16,6 +18,7 @@ public partial class DobavljacWindow : Window
     public DobavljacWindow(SredstvaDbContext db)
     {
         InitializeComponent();
+        ContextHelpFix.UkloniDugmeZaPomoc(this);
         _db = db;
         Title = "Novi dobavljač";
         UpdateUI(false);
@@ -25,6 +28,7 @@ public partial class DobavljacWindow : Window
     public DobavljacWindow(SredstvaDbContext db, int dobavljacId)
     {
         InitializeComponent();
+        ContextHelpFix.UkloniDugmeZaPomoc(this);
         _db = db;
         _editingId = dobavljacId;
         Title = "Izmena dobavljača";
@@ -146,5 +150,26 @@ public partial class DobavljacWindow : Window
         {
             MessageBox.Show($"Greška pri čuvanju dobavljača: {ex.Message}", "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+    }
+
+    private void Window_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.F1)
+        {
+            OtvoriPomoc();
+        }
+    }
+
+    private void OtvoriPomoc()
+    {
+        new EditHelpWindow(
+            "🏢 Pomoć — Dobavljač",
+            "Šifarnik dobavljača (po kontu) korišćen prilikom unosa Prijave sredstava.",
+            new (string, string)[]
+            {
+                ("Esc", "Zatvara prozor bez čuvanja izmena."),
+            },
+            "Konto mora biti jedinstven. Opis konta se koristi kao naziv dobavljača u listama i na Prijavama sredstava."
+        ) { Owner = this }.ShowDialog();
     }
 }

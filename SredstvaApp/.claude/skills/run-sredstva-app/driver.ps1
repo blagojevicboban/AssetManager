@@ -128,6 +128,10 @@ switch ($Command) {
         Start-Sleep -Milliseconds 150
         # PasswordBox does not expose ValuePattern (by design) so SendKeys is used for
         # both TextBox and PasswordBox — it works uniformly on whatever has focus.
+        # Windows/the browser sometimes pre-fills these fields (autocomplete) before we
+        # get here, so always clear first (Ctrl+A, Delete) rather than appending blindly.
+        [System.Windows.Forms.SendKeys]::SendWait("^a{DEL}")
+        Start-Sleep -Milliseconds 100
         [System.Windows.Forms.SendKeys]::SendWait($Arg2)
         "Typed into '$Arg1'"
     }

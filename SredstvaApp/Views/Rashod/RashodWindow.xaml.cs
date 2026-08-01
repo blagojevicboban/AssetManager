@@ -6,7 +6,9 @@ using System.Linq;
 using QuestPDF.Fluent;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Microsoft.EntityFrameworkCore;
+using SredstvaApp.Views.Pomoc;
 using SredstvaData;
 using SredstvaData.Models;
 using SredstvaData.Services;
@@ -444,4 +446,26 @@ public partial class RashodWindow : Window
         TipoviPromena.PovecanjeAmortizacije => "Povećanje amortizacije",
         _ => tip.ToString()
     };
+
+    private void Window_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.F1)
+        {
+            OtvoriPomoc();
+        }
+    }
+
+    private void OtvoriPomoc()
+    {
+        new EditHelpWindow(
+            "📤 Pomoć — Nalog rashoda",
+            "Evidencija rashodovanja, prodaje, otuđenja, prenosa, brisanja i povećanja vrednosti/količine/amortizacije.",
+            new (string, string)[]
+            {
+                ("Esc", "Zatvara prozor."),
+                ("+ Dodaj", "Dodaje sredstvo i tip promene na nalog."),
+            },
+            "Prilikom rashodovanja u toku godine, sistem automatski obračunava i knjiži srazmernu računovodstvenu amortizaciju od početka godine do datuma rashoda pre samog storniranja. Nalog se ne knjiži dok se ne klikne 'Proknjiži nalog'."
+        ) { Owner = this }.ShowDialog();
+    }
 }

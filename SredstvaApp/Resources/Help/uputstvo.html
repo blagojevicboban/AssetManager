@@ -48,7 +48,7 @@
             <strong>Napomena o starim podacima:</strong> Svi vaši podaci iz starih programa automatski su migrirani. Stara šifra sredstva iz DBF datoteke čuva se unutar kartice sredstva pod opcijom "Legacy Šifra".
         </div>
 
-        <h2>1. Prijava i korisnički nalozi</h2>
+        <h2 id="korisnici">1. Prijava i korisnički nalozi</h2>
         <p>Pristup aplikaciji je zaštićen korisničkim nalogom.</p>
         <ul>
             <li><strong>Prijava:</strong> Pri pokretanju programa unesite korisničko ime i lozinku koje ste dobili od administratora.</li>
@@ -56,7 +56,7 @@
             <li><strong>Upravljanje korisnicima:</strong> U tabu <strong>Korisnici</strong> administrator dodaje nove naloge, menja uloge, poništava zaboravljenu lozinku i deaktivira naloge zaposlenih koji više ne treba da imaju pristup (nalog se deaktivira, a ne briše, kako bi istorija unosa ostala sačuvana).</li>
         </ul>
 
-        <h2>2. Firme (rad sa više preduzeća)</h2>
+        <h2 id="firme">2. Firme (rad sa više preduzeća)</h2>
         <p>Aplikacija podržava rad sa proizvoljnim brojem preduzeća u istoj instalaciji — svaka firma ima svoju odvojenu bazu podataka.</p>
         <ul>
             <li>U tabu <strong>Podešavanja → Firme</strong> (ili posebnom meniju Firme, u zavisnosti od verzije) dodajte novu firmu i unesite osnovne podatke (naziv, PIB, matični broj, adresa, bankovni račun...).</li>
@@ -66,7 +66,7 @@
             Sve ostale stranice aplikacije (Osnovna sredstva, Amortizacija, Popis...) uvek prikazuju i menjaju podatke <strong>trenutno aktivne firme</strong>.
         </div>
 
-        <h2>3. Radna tabla (Dashboard)</h2>
+        <h2 id="dashboard">3. Radna tabla (Dashboard)</h2>
         <p>Po ulasku u preduzeće dočekaće vas Radna tabla sa grafičkim i numeričkim pregledom ključnih informacija.</p>
         <ul>
             <li><strong>Zbirni podaci:</strong> Brzi uvid u ukupan broj sredstava, kao i zbirnu nabavnu i sadašnju vrednost svih aktivnih sredstava u bazi.</li>
@@ -74,7 +74,7 @@
             <li><strong>Interaktivnost:</strong> Prelaskom kursora preko delova grafikona prikazaće se tačne numeričke vrednosti.</li>
         </ul>
 
-        <h2>4. Osnovna Sredstva (Kartice)</h2>
+        <h2 id="sredstva">4. Osnovna Sredstva (Kartice)</h2>
         <p>Ovaj modul vam omogućava upravljanje katalogom svih osnovnih sredstava preduzeća.</p>
         <ul>
             <li><strong>Pregled:</strong> U tabeli možete videti stanje, nabavnu i otpisanu vrednost za svako sredstvo.</li>
@@ -83,7 +83,7 @@
             <li><strong>Prijave i Rashodi:</strong> Kroz dodatne module sredstvo može biti evidentirano kao trajno otuđeno (rashodovano).</li>
         </ul>
 
-        <h2>5. Dobavljači</h2>
+        <h2 id="dobavljaci">5. Dobavljači</h2>
         <p>Šifarnik dobavljača (po kontu) koristi se prilikom unosa Prijave sredstava.</p>
         <ul>
             <li>Pretražujte dobavljače po nazivu ili kontu preko polja za pretragu.</li>
@@ -91,7 +91,7 @@
             <li>Dugmad <span class="highlight">✏️ Izmeni</span> i <span class="highlight">🗑️ Obriši</span> služe za ažuriranje šifarnika.</li>
         </ul>
 
-        <h2>6. Prijava sredstava</h2>
+        <h2 id="prijava">6. Prijava sredstava</h2>
         <p>Modul za evidenciju nabavke i aktiviranja novih osnovnih sredstava kroz naloge za prijavu.</p>
         <ul>
             <li>Klikom na <span class="highlight">+ Nova prijava</span> otvara se ekran za unos naloga — dobavljač, datum aktiviranja i stavke (sredstva sa količinom i nabavnom vrednošću).</li>
@@ -99,7 +99,7 @@
             <li>Dvoklikom na nalog ili klikom na <span class="highlight">✏️ Uredi Nalog</span> otvara se nalog za dalju izmenu.</li>
         </ul>
 
-        <h2>7. Rashod i promene</h2>
+        <h2 id="rashod">7. Rashod i promene</h2>
         <p>Modul za evidenciju rashodovanja, prodaje, otuđenja, prenosa u drugu obračunsku jedinicu, brisanja i povećanja vrednosti/količine/amortizacije osnovnih sredstava.</p>
         <ul>
             <li>Statistika u vrhu stranice prikazuje broj naloga, broj rashodovanih i prodatih sredstava, kao i broj proknjiženih naloga i onih na čekanju.</li>
@@ -108,7 +108,7 @@
             <li>Dugme <span class="highlight">🖨 Štampa</span> generiše PDF izveštaj za trenutno prikazane (filtrirane) naloge.</li>
         </ul>
 
-        <h2>8. Računovodstvena i Poreska Amortizacija</h2>
+        <h2 id="amortizacija">8. Računovodstvena i Poreska Amortizacija</h2>
         <p>Modul za obračun računovodstvene amortizacije (po MRS 16) i poreske amortizacije (po Pravilniku o poreskoj amortizaciji i Zakonu o porezu na dobit).</p>
         <ul>
             <li><strong>Računovodstvena Amortizacija (MRS 16):</strong>
@@ -142,7 +142,7 @@
             <li><strong>Automatska Amortizacija pri Rashodovanju:</strong> Prilikom rashodovanja u toku godine, sistem automatski obračunava i knjiži srazmernu računovodstvenu amortizaciju od početka godine do datuma rashoda pre samog storniranja.</li>
         </ul>
 
-        <h2>9. Revalorizacija</h2>
+        <h2 id="revalorizacija">9. Revalorizacija</h2>
         <p>Revalorizacija se radi radi usklađivanja knjigovodstvene vrednosti sredstava sa inflacijom ili trenutnim tržišnim stanjem, primenom revalorizacionih koeficijenata.</p>
         <div class="warning">
             Pre izvođenja Revalorizacije morate uneti <strong>Godišnji i Mesečni koeficijent</strong>. U starom sistemu ovo su bili parametri na glavnom ekranu aplikacije.
@@ -153,7 +153,7 @@
             <li>Program će kreirati novu liniju u tabeli koju kasnije možete <strong>Štampati</strong> kao PDF ili kliknuti <strong>Proknjiži</strong> kako bi se ažurirale vrednosti nad osnovnim sredstvima u glavnoj bazi.</li>
         </ul>
 
-        <h2>10. Popis</h2>
+        <h2 id="popis">10. Popis</h2>
         <p>Na kraju godine sprovodi se obavezni popis inventara radi utvrđivanja eventualnih odstupanja između knjigovodstvenog i stvarnog stanja.</p>
         <ul>
             <li><strong>Kreiranje Komisije:</strong> U Tab-u "Komisije" dodajte novo ime popisne komisije. Zatim na desnoj strani unesite imena članova i njihove uloge (Predsednik/Član).</li>
@@ -163,7 +163,7 @@
             <li><strong>Završni Izveštaj:</strong> Klikom na <span class="highlight">🖨 Štampaj Izveštaj o Popisu</span> dobijate detaljan račun viškova i manjkova objedinjen po Kontima.</li>
         </ul>
 
-        <h2>11. Izveštaji i Rekapitulacije</h2>
+        <h2 id="izvestaji">11. Izveštaji i Rekapitulacije</h2>
         <p>Ovaj modul objedinjuje popisne i rekapitulacione preglede osnovnih sredstava, nezavisno od godišnjeg popisa.</p>
         <ul>
             <li>Sa leve strane izaberite željeni izveštaj: <strong>Popis svih sredstava</strong> ili neku od <strong>Rekapitulacija</strong> (grupisano po kriterijumu iz naziva izveštaja).</li>
@@ -171,7 +171,7 @@
             <li>Dugme <span class="highlight">💾 Export CSV</span> u gornjem desnom uglu snima trenutno prikazani izveštaj u CSV fajl (pogodno za dalju obradu u Excel-u).</li>
         </ul>
 
-        <h2>12. Nalepnice i Bar-kodovi</h2>
+        <h2 id="nalepnice">12. Nalepnice i Bar-kodovi</h2>
         <p>Za potrebe lakšeg popisa i identifikacije opreme, aplikacija omogućava štampu Bar-kod nalepnica.</p>
         <ul>
             <li>Idite na tab <strong>Osnovna Sredstva</strong>.</li>
@@ -180,7 +180,7 @@
             <li>Program će generisati PDF dokument (u A4 formatu, 3 kolone) koji sadrži naziv firme, šifru, inventarski broj, naziv sredstva i CODE-128 bar-kod spreman za štampu.</li>
         </ul>
 
-        <h2>13. Podešavanja</h2>
+        <h2 id="podesavanja">13. Podešavanja</h2>
         <p>Centralno mesto za rezervne kopije baze podataka, uvoz starih podataka i opšte postavke programa.</p>
         <ul>
             <li><strong>Rezervna kopija:</strong> Dugme <span class="highlight">💾 Napravi rezervnu kopiju baze podataka</span> snima trenutno stanje aktivne firme na disk. Tab prikazuje i istoriju svih dosadašnjih kopija, sa mogućnošću brzog vraćanja klikom na <strong>Vrati bazu iz izabrane kopije</strong>.</li>

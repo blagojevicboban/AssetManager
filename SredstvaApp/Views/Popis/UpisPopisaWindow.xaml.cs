@@ -2,7 +2,9 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Microsoft.EntityFrameworkCore;
+using SredstvaApp.Views.Pomoc;
 using SredstvaData;
 using SredstvaData.Models;
 
@@ -101,5 +103,26 @@ public partial class UpisPopisaWindow : Window
                 MessageBox.Show("Greška: " + ex.Message, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+    }
+
+    private void Window_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.F1)
+        {
+            OtvoriPomoc();
+        }
+    }
+
+    private void OtvoriPomoc()
+    {
+        new EditHelpWindow(
+            "📄 Pomoć — Upis stanja popisa",
+            "Masovni unos stvarno popisanih količina za sredstva u izabranom popisu.",
+            new (string, string)[]
+            {
+                ("Esc", "Zatvara prozor."),
+            },
+            "Unesite stvarnu popisanu količinu za svako sredstvo. 'Sačuvaj stanje' čuva unos bez zaključivanja popisa; 'Zaključi popis' trajno zatvara popis i omogućava štampu Izveštaja o popisu sa viškovima/manjkovima."
+        ) { Owner = this }.ShowDialog();
     }
 }

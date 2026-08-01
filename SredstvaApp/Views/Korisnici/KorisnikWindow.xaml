@@ -4,7 +4,7 @@
         Title="Podaci o korisniku" Height="447" Width="450"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource SurfaceBrush}"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize" KeyDown="Window_KeyDown">
 
     <Grid Margin="24">
         <Grid.RowDefinitions>
