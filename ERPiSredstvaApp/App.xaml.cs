@@ -35,6 +35,10 @@ public partial class App : Application
     {
         VelopackApp.Build().Run();
 
+        // Mora pre prvog pristupa UserSettings-u: preuzima baze i podešavanja
+        // zatečena pod starim imenom foldera (pre preimenovanja u ERPi liniju).
+        AppConfig.PreuzmiStariFolderPodataka();
+
         for (int i = 0; i < e.Args.Length; i++)
         {
             if (e.Args[i] == "--db-path" && i + 1 < e.Args.Length)
