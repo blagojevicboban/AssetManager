@@ -66,7 +66,7 @@ public static class AppConfig
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Greška pri migraciji zajedničke baze: {ex.Message}");
+            Serilog.Log.Error(ex, "Greška pri migraciji zajedničke baze");
         }
     }
 

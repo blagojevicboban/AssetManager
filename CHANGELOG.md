@@ -6,6 +6,33 @@ Format je zasnovan na [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) s
 
 ---
 
+## [1.0.55] - 2026-08-02
+
+### 📋 Logovanje (`AppLog`, Serilog)
+- **Uvedeno pravo logovanje u fajl.** Dijagnostika je do sada bila `Debug.WriteLine`, koji je u
+  Release verziji potpuno nevidljiv — kada bi se kod korisnika nešto pokvarilo, nije ostajao trag.
+- Zapisi idu u `%LOCALAPPDATA%\SredstvaApp\logs\log-GGGGMMDD.txt`, novi fajl svakog dana, čuva se
+  poslednjih 14 dana. Zamenjuje raniji `crash.log` koji je rastao bez ograničenja.
+- Postojeći globalni hvatači grešaka (korisnički interfejs, pozadinske niti, neposmatrani zadaci)
+  premešteni u `AppLog` i sada pišu kroz logger umesto ručnog dopisivanja u fajl.
+- `Debug.WriteLine` u `catch` blokovima prevedeni u `Serilog.Log.Error` — `BackupService`,
+  `UserSettings`, `AppConfig`, `FirmePage`, `PodesavanjaPage`, `MainWindow`.
+
+### 🐛 Ispravke
+- **`AmortizacijaPage`** — spisak godina se gradio pozivom `.Value` nad `Godina` koja može biti prazna,
+  što bi oborilo stranicu na prvom zapisu bez godine. Sada se takvi zapisi preskaču.
+
+### 🛠️ Interno (bez uticaja na rad aplikacije)
+- **CI kapija kvaliteta (`.github/workflows/release.yml`)**: workflow razdvojen na `test` i `build` job;
+  release izlazi tek kada build i svih 38 testova prođu. Dodat `pull_request` triger tako da se izmena
+  testira pre nego što uđe u granu. Ranije se nijedan test nije pokretao pre objavljivanja.
+- **`Directory.Build.props`**: upozorenja prevodioca se u Release konfiguraciji tretiraju kao greške,
+  pa nijedno ne može da prođe u objavljenu verziju. U Debug-u ostaju upozorenja.
+- Uklonjen `TestDb` — pomoćni projekat koji nije bio u rešenju, nije se nigde referencirao i jedini je
+  ciljao `net10.0` dok sve ostalo cilja `net8.0`.
+
+---
+
 ## [1.0.54] - 2026-08-01
 
 ### 🎨 UI / UX

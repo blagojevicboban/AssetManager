@@ -43,7 +43,7 @@ public class UserSettings
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Greška pri učitavanju podešavanja: {ex.Message}");
+            Serilog.Log.Error(ex, "Greška pri učitavanju podešavanja");
         }
 
         return new UserSettings();
@@ -63,7 +63,7 @@ public class UserSettings
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Greška pri čuvanju podešavanja: {ex.Message}");
+            Serilog.Log.Error(ex, "Greška pri čuvanju podešavanja");
         }
     }
 }

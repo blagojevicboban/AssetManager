@@ -22,7 +22,7 @@ public partial class PodesavanjaPage : Page
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Greška pri učitavanju podataka o aktivnoj bazi: {ex.Message}");
+            Serilog.Log.Error(ex, "Greška pri učitavanju podataka o aktivnoj bazi");
         }
 
         ChkStartMaximized.IsChecked = UserSettings.Instance.StartMaximized;
@@ -61,7 +61,7 @@ public partial class PodesavanjaPage : Page
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Greška pri osvežavanju istorije kopija: {ex.Message}");
+            Serilog.Log.Error(ex, "Greška pri osvežavanju istorije kopija");
         }
     }
 

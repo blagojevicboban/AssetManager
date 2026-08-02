@@ -147,7 +147,8 @@ public partial class AmortizacijaPage : Page
         
         // Pronađi sve godine
         _availableYears = _listaAmortizacije
-            .Select(a => a.Godina.Value)
+            .Where(a => a.Godina.HasValue)
+            .Select(a => a.Godina!.Value)
             .Distinct()
             .OrderByDescending(g => g)
             .ToList();

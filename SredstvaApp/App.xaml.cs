@@ -17,42 +17,8 @@ public partial class App : Application
 
     public App()
     {
-        // Globalni handler za neuhvaćene izuzetke na UI threadu
-        DispatcherUnhandledException += (s, ex) =>
-        {
-            var logPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "SredstvaApp", "crash.log");
-            Directory.CreateDirectory(Path.GetDirectoryName(logPath)!);
-            File.AppendAllText(logPath, $"[{DateTime.Now}] UI EXCEPTION: {ex.Exception}\n\n");
-            MessageBox.Show(
-                $"Neočekivana greška:\n\n{ex.Exception.Message}\n\nDetalji su sačuvani u:\n{logPath}",
-                "Greška aplikacije",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error);
-            ex.Handled = true;
-        };
-
-        // Handler za fatalne izuzetke na pozadinskim threadovima
-        AppDomain.CurrentDomain.UnhandledException += (s, ex) =>
-        {
-            var logPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "SredstvaApp", "crash.log");
-            Directory.CreateDirectory(Path.GetDirectoryName(logPath)!);
-            File.AppendAllText(logPath, $"[{DateTime.Now}] FATAL: {ex.ExceptionObject}\n\n");
-        };
-
-        // Handler za neuhvaćene Task izuzetke (sprečava tihi crash)
-        System.Threading.Tasks.TaskScheduler.UnobservedTaskException += (s, ex) =>
-        {
-            var logPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "SredstvaApp", "crash.log");
-            Directory.CreateDirectory(Path.GetDirectoryName(logPath)!);
-            File.AppendAllText(logPath, $"[{DateTime.Now}] TASK: {ex.Exception}\n\n");
-            ex.SetObserved(); // Sprečava crash procesa
-        };
+        AppLog.Init();
+        AppLog.RegistrujGlobalneHandlere(this);
 
         AppHost = Host.CreateDefaultBuilder()
             .ConfigureServices((context, services) =>
@@ -104,7 +70,7 @@ public partial class App : Application
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Greška pri ažuriranju statusa rashodovanih sredstava: {ex.Message}");
+            Serilog.Log.Error(ex, "Greška pri ažuriranju statusa rashodovanih sredstava");
         }
 
         var loginWindow = new Views.Korisnici.LoginWindow(dbContext);
@@ -135,10 +101,11 @@ public partial class App : Application
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Greška pri automatskom pravljenju kopije prilikom izlaska: {ex.Message}");
+            Serilog.Log.Error(ex, "Greška pri automatskom pravljenju rezervne kopije prilikom izlaska");
         }
 
         await AppHost!.StopAsync();
+        AppLog.Zatvori();
         base.OnExit(e);
     }
 }

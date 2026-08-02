@@ -71,7 +71,7 @@ public partial class FirmePage : Page
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"Greška pri učitavanju baze '{file}': {ex.Message}");
+                    Serilog.Log.Warning(ex, "Greška pri učitavanju baze {Fajl}", file);
                 }
             }
 
@@ -111,7 +111,7 @@ public partial class FirmePage : Page
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"Greška pri inicijalizaciji podrazumevane baze: {ex.Message}");
+                    Serilog.Log.Error(ex, "Greška pri inicijalizaciji podrazumevane baze");
                 }
             }
 

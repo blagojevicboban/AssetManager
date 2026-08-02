@@ -157,7 +157,7 @@ public class BackupService
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Greška pri učitavanju istorije kopija: {ex.Message}");
+            Serilog.Log.Error(ex, "Greška pri učitavanju istorije kopija");
         }
 
         // Sortiraj najnovije na početak
@@ -189,7 +189,7 @@ public class BackupService
                 for (int i = 15; i < autoBackups.Count; i++)
                 {
                     try { autoBackups[i].Delete(); }
-                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Greška pri brisanju stare automatske kopije: {ex.Message}"); }
+                    catch (Exception ex) { Serilog.Log.Error(ex, "Greška pri brisanju stare automatske kopije"); }
                 }
             }
 
@@ -204,13 +204,13 @@ public class BackupService
                 for (int i = 5; i < safetyBackups.Count; i++)
                 {
                     try { safetyBackups[i].Delete(); }
-                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Greška pri brisanju stare sigurnosne kopije: {ex.Message}"); }
+                    catch (Exception ex) { Serilog.Log.Error(ex, "Greška pri brisanju stare sigurnosne kopije"); }
                 }
             }
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Greška pri rotaciji starih kopija: {ex.Message}");
+            Serilog.Log.Error(ex, "Greška pri rotaciji starih kopija");
         }
     }
 }
