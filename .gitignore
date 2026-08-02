@@ -389,7 +389,7 @@ FodyWeavers.xsd
 bin/
 obj/
 nul
-SredstvaApp/nul
+ERPiSredstvaApp/nul
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
@@ -486,3 +486,4 @@ $RECYCLE.BIN/
 sredstva.db
 sredstva.db-shm
 sredstva.db-wal
+build_log.txt

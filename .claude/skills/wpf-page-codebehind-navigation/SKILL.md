@@ -1,17 +1,17 @@
 ---
 name: wpf-page-codebehind-navigation
-description: Conventions for adding a new WPF Page/Window in SredstvaApp — constructor-injected SredstvaDbContext, MainWindow navigation wiring, Loaded-based data binding, search/filter, and dialog refresh patterns. Use whenever adding or modifying a Views/*Page.xaml(.cs) or *Window.xaml(.cs).
+description: Conventions for adding a new WPF Page/Window in ERPiSredstvaApp — constructor-injected SredstvaDbContext, MainWindow navigation wiring, Loaded-based data binding, search/filter, and dialog refresh patterns. Use whenever adding or modifying a Views/*Page.xaml(.cs) or *Window.xaml(.cs).
 ---
 
-# WPF Page/Window Code-Behind Pattern (SredstvaApp)
+# WPF Page/Window Code-Behind Pattern (ERPiSredstvaApp)
 
-`SredstvaApp` does **not** use a ViewModel/binding-command MVVM layer (only `MainWindowViewModel.cs` exists). Pages and Windows talk to the database directly from code-behind. Follow this pattern for consistency — do not introduce a parallel MVVM pattern for a single new page.
+`ERPiSredstvaApp` does **not** use a ViewModel/binding-command MVVM layer (only `MainWindowViewModel.cs` exists). Pages and Windows talk to the database directly from code-behind. Follow this pattern for consistency — do not introduce a parallel MVVM pattern for a single new page.
 
 ---
 
 ## 1. Page Structure
 
-- Each feature lives in `SredstvaApp/Views/<Feature>/<Feature>Page.xaml(.cs)` (list/grid pages) or `<Feature>Window.xaml(.cs)` (modal dialogs, e.g. `RashodWindow`, `PrijavaWindow`, `LoginWindow`).
+- Each feature lives in `ERPiSredstvaApp/Views/<Feature>/<Feature>Page.xaml(.cs)` (list/grid pages) or `<Feature>Window.xaml(.cs)` (modal dialogs, e.g. `RashodWindow`, `PrijavaWindow`, `LoginWindow`).
 - Constructor takes `SredstvaDbContext db` (and optional extra params like a pre-selected id, e.g. `KarticePage(SredstvaDbContext db, int sredstvoId)`) and stores it in a `private readonly SredstvaDbContext _db` field.
 - Call `InitializeComponent()` first, then assign fields, then wire `Loaded += Page_Loaded`.
 - Load data in the `Loaded` handler (not the constructor) — query via `_db`, materialize with `.ToList()`, assign to a backing `List<T> _all` field, and set `SomeGrid.ItemsSource = _all`.

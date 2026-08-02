@@ -1,0 +1,153 @@
+<Page x:Class="ERPiSredstvaApp.Views.Dobavljaci.DobavljaciPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Dobavljači"
+      Background="{StaticResource SurfaceBrush}">
+
+    <Grid Margin="28,24,24,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Naslov -->
+        <StackPanel Grid.Row="0">
+            <TextBlock x:Name="SubtitleText" Text="Učitavanje..."
+                       Style="{StaticResource PageSubtitle}"/>
+        </StackPanel>
+
+        <!-- Toolbar -->
+        <Border Grid.Row="2" Style="{StaticResource Card}" Padding="16,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="🔍" FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBox x:Name="SearchBox" Width="280" Height="34"
+                             TextChanged="SearchBox_TextChanged"/>
+                    <TextBlock Text="Pretraga po nazivu ili kontu"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               FontSize="12" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                </StackPanel>
+                <Button Grid.Column="1" Content="➕  Novi dobavljač"
+                        Style="{StaticResource PrimaryButton}" Height="34"
+                        Click="BtnNovi_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- Split: leva lista + desni detalj -->
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="320"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- DataGrid -->
+            <Border Style="{StaticResource Card}" Padding="0">
+                <DataGrid x:Name="DobavljaciGrid"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          SelectionChanged="DobavljaciGrid_SelectionChanged"
+                          BorderThickness="0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Konto" Binding="{Binding Konto}" Width="90">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="FontFamily" Value="Consolas"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Naziv / Opis konta" Binding="{Binding OpisKonta}" Width="*" MinWidth="180"/>
+                        <DataGridTextColumn Header="Adresa" Binding="{Binding UlicaIBroj}" Width="160"/>
+                        <DataGridTextColumn Header="Mesto" Binding="{Binding MestoIBroj}" Width="130"/>
+                        <DataGridTextColumn Header="Br. Prijava" Binding="{Binding BrojPrijava}" Width="90">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <!-- Detalj panel desno -->
+            <Border Grid.Column="2" Style="{StaticResource Card}">
+                <StackPanel x:Name="DetailPanel">
+                    <!-- Placeholder -->
+                    <StackPanel x:Name="DetailPlaceholder" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,60,0,0">
+                        <TextBlock Text="🏢" FontSize="40" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Izaberite dobavljača" FontSize="14"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                    </StackPanel>
+
+                    <!-- Detalji -->
+                    <StackPanel x:Name="DetailContent" Visibility="Collapsed">
+                        <TextBlock Text="DETALJI DOBAVLJAČA" FontSize="10" FontWeight="SemiBold"
+                                   Foreground="{StaticResource AccentBrush}" Margin="0,0,0,16"/>
+
+                        <TextBlock Text="KONTO" FontSize="10" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <TextBlock x:Name="DetailKonto" FontSize="20" FontWeight="Bold"
+                                   FontFamily="Consolas" Foreground="{StaticResource PrimaryLightBrush}"
+                                   Margin="0,2,0,12"/>
+
+                        <TextBlock Text="NAZIV" FontSize="10" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <TextBlock x:Name="DetailNaziv" FontSize="14" FontWeight="SemiBold"
+                                   TextWrapping="Wrap" Margin="0,2,0,12"/>
+
+                        <TextBlock Text="ADRESA" FontSize="10" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <TextBlock x:Name="DetailAdresa" FontSize="13"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   Margin="0,2,0,4"/>
+                        <TextBlock x:Name="DetailMesto" FontSize="13"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   Margin="0,0,0,12"/>
+
+                        <Rectangle Height="1" Fill="{StaticResource BorderBrush}" Margin="0,4,0,16"/>
+
+                        <TextBlock Text="PRIJAVE SREDSTAVA" FontSize="10" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,8"/>
+                        <ItemsControl x:Name="PrijaveList">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#F0F7F4" CornerRadius="6"
+                                            Padding="10,6" Margin="0,0,0,4">
+                                        <Grid>
+                                            <TextBlock Text="{Binding Naziv}" FontSize="12"
+                                                       TextWrapping="Wrap"/>
+                                            <TextBlock Text="{Binding NabavnaStr}" FontSize="11"
+                                                       HorizontalAlignment="Right"
+                                                       FontFamily="Consolas"
+                                                       Foreground="{StaticResource AccentBrush}"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,16,0,0" HorizontalAlignment="Right">
+                            <Button Content="✏️ Izmeni" Style="{StaticResource PrimaryButton}" 
+                                    Height="36" Width="100" Margin="0,0,12,0" Click="BtnIzmeni_Click"/>
+                            <Button Content="🗑️ Obriši" Style="{StaticResource SecondaryButton}" 
+                                    Height="36" Width="100" Click="BtnObrisi_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>

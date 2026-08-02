@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="ERPiSredstvaApp/ERPiSredstvaApp.csproj" />
+  <Project Path="ERPiSredstvaData.Tests/ERPiSredstvaData.Tests.csproj" />
+  <Project Path="ERPiSredstvaData/ERPiSredstvaData.csproj" />
+  <Project Path="ERPiSredstvaMigration/ERPiSredstvaMigration.csproj" />
+</Solution>

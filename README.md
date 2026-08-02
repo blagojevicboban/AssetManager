@@ -1,4 +1,4 @@
-# 🏢 SredstvaSystem — Evidencija Osnovnih Sredstava
+# 🏢 ERPiSredstva — Evidencija Osnovnih Sredstava
 
 > Desktop aplikacija za evidenciju osnovnih sredstava, amortizaciju, revalorizaciju i godišnje popise — razvijena u C# / .NET 8 / WPF.
 
@@ -51,8 +51,8 @@
 ## 📁 Struktura projekta
 
 ```text
-SredstvaSystem/
-├── SredstvaApp/            # Glavni WPF projekat (Stranice, PDF Dokumenti)
+ERPiSredstva/
+├── ERPiSredstvaApp/            # Glavni WPF projekat (Stranice, PDF Dokumenti)
 │   ├── Views/
 │   │   ├── Korisnici/      # Prijava (Login) i upravljanje korisničkim nalozima
 │   │   ├── Firme/          # Rad sa više firmi / preduzeća
@@ -68,10 +68,10 @@ SredstvaSystem/
 │   │   ├── Izvestaji/      # Izveštaji i rekapitulacije
 │   │   └── Podesavanja/    # Backup/restore, uvoz iz starog programa, postavke
 │   └── Resources/          # Stilovi, Uputstvo (Help dokumentacija)
-├── SredstvaData/           # Data Access Layer (EF Core entiteti, DbContext)
+├── ERPiSredstvaData/           # Data Access Layer (EF Core entiteti, DbContext)
 │   └── Models/             # Sredstvo, Kartica, Prijava, Rashod, Popis, Dobavljac, Firma, Korisnik...
-├── SredstvaData.Tests/     # Unit testovi (npr. obračun amortizacije)
-├── SredstvaMigration/      # Alat za migraciju legacy podataka iz starih DBF Clipper fajlova
+├── ERPiSredstvaData.Tests/     # Unit testovi (npr. obračun amortizacije)
+├── ERPiSredstvaMigration/      # Alat za migraciju legacy podataka iz starih DBF Clipper fajlova
 ├── .github/workflows/      # GitHub Actions za CI/CD i automatski release
 └── version.txt             # Fajl iz koga skripta cita trenutnu verziju za auto-update
 ```
@@ -89,29 +89,29 @@ SredstvaSystem/
 
 ```bash
 # 1. Klonirati repozitorijum (ako ste ga postavili na Git)
-git clone https://github.com/vas-profil/SredstvaSystem.git
-cd SredstvaSystem
+git clone https://github.com/vas-profil/ERPiSredstva.git
+cd ERPiSredstva
 
 # 2. Prevesti projekat
 dotnet build
 
 # 3. Pokrenuti aplikaciju
-dotnet run --project SredstvaApp/SredstvaApp.csproj
+dotnet run --project ERPiSredstvaApp/ERPiSredstvaApp.csproj
 ```
 
-> **Napomena:** Lokalna SQLite baza (`sredstva.db`) automatski se kreira na prvoj instanci ukoliko već ne postoji. Ukoliko imate DBF podatke, prvo pokrenite projekat `SredstvaMigration` ili iskoristite uvoz kroz tab "Uvoz iz starog programa" u Podešavanjima.
+> **Napomena:** Lokalna SQLite baza (`sredstva.db`) automatski se kreira na prvoj instanci ukoliko već ne postoji. Ukoliko imate DBF podatke, prvo pokrenite projekat `ERPiSredstvaMigration` ili iskoristite uvoz kroz tab "Uvoz iz starog programa" u Podešavanjima.
 
 ### Testovi
 
 ```bash
-dotnet test SredstvaData.Tests/SredstvaData.Tests.csproj
+dotnet test ERPiSredstvaData.Tests/ERPiSredstvaData.Tests.csproj
 ```
 
 ---
 
 ## 📦 Instalacija (za krajnje korisnike)
 
-Kada je CI/CD aktivan, preuzmite najnoviji `SredstvaAppSetup.exe` sa GitHub Releases stranice.
+Kada je CI/CD aktivan, preuzmite najnoviji `ERPiSredstvaAppSetup.exe` sa GitHub Releases stranice.
 Aplikacija se instalira u profil korisnika bez administratorskih prava, a svako novo ažuriranje (Nova verzija u `version.txt`) biće primenjeno automatski kroz **Velopack Delta Update**.
 
 ---
@@ -130,7 +130,7 @@ Aplikacija se instalira u profil korisnika bez administratorskih prava, a svako 
 <br/>
 <br/>
 
-# 🏢 SredstvaSystem — Fixed Assets Management (English)
+# 🏢 ERPiSredstva — Fixed Assets Management (English)
 
 > Desktop application for fixed assets management, depreciation, revaluation, and annual inventory — developed in C# / .NET 8 / WPF.
 
@@ -183,8 +183,8 @@ Aplikacija se instalira u profil korisnika bez administratorskih prava, a svako 
 ## 📁 Project Structure
 
 ```text
-SredstvaSystem/
-├── SredstvaApp/            # Main WPF project (Pages, PDF Documents)
+ERPiSredstva/
+├── ERPiSredstvaApp/            # Main WPF project (Pages, PDF Documents)
 │   ├── Views/
 │   │   ├── Korisnici/      # Login and user account management
 │   │   ├── Firme/          # Multi-company management
@@ -200,10 +200,10 @@ SredstvaSystem/
 │   │   ├── Izvestaji/      # Reports and recapitulations
 │   │   └── Podesavanja/    # Backup/restore, legacy import, settings
 │   └── Resources/          # Styles, Manual (Help documentation)
-├── SredstvaData/           # Data Access Layer (EF Core entities, DbContext)
+├── ERPiSredstvaData/           # Data Access Layer (EF Core entities, DbContext)
 │   └── Models/             # Asset, Card, Registration, Write-off, Inventory, Supplier, Company, User...
-├── SredstvaData.Tests/     # Unit tests (e.g. depreciation calculation)
-├── SredstvaMigration/      # Migration tool for legacy data from old DBF Clipper files
+├── ERPiSredstvaData.Tests/     # Unit tests (e.g. depreciation calculation)
+├── ERPiSredstvaMigration/      # Migration tool for legacy data from old DBF Clipper files
 ├── .github/workflows/      # GitHub Actions for CI/CD and automatic release
 └── version.txt             # File from which the script reads the current version for auto-update
 ```
@@ -221,29 +221,29 @@ SredstvaSystem/
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/blagojevicboban/AssetManager.git
-cd AssetManager
+git clone https://github.com/blagojevicboban/ERPiSredstva.git
+cd ERPiSredstva
 
 # 2. Build the project
 dotnet build
 
 # 3. Run the application
-dotnet run --project SredstvaApp/SredstvaApp.csproj
+dotnet run --project ERPiSredstvaApp/ERPiSredstvaApp.csproj
 ```
 
-> **Note:** The local SQLite database (`sredstva.db`) is automatically created on the first instance if it doesn't already exist. If you have DBF data, first run the `SredstvaMigration` project, or use the import feature under the "Uvoz iz starog programa" tab in Settings.
+> **Note:** The local SQLite database (`sredstva.db`) is automatically created on the first instance if it doesn't already exist. If you have DBF data, first run the `ERPiSredstvaMigration` project, or use the import feature under the "Uvoz iz starog programa" tab in Settings.
 
 ### Tests
 
 ```bash
-dotnet test SredstvaData.Tests/SredstvaData.Tests.csproj
+dotnet test ERPiSredstvaData.Tests/ERPiSredstvaData.Tests.csproj
 ```
 
 ---
 
 ## 📦 Installation (for end users)
 
-When CI/CD is active, download the latest `SredstvaAppSetup.exe` from the GitHub Releases page.
+When CI/CD is active, download the latest `ERPiSredstvaAppSetup.exe` from the GitHub Releases page.
 The application is installed in the user's profile without administrator privileges, and every new update (New version in `version.txt`) will be applied automatically through **Velopack Delta Update**.
 
 ---

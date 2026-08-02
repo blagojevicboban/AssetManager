@@ -1,10 +1,18 @@
-# 📋 Istorija izmena (Changelog) — SredstvaSystem
+# 📋 Istorija izmena (Changelog) — ERPiSredstva
 
-Sve značajne promene i novine u aplikaciji **SredstvaSystem** dokumentovane su u ovom fajlu.
+Sve značajne promene i novine u aplikaciji **ERPiSredstva** dokumentovane su u ovom fajlu.
 
 Format je zasnovan na [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) standardu i prati Semantic Versioning.
 
 ---
+
+## [1.1.0] - 2026-08-02
+
+### 🏷️ Preimenovanje projekta u ERPi liniju
+- **Rešenje i svi projekti preimenovani**: `SredstvaSystem.slnx` → `ERPiSredstva.slnx`, a projekti `SredstvaApp`/`SredstvaData`/`SredstvaData.Tests`/`SredstvaMigration` → `ERPiSredstvaApp`/`ERPiSredstvaData`/`ERPiSredstvaData.Tests`/`ERPiSredstvaMigration` (folderi, `.csproj` fajlovi, `namespace`-ovi i reference).
+- **Repozitorijum i radni folder**: kod je premešten u `C:\ERPi\ERPiSredstva`, a `origin` pokazuje na `https://github.com/blagojevicboban/ERPiSredstva.git`.
+- **Velopack `packId` je sada `ERPiSredstva`** (ranije `SredstvaSystem`), izvršni fajl je `ERPiSredstvaApp.exe`. `ERPiHub` prepoznaje i staru i novu instalaciju, pa se na računarima sa ranijom verzijom modul i dalje vidi kao instaliran.
+- Ažurirani `.github/workflows/release.yml`, `.vscode` zadaci, skills dokumentacija i README.
 
 ## [1.0.56] - 2026-08-02
 
@@ -16,7 +24,7 @@ Format je zasnovan na [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) s
 ### 📋 Logovanje (`AppLog`, Serilog)
 - **Uvedeno pravo logovanje u fajl.** Dijagnostika je do sada bila `Debug.WriteLine`, koji je u
   Release verziji potpuno nevidljiv — kada bi se kod korisnika nešto pokvarilo, nije ostajao trag.
-- Zapisi idu u `%LOCALAPPDATA%\SredstvaApp\logs\log-GGGGMMDD.txt`, novi fajl svakog dana, čuva se
+- Zapisi idu u `%LOCALAPPDATA%\ERPiSredstvaApp\logs\log-GGGGMMDD.txt`, novi fajl svakog dana, čuva se
   poslednjih 14 dana. Zamenjuje raniji `crash.log` koji je rastao bez ograničenja.
 - Postojeći globalni hvatači grešaka (korisnički interfejs, pozadinske niti, neposmatrani zadaci)
   premešteni u `AppLog` i sada pišu kroz logger umesto ručnog dopisivanja u fajl.
@@ -48,7 +56,7 @@ Format je zasnovan na [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) s
 ## [1.0.52] - 2026-08-01
 
 ### 🚀 Nove funkcionalnosti i Sinhronizacija
-- **Integracija sa AccountingSystem (Poreska Amortizacija Obrazac OA)** — sinhronizovan proračun poreske amortizacije po I–V grupama sa Glavnom knjigom i Poreskim Bilansom (Obrazac PB-1).
+- **Integracija sa ERPiFinansije (Poreska Amortizacija Obrazac OA)** — sinhronizovan proračun poreske amortizacije po I–V grupama sa Glavnom knjigom i Poreskim Bilansom (Obrazac PB-1).
 - **Proširena evidencija fiksnih sredstava** — usklađena polja poreskih grupa, nabavnih i sadašnjih vrednosti za izvoz u PDF/Excel.
 
 ---
@@ -71,8 +79,8 @@ Format je zasnovan na [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) s
 ## [1.0.45] - 2026-07-29
 
 
-### 🚀 ErpHub Integracija & CLI Ruting
-- **Podrška za `--db-path` CLI parametar**: Omogućeno pokretanje `SredstvaApp.exe` iz ErpHub centralnog kontrolnog panela sa automatskim prosleđivanjem putanje do baze podataka.
+### 🚀 ERPiHub Integracija & CLI Ruting
+- **Podrška za `--db-path` CLI parametar**: Omogućeno pokretanje `ERPiSredstvaApp.exe` iz ERPiHub centralnog kontrolnog panela sa automatskim prosleđivanjem putanje do baze podataka.
 
 ### 🎨 UI / UX Poboljšanja
 - **Refaktorisana forma unosa prijave (`PrijavaWindow`)**: Proširena kolona za izbor Poreske grupe sa ToolTip prikazom zakonskih stopa, dodata unutrašnja margina na dugmad `+ Novi dobavljač` i `Dodaj` za bolji vizuelni odziv.

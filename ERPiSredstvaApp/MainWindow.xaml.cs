@@ -1,0 +1,255 @@
+using System.Windows;
+using System.Windows.Controls;
+using ERPiSredstvaApp.ViewModels;
+using ERPiSredstvaApp.Views.Pomoc;
+using ERPiSredstvaData;
+using Velopack;
+
+namespace ERPiSredstvaApp;
+
+public partial class MainWindow : Window
+{
+    private readonly SredstvaDbContext _db;
+    private Button? _activeNavButton;
+    private string _trenutnaSekcijaKljuc = "";
+
+    public MainWindow(SredstvaDbContext db)
+    {
+        InitializeComponent();
+        
+        if (UserSettings.Instance.StartMaximized)
+        {
+            WindowState = WindowState.Maximized;
+        }
+        
+        _db = db;
+        
+        UpdateUserInfo();
+        ApplyRolePermissions();
+        
+        AppSession.TrenutnaFirmaChanged += () =>
+        {
+            Dispatcher.Invoke(() => 
+            {
+                ImeFirmeText.Text = AppSession.TrenutnaFirma?.Naziv ?? "—";
+            });
+        };
+        ImeFirmeText.Text = AppSession.TrenutnaFirma?.Naziv ?? "—";
+        
+        var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+        var versionStr = version != null ? $"{version.Major}.{version.Minor}.{version.Build}" : "1.0.0";
+        VersionText.Text = $"v{versionStr}  •  {System.DateTime.Now.Year}";
+        
+        // Prikazujemo prvu stranicu (Radna tabla)
+        NavigateTo(BtnDashboard, "📊 Radna tabla", () => new Views.Dashboard.DashboardPage(_db));
+
+        // Provera ažuriranja u pozadini
+        _ = CheckForUpdatesAsync();
+    }
+
+    private async System.Threading.Tasks.Task CheckForUpdatesAsync()
+    {
+        try
+        {
+            var source = new Velopack.Sources.GithubSource(
+                "https://github.com/blagojevicboban/ERPiSredstva",
+                null, // null = javni repozitorijum, nema potrebe za tokenom
+                false);
+            var mgr = new UpdateManager(source);
+            var newVersion = await mgr.CheckForUpdatesAsync();
+            if (newVersion != null)
+            {
+                var dialog = new UpdateDialog(newVersion, mgr);
+                dialog.Owner = this;
+                dialog.ShowDialog();
+            }
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Error(ex, "Greška pri proveri ažuriranja");
+        }
+    }
+
+    private void UpdateUserInfo()
+    {
+        if (AppSession.TrenutniKorisnik != null)
+        {
+            TxtImeKorisnika.Text = AppSession.TrenutniKorisnik.ImePrezime;
+            TxtUlogaKorisnika.Text = AppSession.TrenutniKorisnik.Uloga.ToString();
+        }
+    }
+
+    private void ApplyRolePermissions()
+    {
+        // Gledalac ne sme da vrši promene ni obračune
+        if (AppSession.TrenutniKorisnik?.Uloga == ERPiSredstvaData.Models.UlogaKorisnika.Gledalac)
+        {
+            BtnPrijava.Visibility = Visibility.Collapsed;
+            BtnRashod.Visibility = Visibility.Collapsed;
+            BtnAmortizacija.Visibility = Visibility.Collapsed;
+            BtnRevalorizacija.Visibility = Visibility.Collapsed;
+            BtnPodesavanja.Visibility = Visibility.Collapsed;
+        }
+        
+        // Samo Administrator sme da vidi Korisnike i Podešavanja
+        if (AppSession.TrenutniKorisnik?.Uloga != ERPiSredstvaData.Models.UlogaKorisnika.Administrator)
+        {
+            BtnKorisnici.Visibility = Visibility.Collapsed;
+            BtnPodesavanja.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+    {
+        // Prikaži ime firme
+        var firma = _db.Firme.FirstOrDefault();
+        ImeFirmeText.Text = firma?.Naziv ?? "—";
+    }
+
+    private void Window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+        if (e.Key == System.Windows.Input.Key.M &&
+            (System.Windows.Input.Keyboard.Modifiers & System.Windows.Input.ModifierKeys.Control) == System.Windows.Input.ModifierKeys.Control)
+        {
+            BtnToggleSidebar_Click(sender, e);
+            e.Handled = true;
+        }
+        else if (e.Key == System.Windows.Input.Key.F1)
+        {
+            OtvoriPomocKontekstualno();
+            e.Handled = true;
+        }
+    }
+
+    private void BtnToggleSidebar_Click(object sender, RoutedEventArgs e)
+    {
+        if (SidebarColumn.Width.Value > 100)
+        {
+            SidebarColumn.Width = new GridLength(64);
+            TxtBrandTitle.Visibility = Visibility.Collapsed;
+            TxtBrandSubtitle.Visibility = Visibility.Collapsed;
+            HeaderEvidencija.Visibility = Visibility.Collapsed;
+            HeaderPromene.Visibility = Visibility.Collapsed;
+            HeaderObracuni.Visibility = Visibility.Collapsed;
+            HeaderIzvestaji.Visibility = Visibility.Collapsed;
+            HeaderPodesavanja.Visibility = Visibility.Collapsed;
+            HeaderDokumentacija.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            SidebarColumn.Width = new GridLength(220);
+            TxtBrandTitle.Visibility = Visibility.Visible;
+            TxtBrandSubtitle.Visibility = Visibility.Visible;
+            HeaderEvidencija.Visibility = Visibility.Visible;
+            HeaderPromene.Visibility = Visibility.Visible;
+            HeaderObracuni.Visibility = Visibility.Visible;
+            HeaderIzvestaji.Visibility = Visibility.Visible;
+            HeaderPodesavanja.Visibility = Visibility.Visible;
+            HeaderDokumentacija.Visibility = Visibility.Visible;
+        }
+    }
+
+    // ── Navigacija ────────────────────────────────────────────────
+    private void NavigateTo(Button sender, string title, Func<Page> pageFactory, string subtitle = "", string helpAnchor = "")
+    {
+        if (_activeNavButton != null)
+            _activeNavButton.Style = FindResource("NavButton") as Style;
+
+        sender.Style = FindResource("NavButtonActive") as Style;
+        _activeNavButton = sender;
+
+        TxtHeaderTitle.Text = title;
+        TxtHeaderSubtitle.Text = subtitle;
+        _trenutnaSekcijaKljuc = helpAnchor;
+        MainFrame.Navigate(pageFactory());
+    }
+
+    // ── Sidebar dugmad ────────────────────────────────────────────
+    private void BtnDashboard_Click(object sender, RoutedEventArgs e)
+        => NavigateTo(BtnDashboard, "📊 Radna tabla", () => new Views.Dashboard.DashboardPage(_db), "Pregled i statistika osnovnih sredstava", helpAnchor: "dashboard");
+
+    private void BtnSredstva_Click(object sender, RoutedEventArgs e)
+        => NavigateTo(BtnSredstva, "🏗️ Osnovna sredstva", () => new Views.Sredstva.SredstvaPage(_db), helpAnchor: "sredstva");
+
+    private void BtnKartice_Click(object sender, RoutedEventArgs e)
+        => NavigateTo(BtnKartice, "📋 Analitičke kartice", () => new Views.Kartice.KarticePage(_db), helpAnchor: "sredstva");
+
+    public void OpenAnalitickaKartica(int sredstvoId)
+    {
+        NavigateTo(BtnKartice, "📋 Analitičke kartice", () => new Views.Kartice.KarticePage(_db, sredstvoId), helpAnchor: "sredstva");
+    }
+
+    private void BtnPrijava_Click(object sender, RoutedEventArgs e)
+        => NavigateTo(BtnPrijava, "📥 Prijava sredstava", () => new Views.Rashod.PrijavaPage(_db), helpAnchor: "prijava");
+
+    private void BtnRashod_Click(object sender, RoutedEventArgs e)
+        => NavigateTo(BtnRashod, "📤 Rashod i promene", () => new Views.Rashod.RashodPage(_db), helpAnchor: "rashod");
+
+    private void BtnAmortizacija_Click(object sender, RoutedEventArgs e)
+        => NavigateTo(BtnAmortizacija, "📊 Amortizacija", () => new Views.Amortizacija.AmortizacijaPage(_db), helpAnchor: "amortizacija");
+
+    private void BtnRevalorizacija_Click(object sender, RoutedEventArgs e)
+        => NavigateTo(BtnRevalorizacija, "📈 Revalorizacija", () => new Views.Revalorizacija.RevalorizacijaPage(_db), "Usklađivanje vrednosti osnovnih sredstava primenom zadatih koeficijenata", helpAnchor: "revalorizacija");
+
+    private void BtnPopis_Click(object sender, RoutedEventArgs e)
+        => NavigateTo(BtnPopis, "📄 Popis sredstava", () => new Views.Popis.PopisPage(_db), "Upravljanje popisima, kreiranje komisija i unos stanja popisa", helpAnchor: "popis");
+
+    private void BtnRekap_Click(object sender, RoutedEventArgs e)
+        => NavigateTo(BtnRekap, "📑 Rekapitulacija", () => new Views.Izvestaji.IzvestajiPage(_db), "Pregled i analiza osnovnih sredstava po različitim kriterijumima", helpAnchor: "izvestaji");
+
+    private void BtnDobavljaci_Click(object sender, RoutedEventArgs e)
+        => NavigateTo(BtnDobavljaci, "🏢 Dobavljači", () => new Views.Dobavljaci.DobavljaciPage(_db), helpAnchor: "dobavljaci");
+
+    private void FirmaBorder_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        => NavigateTo(BtnFirme, "🏢 Upravljanje firmama", () => new Views.Firme.FirmePage(), "Pregled, izmena, unos novih i odabir aktivne firme za obračune i izveštaje", helpAnchor: "firme");
+
+    private void BtnFirme_Click(object sender, RoutedEventArgs e)
+        => NavigateTo(BtnFirme, "🏢 Upravljanje firmama", () => new Views.Firme.FirmePage(), "Pregled, izmena, unos novih i odabir aktivne firme za obračune i izveštaje", helpAnchor: "firme");
+
+    private void BtnKorisnici_Click(object sender, RoutedEventArgs e)
+        => NavigateTo(BtnKorisnici, "👥 Korisnici", () => new Views.Korisnici.KorisniciPage(_db), "Upravljanje pristupom i ulogama zaposlenih", helpAnchor: "korisnici");
+
+    private void BtnPodesavanja_Click(object sender, RoutedEventArgs e)
+        => NavigateTo(BtnPodesavanja, "⚙️ Podešavanja", () => new Views.Podesavanja.PodesavanjaPage(), "Upravljanje osnovnim podacima o firmi i kreiranje/vraćanje rezervne kopije baze podataka", helpAnchor: "podesavanja");
+
+    private void BtnOdjava_Click(object sender, RoutedEventArgs e)
+    {
+        AppSession.TrenutniKorisnik = null;
+        var loginWindow = new ERPiSredstvaApp.Views.Korisnici.LoginWindow(_db);
+        loginWindow.Show();
+        this.Close();
+    }
+
+    private void BtnPomoc_Click(object sender, RoutedEventArgs e)
+    {
+        TxtHeaderTitle.Text = "❓ Pomoć";
+        TxtHeaderSubtitle.Text = "";
+        MainFrame.Navigate(new PomocPage());
+    }
+
+    private void OtvoriPomocKontekstualno()
+    {
+        TxtHeaderTitle.Text = "❓ Pomoć";
+        TxtHeaderSubtitle.Text = "";
+        MainFrame.Navigate(new PomocPage(_trenutnaSekcijaKljuc));
+    }
+
+    private void BtnChangelog_Click(object sender, RoutedEventArgs e)
+    {
+        PrikaziChangelog();
+    }
+
+    private void VersionText_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        PrikaziChangelog();
+    }
+
+    private void PrikaziChangelog()
+    {
+        var win = new Views.Pomoc.ChangelogWindow
+        {
+            Owner = this
+        };
+        win.ShowDialog();
+    }
+}

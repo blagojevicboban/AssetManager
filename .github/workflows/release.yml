@@ -1,4 +1,4 @@
-name: Release SredstvaSystem
+name: Release ERPiSredstva
 
 on:
   push:
@@ -32,10 +32,10 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Prevođenje celog rešenja
-        run: dotnet build SredstvaSystem.slnx -c Release
+        run: dotnet build ERPiSredstva.slnx -c Release
 
       - name: Pokretanje testova
-        run: dotnet test SredstvaData.Tests\SredstvaData.Tests.csproj -c Release --no-build --verbosity normal
+        run: dotnet test ERPiSredstvaData.Tests\ERPiSredstvaData.Tests.csproj -c Release --no-build --verbosity normal
 
   build:
     needs: test
@@ -64,14 +64,14 @@ jobs:
 
       - name: Prevođenje koda (dotnet publish)
         run: |
-          dotnet publish SredstvaApp\SredstvaApp.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -p:IncludeNativeLibrariesForSelfExtract=true -p:Version=$env:VERSION -o publish_output
+          dotnet publish ERPiSredstvaApp\ERPiSredstvaApp.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -p:IncludeNativeLibrariesForSelfExtract=true -p:Version=$env:VERSION -o publish_output
 
       - name: Kopiranje dodatnih fajlova (Resources/Help)
         run: |
           # Ako se Help nije preneo kroz CSPROJ, ručno ga kopiramo:
-          if (Test-Path "SredstvaApp\Resources\Help") {
+          if (Test-Path "ERPiSredstvaApp\Resources\Help") {
               New-Item -ItemType Directory -Path "publish_output\Resources\Help" -Force | Out-Null
-              Copy-Item -Path "SredstvaApp\Resources\Help\*" -Destination "publish_output\Resources\Help" -Recurse -Force
+              Copy-Item -Path "ERPiSredstvaApp\Resources\Help\*" -Destination "publish_output\Resources\Help" -Recurse -Force
           }
 
       - name: Instalacija Velopack CLI
@@ -81,13 +81,13 @@ jobs:
         run: |
           $vpkArgs = @(
               "pack",
-              "--packId", "SredstvaSystem",
+              "--packId", "ERPiSredstva",
               "--packVersion", $env:VERSION,
               "--packDir", "publish_output",
-              "--mainExe", "SredstvaApp.exe",
+              "--mainExe", "ERPiSredstvaApp.exe",
               "--outputDir", "ReleasePackage",
               "--packTitle", "ERPi Sredstva",
-              "--icon", "SredstvaApp\app.ico"
+              "--icon", "ERPiSredstvaApp\app.ico"
           )
           
           & vpk $vpkArgs

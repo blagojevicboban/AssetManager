@@ -1,18 +1,18 @@
 ---
 name: questpdf-report-documents
-description: Conventions for QuestPDF report/print documents in SredstvaApp (Nalepnice, Rashod, Prijava, Amortizacija/Obrazac OA, Popis, Revalorizacija, Analitička kartica) — IDocument structure, header/footer/table styling, and the generate-and-open flow. Use whenever adding or editing a *Document.cs file under SredstvaApp/Views/**/Stampe or generating a new PDF report.
+description: Conventions for QuestPDF report/print documents in ERPiSredstvaApp (Nalepnice, Rashod, Prijava, Amortizacija/Obrazac OA, Popis, Revalorizacija, Analitička kartica) — IDocument structure, header/footer/table styling, and the generate-and-open flow. Use whenever adding or editing a *Document.cs file under ERPiSredstvaApp/Views/**/Stampe or generating a new PDF report.
 ---
 
-# QuestPDF Document Conventions (SredstvaApp)
+# QuestPDF Document Conventions (ERPiSredstvaApp)
 
-Every printable report in `SredstvaApp` is a small `IDocument` class colocated with its feature (e.g. `Views/Rashod/Stampe/RashodDocument.cs`, `Views/Amortizacija/ObrazacOADocument.cs`, `Views/Sredstva/NalepniceDocument.cs`, `Views/Popis/PopisIzvestajDocument.cs`). Follow the existing shape rather than inventing a new document scaffold.
+Every printable report in `ERPiSredstvaApp` is a small `IDocument` class colocated with its feature (e.g. `Views/Rashod/Stampe/RashodDocument.cs`, `Views/Amortizacija/ObrazacOADocument.cs`, `Views/Sredstva/NalepniceDocument.cs`, `Views/Popis/PopisIzvestajDocument.cs`). Follow the existing shape rather than inventing a new document scaffold.
 
 ---
 
 ## 1. Class Shape
 
 - Name: `<Feature>Document.cs`, implements `QuestPDF.Infrastructure.IDocument`.
-- Constructor takes plain data (a `List<...Info>` DTO built by the calling page, plus optional `SredstvaData.Models.Firma? firma`) — never an `SredstvaDbContext`. Query the DB in the page/window, hand the document only the data it needs to render.
+- Constructor takes plain data (a `List<...Info>` DTO built by the calling page, plus optional `ERPiSredstvaData.Models.Firma? firma`) — never an `SredstvaDbContext`. Query the DB in the page/window, hand the document only the data it needs to render.
 - If the document needs per-row DTOs, define small `public class XInfo { ... }` records/classes in the same file above the document class (see `RashodStavkaInfo`/`RashodNalogInfo` in `RashodDocument.cs`).
 
 ## 2. `Compose(IDocumentContainer container)`

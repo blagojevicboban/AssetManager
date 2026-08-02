@@ -1,6 +1,0 @@
-<Solution>
-  <Project Path="SredstvaApp/SredstvaApp.csproj" />
-  <Project Path="SredstvaData.Tests/SredstvaData.Tests.csproj" />
-  <Project Path="SredstvaData/SredstvaData.csproj" />
-  <Project Path="SredstvaMigration/SredstvaMigration.csproj" />
-</Solution>
