@@ -148,7 +148,11 @@ public partial class PodesavanjaPage : Page
                         "Uspeh", MessageBoxButton.OK, MessageBoxImage.Information);
                     
                     // Restart
-                    System.Diagnostics.Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location.Replace(".dll", ".exe"));
+                    var exePath = Environment.ProcessPath;
+                    if (!string.IsNullOrEmpty(exePath))
+                    {
+                        System.Diagnostics.Process.Start(exePath);
+                    }
                     Application.Current.Shutdown();
                 }
                 else

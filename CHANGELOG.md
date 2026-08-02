@@ -6,6 +6,11 @@ Format je zasnovan na [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) s
 
 ---
 
+## [1.0.56] - 2026-08-02
+
+### 🐛 Ispravke
+- **Vraćanje rezervne kopije i Single-File Publish (`IL3000`)**: Zamenjen poziv `Assembly.Location` sa `Environment.ProcessPath` prilikom ponovnog pokretanja aplikacije nakon obnavljanja baze podataka. Time je sprečena greška `IL3000` pri Single-File objavljivanju i osigurano pouzdano pokretanje procesa.
+
 ## [1.0.55] - 2026-08-02
 
 ### 📋 Logovanje (`AppLog`, Serilog)
