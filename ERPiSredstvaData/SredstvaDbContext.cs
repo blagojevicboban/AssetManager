@@ -1,7 +1,10 @@
 using System;
 using System.IO;
+using System.Linq;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using ERPiSredstvaData.Models;
 
 namespace ERPiSredstvaData;
@@ -42,9 +45,67 @@ public class SredstvaDbContext : DbContext
         BaselineLegacyDatabaseIfNeeded(dbPath);
         EnsureExtraColumnsExist(dbPath);
 
+        // Bezbednosna mreza za bazu koja NIJE zatecena ERPiSredstva baza (npr. otvorena je
+        // baza drugog modula bez sopstvene Sredstva tabele, ili baza kojoj je istorija
+        // migracija prazna/izbrisana) - BaselineLegacyDatabaseIfNeeded je za nju vec preskocio
+        // svoje specificne zakrpe jer Sredstva tabela ne postoji. Ako bi se ovde presla
+        // pravo na Migrate(), on bi pokusao da napravi tabele (npr. Firme) koje vec postoje
+        // i pao sa "table already exists", isto kao sto se desavalo u AccountingDbContext.
+        if (PostojiZatecenaSemaBezMigracija(ctx))
+        {
+            OznaciSveMigracijeKaoPrimenjene(ctx);
+        }
+
         ctx.Database.Migrate();
 
         return ctx;
+    }
+
+    /// <summary>
+    /// Da li baza postoji, sadrzi tabele, ali nema nijednu primenjenu migraciju u istoriji.
+    /// To se desava kad je baza napravljena drugim modulom (npr. ERPi Zarade ili ERPi
+    /// Finansije) cije tabele ne ukljucuju Sredstva - BaselineLegacyDatabaseIfNeeded takvu
+    /// bazu prepoznaje i ne dira, pa ovde ostaje da se sprovede generalna zastita.
+    /// </summary>
+    private static bool PostojiZatecenaSemaBezMigracija(SredstvaDbContext ctx)
+    {
+        var creator = ctx.Database.GetService<IRelationalDatabaseCreator>();
+        if (!creator.Exists() || !creator.HasTables())
+            return false;
+
+        try
+        {
+            var primenjene = ctx.Database.GetAppliedMigrations().ToList();
+            return primenjene.Count == 0;
+        }
+        catch
+        {
+            // __EFMigrationsHistory ne postoji - baza je definitivno zatecena.
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// Upisuje SVE poznate migracije u __EFMigrationsHistory BEZ izvrsavanja njihovog
+    /// sadrzaja, cime se zatecena baza usvaja u sistem migracija a da se nijedan podatak ne
+    /// dira. Od tog trenutka svaka naredna migracija ide kroz uobicajenu EF proceduru.
+    /// </summary>
+    private static void OznaciSveMigracijeKaoPrimenjene(SredstvaDbContext ctx)
+    {
+        ctx.Database.ExecuteSqlRaw(@"
+            CREATE TABLE IF NOT EXISTS __EFMigrationsHistory (
+                MigrationId TEXT NOT NULL CONSTRAINT PK___EFMigrationsHistory PRIMARY KEY,
+                ProductVersion TEXT NOT NULL
+            );");
+
+        var verzija = typeof(DbContext).Assembly.GetName().Version?.ToString() ?? "8.0.0";
+
+        foreach (var migracija in ctx.Database.GetMigrations())
+        {
+            ctx.Database.ExecuteSqlRaw(
+                "INSERT OR IGNORE INTO __EFMigrationsHistory (MigrationId, ProductVersion) VALUES ({0}, {1});",
+                migracija, verzija);
+        }
     }
 
     /// <summary>
@@ -75,6 +136,16 @@ public class SredstvaDbContext : DbContext
         if (TableExists("__EFMigrationsHistory"))
         {
             // Baza je vec na tragu migracija - nema sta da se radi ovde.
+            return;
+        }
+
+        if (!TableExists("Sredstva"))
+        {
+            // Ovo NIJE zatecena ERPiSredstva baza - vec baza drugog modula (npr. ERPi Zarade
+            // ili ERPi Finansije) otvorena greskom, koja slucajno nema __EFMigrationsHistory.
+            // Zakrpe ispod pretpostavljaju da Sredstva tabela vec postoji pa bi ovde pukle sa
+            // "no such table: Sredstva". Generalni fallback u Create() (PostojiZatecenaSema
+            // BezMigracija/OznaciSveMigracijeKaoPrimenjene) preuzima ovaj slucaj.
             return;
         }
 

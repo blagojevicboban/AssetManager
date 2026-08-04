@@ -6,6 +6,12 @@ Format je zasnovan na [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) s
 
 ---
 
+## [1.1.3] - 2026-08-04
+
+### 🐛 Zaštita od pada pri otvaranju baze drugog modula bez istorije migracija (`SredstvaDbContext`)
+- **Aplikacija je mogla da padne** (npr. sa `no such table: Sredstva` ili `table "Firme" already exists`) kad je kao aktivna baza bila otvorena datoteka koju je kreirao drugi modul (npr. ERPi Zarade ili ERPi Finansije), a koja nema `__EFMigrationsHistory` tabelu. Postojeća zakrpa za zatečene baze (`BaselineLegacyDatabaseIfNeeded`) je pretpostavljala da `Sredstva` tabela već postoji i pokušavala da je menja SQL-om, pa je pucala nad tuđom bazom koja tu tabelu nema.
+- **Popravka:** `BaselineLegacyDatabaseIfNeeded` sada preskače svoje specifične zakrpe kad `Sredstva` tabela ne postoji. Dodata je i generalna zaštita po uzoru na `AccountingDbContext` (ERPi Finansije) i `PlataDbContext` (ERPi Zarade): `PostojiZatecenaSemaBezMigracija` prepoznaje bazu koja ima tabele ali nijednu primenjenu migraciju, a `OznaciSveMigracijeKaoPrimenjene` upisuje sve poznate migracije u istoriju bez izvršavanja, pa `Migrate()` ne pokušava da napravi tabele koje već postoje u tuđoj bazi. Ponašanje za prave stare ERPiSredstva baze (koje `Sredstva` tabelu imaju) ostaje nepromenjeno.
+
 ## [1.1.2] - 2026-08-02
 
 ### 🐛 Preuzimanje podataka i kada je nova verzija već pokrenuta (`AppConfig`)
