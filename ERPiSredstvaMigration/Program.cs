@@ -9,7 +9,7 @@ using ERPiSredstvaData.Models;
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 var enc = Encoding.GetEncoding(852);
-var opts = new DbfDataReaderOptions { Encoding = enc };
+var opts = new DbfDataReaderOptions { Encoding = enc, SkipDeletedRecords = true };
 var kor28 = @"C:\SREDSTVA\SREDS\KOR28\";
 
 // Prvo citamo firmu da bismo znali ime baze
@@ -84,13 +84,19 @@ using (var r = new DbfDataReader.DbfDataReader(kor28 + "SREDSTVA.DBF", opts))
     {
         var sifra = ToInt(GetSafe(r, cols, "SIFRA"));
         var invenBr = Str(GetSafe(r, cols, "INVEN_BR"));
+        var naziv = Str(GetSafe(r, cols, "NAZIV"));
+        if (sifra <= 0 || string.IsNullOrWhiteSpace(naziv))
+        {
+            continue;
+        }
+
         var nabavna = ToDec(GetSafe(r, cols, "NABAVNA"));
         var otpisana = ToDec(GetSafe(r, cols, "OTPISANA"));
         var s = new Sredstvo
         {
             LegacySifra = sifra,
             InventarskiBroj = string.IsNullOrWhiteSpace(invenBr) ? sifra.ToString() : invenBr,
-            Naziv = Str(GetSafe(r, cols, "NAZIV")),
+            Naziv = naziv,
             NabavnaVrednost = nabavna,
             IspravkaVrednosti = otpisana,
             SadasnjaVrednost = nabavna - otpisana,

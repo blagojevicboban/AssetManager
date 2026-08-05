@@ -247,12 +247,19 @@ public class DbfImportService
         if (!File.Exists(path)) return;
 
         var encoding = Encoding.GetEncoding(852);
-        var opts = new DbfDataReaderOptions { Encoding = encoding };
+        var opts = new DbfDataReaderOptions { Encoding = encoding, SkipDeletedRecords = true };
         using var reader = new DbfDataReader.DbfDataReader(path, opts);
         var columns = GetColumns(reader);
 
         while (reader.Read())
         {
+            var legacySifra = GetIntSafe(reader, columns, "SIFRA");
+            var naziv = GetStringSafe(reader, columns, "NAZIV");
+            if (legacySifra <= 0 || string.IsNullOrWhiteSpace(naziv))
+            {
+                continue;
+            }
+
             var sr = new Sredstvo
             {
                 JeAktivno = true,
@@ -260,11 +267,11 @@ public class DbfImportService
                 DatumAktiviranja = DateTime.Now
             };
 
-            sr.LegacySifra = GetIntSafe(reader, columns, "SIFRA");
+            sr.LegacySifra = legacySifra;
             sr.InventarskiBroj = GetStringSafe(reader, columns, "INVEN_BR", "INVBROJ");
             if (string.IsNullOrEmpty(sr.InventarskiBroj)) sr.InventarskiBroj = sr.LegacySifra.ToString();
             
-            sr.Naziv = GetStringSafe(reader, columns, "NAZIV");
+            sr.Naziv = naziv;
             sr.NabavnaVrednost = GetDecimalSafe(reader, columns, "NABAVNA", "NABVRED");
             sr.IspravkaVrednosti = GetDecimalSafe(reader, columns, "OTPISANA", "ISPRVRED");
             sr.StopaAmortizacije = GetDecimalSafe(reader, columns, "STOPA_AM");
